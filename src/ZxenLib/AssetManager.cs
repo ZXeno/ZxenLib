@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.Managers
+﻿namespace ZxenLib
 {
     using System;
     using System.Collections.Generic;
@@ -8,6 +8,7 @@
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Media;
+    using ZxenLib.Graphics;
 
     /// <summary>
     /// Used for managing game assets such as textures, sounds, fonts, etc.

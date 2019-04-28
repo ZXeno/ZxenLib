@@ -1,8 +1,7 @@
-﻿namespace ZxenLib.Managers
+﻿namespace ZxenLib.Graphics
 {
     using System.Collections.Generic;
     using Microsoft.Xna.Framework.Graphics;
-    using ZxenLib.Graphics;
 
     /// <summary>
     /// Interface for the <see cref="SpriteManager"/> class.

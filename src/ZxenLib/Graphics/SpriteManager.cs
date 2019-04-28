@@ -1,10 +1,9 @@
-﻿namespace ZxenLib.Managers
+﻿namespace ZxenLib.Graphics
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using Microsoft.Xna.Framework.Graphics;
-    using ZxenLib.Graphics;
 
     /// <summary>
     /// Manages all sprites through a collection of Atlases.

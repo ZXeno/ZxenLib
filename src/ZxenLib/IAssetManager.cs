@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.Managers
+﻿namespace ZxenLib
 {
     using System.Collections.Generic;
     using Microsoft.Xna.Framework.Audio;
