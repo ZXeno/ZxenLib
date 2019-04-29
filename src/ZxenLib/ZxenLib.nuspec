@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>ZXenLib</id>
+    <version>0.1.0</version>
+    <title>ZXenLib</title>
+    <authors>Jonathan "ZXeno" Cain</authors>
+	<owners>Jonathan "ZXeno" Cain</owners>
+    <licenseUrl>https://github.com/ZXeno/ZXenLib/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/ZXeno/ZXenLib</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>System I use for building games using the Monogame framework. This includes an event system, entity component system, sprite and animation system, gamestate system, and more.</description>
+    <copyright>Copyright © Jonathan Cain under the MIT license.</copyright>
+    <tags>Monogame, GameDev, game development, games, C#, .net</tags>
+	<dependencies>
+		<dependency id="NanoDiCs" version="1.0" />
+		<dependency id="Newtonsoft.Json" version="10.0" />
+		<dependency id="MonoGame.Framework.DesktopGL" version="3.6.0.1625" />
+	</dependencies>
+  </metadata>
+  <files>
+	<file src="bin\release\*.dll" target="lib" />
+  </files>
+</package>
