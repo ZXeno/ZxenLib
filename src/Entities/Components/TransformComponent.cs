@@ -13,6 +13,10 @@
         /// </summary>
         public const string TransformComponentProgrammaticId = "TransformComponent";
         private Vector2 scale;
+        private Vector2 position;
+        private bool isDirty;
+        private Angle angle;
+        private Rectangle bounds;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransformComponent"/> class.
@@ -23,6 +27,7 @@
             this.Size = Vector2.One;
             this.Angle = new Angle();
             this.ProgrammaticId = TransformComponentProgrammaticId;
+            this.isDirty = true;
         }
 
         /// <summary>
@@ -36,17 +41,34 @@
             this.Angle = new Angle();
             this.Parent = parent;
             this.ProgrammaticId = TransformComponentProgrammaticId;
+            this.isDirty = true;
         }
 
         /// <summary>
         /// Gets or sets the entity's <see cref="Vector2"/> position.
         /// </summary>
-        public Vector2 Position { get; set; }
+        public Vector2 Position
+        {
+            get => position;
+            set
+            {
+                position = value;
+                this.isDirty = true;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the angle of this transform component.
         /// </summary>
-        public Angle Angle { get; set; }
+        public Angle Angle
+        {
+            get => angle;
+            set
+            {
+                angle = value;
+                isDirty = true;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the scale of object. Used in GameObject bounds calculations.
@@ -78,11 +100,12 @@
         {
             get
             {
-                return new Rectangle(
-                    (int)(this.Position.X - (this.Size.X / 2 * this.Scale.X)),
-                    (int)(this.Position.Y - (this.Size.Y / 2 * this.Scale.Y)),
-                    (int)(this.Size.X * this.Scale.X),
-                    (int)(this.Size.Y * this.Scale.Y));
+                if (isDirty)
+                {
+                    this.RecalculateBounds();
+                }
+
+                return this.bounds;
             }
         }
 
@@ -134,6 +157,15 @@
         public void ScaleTransform(Vector2 scale)
         {
             this.Scale += scale;
+        }
+
+        private void RecalculateBounds()
+        {
+            this.bounds = new Rectangle(
+                    (int)(this.Position.X - (this.Size.X / 2 * this.Scale.X)),
+                    (int)(this.Position.Y - (this.Size.Y / 2 * this.Scale.Y)),
+                    (int)(this.Size.X * this.Scale.X),
+                    (int)(this.Size.Y * this.Scale.Y));
         }
     }
 }

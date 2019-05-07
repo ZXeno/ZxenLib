@@ -4,7 +4,6 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using ZxenLib.Graphics;
-    using ZxenLib.Managers;
 
     /// <summary>
     /// Factory class to build UI controls with default values.

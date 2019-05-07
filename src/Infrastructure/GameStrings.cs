@@ -1,7 +1,5 @@
 ﻿namespace ZxenLib.Infrastructure
 {
-    using ZxenLib.Managers;
-
     /// <summary>
     /// Wrapper class for getting loaded strings values.
     /// </summary>

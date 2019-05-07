@@ -3,7 +3,6 @@
     using System;
     using Microsoft.Xna.Framework.Media;
     using ZxenLib.Events;
-    using ZxenLib.Managers;
 
     /// <summary>
     /// Manages and plays all sound effects for the game.
