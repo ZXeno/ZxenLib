@@ -1,0 +1,176 @@
+﻿namespace ZxenLib.GameState
+{
+    using System;
+    using System.Collections.Generic;
+    using Microsoft.Xna.Framework.Graphics;
+    using ZxenLib.Events;
+
+    /// <summary>
+    /// Defines the implemenation of a GameState.
+    /// </summary>
+    public abstract partial class GameState
+    {
+        private IEventDispatcher eventDispatcher;
+        private List<GameState> childStates;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameState"/> class.
+        /// </summary>
+        public GameState(GameStateManager gameStateManager, IEventDispatcher eventDispatcher)
+        {
+            this.Id = Guid.NewGuid().ToString();
+            this.eventDispatcher = eventDispatcher;
+            this.StateManager = gameStateManager;
+            this.childStates = new List<GameState>();
+            this.Tag = this;
+            this.IsInitialized = false;
+        }
+
+        /// <summary>
+        /// Gets or sets the Id of this object
+        /// </summary>
+        public string Id { get; protected set; }
+
+        /// <summary>
+        /// Gets this <see cref="GameState"/>'s child states.
+        /// </summary>
+        public IList<GameState> ChildStates { get => this.childStates; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="GameState"/> has been initialilized.
+        /// </summary>
+        public bool IsInitialized { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the GameState tag.
+        /// </summary>
+        public GameState Tag { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="GameState"/> is enabled.
+        /// </summary>
+        public bool IsEnabled { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="GameState"/> is visible.
+        /// </summary>
+        public bool Visible { get; set; }
+
+        /// <summary>
+        /// Gets or sets the draw order for this state.
+        /// </summary>
+        public int DrawOrder { get; set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="GameStateManager"/> for this <see cref="GameState"/>.
+        /// </summary>
+        protected GameStateManager StateManager { get; set; }
+
+        /// <summary>
+        /// Performs initialization.
+        /// </summary>
+        public virtual void Initialize()
+        {
+            this.eventDispatcher.Subscribe(GameStateManager.StateChangeEventId, this.StateChange, this);
+            this.IsInitialized = true;
+        }
+
+        /// <summary>
+        /// Loads any content.
+        /// </summary>
+        public virtual void LoadContent()
+        {
+        }
+
+        /// <summary>
+        /// Performs updates for this <see cref="GameState"/>. Called every frame.
+        /// </summary>
+        /// <param name="deltaTime">The elapsed time of the previous frame.</param>
+        public virtual void Update(float deltaTime)
+        {
+            foreach (GameState child in this.childStates)
+            {
+                if (child.IsEnabled)
+                {
+                    child.Update(deltaTime);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Performs draw call batching for this <see cref="GameState"/>. Called every frame.
+        /// </summary>
+        /// <param name="sb">The <see cref="SpriteBatch"/> used for batching draw calls.</param>
+        public virtual void Draw(SpriteBatch sb)
+        {
+            foreach (GameState childState in this.childStates)
+            {
+                if (childState.Visible)
+                {
+                    childState.Draw(sb);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Disposes of this object.
+        /// </summary>
+        public virtual void ClearState()
+        {
+            this.eventDispatcher.Unsubscribe(GameStateManager.StateChangeEventId, this, this.StateChange);
+            this.childStates.Clear();
+            this.childStates = null;
+            this.StateManager = null;
+            this.Tag = null;
+        }
+
+        /// <summary>
+        /// Handles StateChange events for this <see cref="GameState"/>
+        /// </summary>
+        /// <param name="eventData">The <see cref="EventData"/> for this event.</param>
+        protected internal virtual void StateChange(EventData eventData)
+        {
+            if (this.StateManager.CurrentState == this.Tag)
+            {
+                if (!this.IsInitialized)
+                {
+                    this.Initialize();
+                }
+
+                this.Show();
+            }
+            else
+            {
+                this.Hide();
+            }
+        }
+
+        /// <summary>
+        /// Shows the state.
+        /// </summary>
+        protected virtual void Show()
+        {
+            this.Visible = true;
+            this.IsEnabled = true;
+            foreach (GameState state in this.childStates)
+            {
+                state.IsEnabled = true;
+                state.Visible = true;
+            }
+        }
+
+        /// <summary>
+        /// Hides the state.
+        /// </summary>
+        protected virtual void Hide()
+        {
+            this.Visible = false;
+            this.IsEnabled = false;
+            foreach (GameState state in this.childStates)
+            {
+                state.IsEnabled = false;
+                state.Visible = false;
+            }
+        }
+    }
+}
