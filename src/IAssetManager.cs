@@ -38,7 +38,10 @@
         /// <summary>
         /// Initializes the AssetManager.
         /// </summary>
-        void Initialize();
+        /// <param name="stringsFileName">The file name of the text file containing strings data.</param>
+        /// <param name="stringsDirectory">The directory containing the strings file.</param>
+        /// <param name="useStrings">Flag for if the built-in strings system should be used.</param>
+        void Initialize(string stringsFileName = "strings.txt", string stringsDirectory = "", bool useStrings = true);
 
         /// <summary>
         /// Gets all file names under a given folder path. Does not enumerate subfolders.

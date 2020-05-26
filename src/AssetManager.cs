@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Audio;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
@@ -20,19 +21,21 @@
         private const string SfxFolderName = "SoundFX";
         private const string SongsFolderName = "Music";
         private const string StringsFileName = "strings.txt";
+        private const string DataDirectory = "Data";
 
         private string textureDirectoryPath;
         private string fontDirectoryPath;
         private string sfxDirectoryPath;
         private string songsDirectoryPath;
         private string stringsDirectoryPath;
+        private bool useStrings;
 
         private ContentManager contentManager;
         private ISpriteManager spriteManager;
 
-        public AssetManager(ContentManager contentManager, ISpriteManager spriteManager)
+        public AssetManager(Game game, ISpriteManager spriteManager)
         {
-            this.contentManager = contentManager;
+            this.contentManager = game.Content;
             this.spriteManager = spriteManager;
         }
 
@@ -64,19 +67,51 @@
         /// <summary>
         /// Initializes the AssetManager.
         /// </summary>
-        public void Initialize()
+        /// <param name="stringsFileName">The file name of the text file containing strings data.</param>
+        /// <param name="stringsDirectory">The directory containing the strings file.</param>
+        /// <param name="useStrings">Flag for if the built-in strings system should be used.</param>
+        public void Initialize(string stringsFileName = "strings.txt", string stringsDirectory = "", bool useStrings = true)
         {
+            this.useStrings = useStrings;
             this.Textures = new Dictionary<string, Texture2D>();
             this.Fonts = new Dictionary<string, SpriteFont>();
             this.SoundFX = new Dictionary<string, SoundEffect>();
             this.Songs = new Dictionary<string, Song>();
-            this.Strings = new Dictionary<string, string>();
 
             this.textureDirectoryPath = Path.Combine(this.contentManager.RootDirectory, AssetManager.TextureFolderName);
             this.fontDirectoryPath = Path.Combine(this.contentManager.RootDirectory, AssetManager.FontFolderName);
             this.sfxDirectoryPath = Path.Combine(this.contentManager.RootDirectory, AssetManager.SfxFolderName);
             this.songsDirectoryPath = Path.Combine(this.contentManager.RootDirectory, AssetManager.SongsFolderName);
-            this.stringsDirectoryPath = Path.Combine(this.contentManager.RootDirectory, "Data");
+
+            if (!Directory.Exists(this.textureDirectoryPath))
+            {
+                Directory.CreateDirectory(this.textureDirectoryPath);
+            }
+
+            if (!Directory.Exists(this.fontDirectoryPath))
+            {
+                Directory.CreateDirectory(this.fontDirectoryPath);
+            }
+
+            if (!Directory.Exists(this.sfxDirectoryPath))
+            {
+                Directory.CreateDirectory(this.sfxDirectoryPath);
+            }
+
+            if (!Directory.Exists(this.songsDirectoryPath))
+            {
+                Directory.CreateDirectory(this.songsDirectoryPath);
+            }
+
+            if (this.useStrings)
+            {
+                this.Strings = new Dictionary<string, string>();
+                this.stringsDirectoryPath = Path.Combine(this.contentManager.RootDirectory, AssetManager.DataDirectory);
+                if (!Directory.Exists(this.stringsDirectoryPath))
+                {
+                    Directory.CreateDirectory(this.stringsDirectoryPath);
+                }
+            }
         }
 
         /// <summary>
@@ -96,52 +131,69 @@
         {
             // TODO: There must be a way to dynamically load these assets and sort them by type without needing to know which folders they are in beforehand.
 
-            // Load textures
-            List<string> fileNames = this.GetAllFileNames(this.textureDirectoryPath).ToList();
-            foreach (string filePath in fileNames.Where(x => !x.EndsWith(".json")))
-            {
-                string fileName = Path.GetFileNameWithoutExtension(filePath);
-                this.Textures.Add(fileName, this.contentManager.Load<Texture2D>($"{AssetManager.TextureFolderName}\\{fileName}"));
-            }
+            List<string> fileNames = null;
 
-            foreach (string filePath in fileNames.Where(x => x.EndsWith(".json")))
+            // Load textures
+            if (Directory.Exists(this.textureDirectoryPath))
             {
-                string fileName = Path.GetFileNameWithoutExtension(filePath);
-                string fullyQualifiedPath = Path.Combine(Environment.CurrentDirectory, filePath);
-                this.spriteManager.AddAtlas(fileName, this.Textures[fileName], fullyQualifiedPath);
+                fileNames = this.GetAllFileNames(this.textureDirectoryPath).ToList();
+                foreach (string filePath in fileNames.Where(x => !x.EndsWith(".json")))
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(filePath);
+                    this.Textures.Add(fileName, this.contentManager.Load<Texture2D>($"{AssetManager.TextureFolderName}\\{fileName}"));
+                }
+
+                foreach (string filePath in fileNames.Where(x => x.EndsWith(".json")))
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(filePath);
+                    string fullyQualifiedPath = Path.Combine(Environment.CurrentDirectory, filePath);
+                    this.spriteManager.AddAtlas(fileName, this.Textures[fileName], fullyQualifiedPath);
+                }
             }
 
             // Load fonts
-            fileNames = this.GetAllFileNames(this.fontDirectoryPath).ToList();
-            foreach (string filePath in fileNames)
+            if (Directory.Exists(this.fontDirectoryPath))
             {
-                string fileName = Path.GetFileNameWithoutExtension(filePath);
-                this.Fonts.Add(fileName, this.contentManager.Load<SpriteFont>($"{AssetManager.FontFolderName}\\{fileName}"));
+                fileNames = this.GetAllFileNames(this.fontDirectoryPath).ToList();
+                foreach (string filePath in fileNames)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(filePath);
+                    this.Fonts.Add(fileName, this.contentManager.Load<SpriteFont>($"{AssetManager.FontFolderName}\\{fileName}"));
+                }
             }
 
             // Load SoundFX
-            fileNames = this.GetAllFileNames(this.sfxDirectoryPath).ToList();
-            foreach (string filePath in fileNames)
+            if (Directory.Exists(this.sfxDirectoryPath))
             {
-                string fileName = Path.GetFileNameWithoutExtension(filePath);
-                this.SoundFX.Add(fileName, this.contentManager.Load<SoundEffect>($"{AssetManager.SfxFolderName}\\{fileName}"));
+                fileNames = this.GetAllFileNames(this.sfxDirectoryPath).ToList();
+                foreach (string filePath in fileNames)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(filePath);
+                    this.SoundFX.Add(fileName, this.contentManager.Load<SoundEffect>($"{AssetManager.SfxFolderName}\\{fileName}"));
+                }
             }
 
             // Load Songs
-            fileNames = this.GetAllFileNames(this.songsDirectoryPath).Where(x => x.EndsWith(".xnb")).ToList();
-            foreach (string filePath in fileNames)
+            if (Directory.Exists(this.songsDirectoryPath))
             {
-                string fileName = Path.GetFileNameWithoutExtension(filePath);
-                this.Songs.Add(fileName, this.contentManager.Load<Song>($"{AssetManager.SongsFolderName}\\{fileName}"));
+                fileNames = this.GetAllFileNames(this.songsDirectoryPath).Where(x => x.EndsWith(".xnb")).ToList();
+                foreach (string filePath in fileNames)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(filePath);
+                    this.Songs.Add(fileName, this.contentManager.Load<Song>($"{AssetManager.SongsFolderName}\\{fileName}"));
+                }
             }
 
             // Load Strings
-            var stringsData = File.ReadAllText(Path.Combine(this.stringsDirectoryPath, AssetManager.StringsFileName));
-            string[] splitdata = stringsData.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            for (int x = 0; x < splitdata.Length; x++)
+            if (this.useStrings && Directory.Exists(this.stringsDirectoryPath))
             {
-                var splitLine = splitdata[x].Split(new[] { "=" }, StringSplitOptions.None);
-                this.Strings.Add(splitLine[0].Trim(), splitLine[1].Trim());
+                var stringsData = File.ReadAllText(Path.Combine(this.stringsDirectoryPath, AssetManager.StringsFileName));
+                string[] splitdata = stringsData.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                for (int x = 0; x < splitdata.Length; x++)
+                {
+                    var splitLine = splitdata[x].Split(new[] { "=" }, StringSplitOptions.None);
+                    this.Strings.Add(splitLine[0].Trim(), splitLine[1].Trim());
+                }
             }
         }
     }

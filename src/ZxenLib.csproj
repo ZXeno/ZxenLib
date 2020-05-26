@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net472</TargetFrameworks>
-    <Version>0.1.1</Version>
-	  <PackageVersion>0.1.1</PackageVersion>
+    <Version>0.1.2.0</Version>
+	  <PackageVersion>0.1.2.0</PackageVersion>
     <Authors>Jonathan "ZXeno" Cain</Authors>
     <Company />
     <Description>System I use for building games using the Monogame framework. This includes an event system, entity component system, sprite and animation system, gamestate system, and more.</Description>
@@ -12,8 +12,11 @@
     <RepositoryUrl>https://github.com/ZXeno/ZxenLib</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <PackageReleaseNotes>Making available for use with Monogame 3.8 and .Net Standard 2.1
-No new features as of yet.</PackageReleaseNotes>
+-Moved the UI functionality to its own solution.
+-Added configuration manager and resolution options.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyVersion>0.1.2.0</AssemblyVersion>
+    <FileVersion>0.1.2.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +26,7 @@ No new features as of yet.</PackageReleaseNotes>
   <ItemGroup>
     <PackageReference Include="NanoDiCs" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.2" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.13" />
   </ItemGroup>
 
   <ItemGroup>
