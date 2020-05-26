@@ -18,7 +18,7 @@
         private const int StartDrawOrder = 1000;
         private const int DrawOrderInc = 100;
         private int drawOrder;
-        private Stack<GameState> gameStates;
+        private Stack<GameScreen> gameStates;
         private IEventDispatcher eventDispatcher;
 
         /// <summary>
@@ -27,14 +27,14 @@
         public GameStateManager(IEventDispatcher eventDispatcher)
         {
             this.drawOrder = StartDrawOrder;
-            this.gameStates = new Stack<GameState>();
+            this.gameStates = new Stack<GameScreen>();
             this.eventDispatcher = eventDispatcher;
         }
 
         /// <summary>
         /// Gets the current state.
         /// </summary>
-        public GameState CurrentState
+        public GameScreen CurrentState
         {
             get => this.gameStates.Peek();
         }
@@ -53,7 +53,7 @@
         {
             if (this.gameStates.Count > 0)
             {
-                GameState removedState = this.RemoveState();
+                GameScreen removedState = this.RemoveState();
                 this.drawOrder -= DrawOrderInc;
                 this.eventDispatcher.Publish(new EventData()
                 {
@@ -69,7 +69,7 @@
         /// Adds a new state.
         /// </summary>
         /// <param name="newState">New state being added.</param>
-        public void PushState(GameState newState)
+        public void PushState(GameScreen newState)
         {
             this.drawOrder += DrawOrderInc;
             newState.DrawOrder = this.drawOrder;
@@ -82,7 +82,7 @@
         /// <param name="deltaTime">The elapsed time of the previous frame.</param>
         public void UpdateStates(float deltaTime)
         {
-            foreach (GameState state in this.gameStates)
+            foreach (GameScreen state in this.gameStates)
             {
                 if (state.IsInitialized && state.IsEnabled)
                 {
@@ -97,9 +97,9 @@
         /// <param name="sb">The <see cref="SpriteBatch"/> used for batching draw calls.</param>
         public void DrawStates(SpriteBatch sb)
         {
-            List<GameState> drawOrderedList = this.gameStates.OrderBy(x => x.DrawOrder).ToList();
+            List<GameScreen> drawOrderedList = this.gameStates.OrderBy(x => x.DrawOrder).ToList();
 
-            foreach (GameState state in drawOrderedList)
+            foreach (GameScreen state in drawOrderedList)
             {
                 if (state.IsInitialized && state.IsEnabled && state.Visible)
                 {
@@ -111,8 +111,8 @@
         /// <summary>
         /// Changes the game state the provided new state.
         /// </summary>
-        /// <param name="newState"><see cref="GameState"/> being added to the manager.</param>
-        public void ChangeState(GameState newState)
+        /// <param name="newState"><see cref="GameScreen"/> being added to the manager.</param>
+        public void ChangeState(GameScreen newState)
         {
             while (this.gameStates.Count > 0)
             {
@@ -127,10 +127,10 @@
         /// <summary>
         /// Removes state from the top of the stack, unregisters state from listener.
         /// </summary>
-        /// <returns><see cref="GameState"/></returns>
-        private GameState RemoveState()
+        /// <returns><see cref="GameScreen"/></returns>
+        private GameScreen RemoveState()
         {
-            GameState state = this.gameStates.Peek();
+            GameScreen state = this.gameStates.Peek();
             state.ClearState();
             this.gameStates.Pop();
 
@@ -140,8 +140,8 @@
         /// <summary>
         /// Adds new state to the top of the stack.
         /// </summary>
-        /// <param name="newState"><see cref="GameState"/> being added to the manager.</param>
-        private void AddState(GameState newState)
+        /// <param name="newState"><see cref="GameScreen"/> being added to the manager.</param>
+        private void AddState(GameScreen newState)
         {
             this.gameStates.Push(newState);
             if (!newState.IsInitialized)

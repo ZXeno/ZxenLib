@@ -8,20 +8,20 @@
     /// <summary>
     /// Defines the implemenation of a GameState.
     /// </summary>
-    public abstract partial class GameState
+    public abstract partial class GameScreen
     {
         private IEventDispatcher eventDispatcher;
-        private List<GameState> childStates;
+        private List<GameScreen> childStates;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameState"/> class.
+        /// Initializes a new instance of the <see cref="GameScreen"/> class.
         /// </summary>
-        public GameState(GameStateManager gameStateManager, IEventDispatcher eventDispatcher)
+        public GameScreen(GameStateManager gameStateManager, IEventDispatcher eventDispatcher)
         {
             this.Id = Guid.NewGuid().ToString();
             this.eventDispatcher = eventDispatcher;
             this.StateManager = gameStateManager;
-            this.childStates = new List<GameState>();
+            this.childStates = new List<GameScreen>();
             this.Tag = this;
             this.IsInitialized = false;
         }
@@ -32,27 +32,27 @@
         public string Id { get; protected set; }
 
         /// <summary>
-        /// Gets this <see cref="GameState"/>'s child states.
+        /// Gets this <see cref="GameScreen"/>'s child states.
         /// </summary>
-        public IList<GameState> ChildStates { get => this.childStates; }
+        public IList<GameScreen> ChildStates { get => this.childStates; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="GameState"/> has been initialilized.
+        /// Gets or sets a value indicating whether this <see cref="GameScreen"/> has been initialilized.
         /// </summary>
         public bool IsInitialized { get; protected set; }
 
         /// <summary>
         /// Gets or sets the GameState tag.
         /// </summary>
-        public GameState Tag { get; protected set; }
+        public GameScreen Tag { get; protected set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="GameState"/> is enabled.
+        /// Gets or sets a value indicating whether this <see cref="GameScreen"/> is enabled.
         /// </summary>
         public bool IsEnabled { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="GameState"/> is visible.
+        /// Gets or sets a value indicating whether this <see cref="GameScreen"/> is visible.
         /// </summary>
         public bool Visible { get; set; }
 
@@ -62,7 +62,7 @@
         public int DrawOrder { get; set; }
 
         /// <summary>
-        /// Gets or sets the <see cref="GameStateManager"/> for this <see cref="GameState"/>.
+        /// Gets or sets the <see cref="GameStateManager"/> for this <see cref="GameScreen"/>.
         /// </summary>
         protected GameStateManager StateManager { get; set; }
 
@@ -83,12 +83,12 @@
         }
 
         /// <summary>
-        /// Performs updates for this <see cref="GameState"/>. Called every frame.
+        /// Performs updates for this <see cref="GameScreen"/>. Called every frame.
         /// </summary>
         /// <param name="deltaTime">The elapsed time of the previous frame.</param>
         public virtual void Update(float deltaTime)
         {
-            foreach (GameState child in this.childStates)
+            foreach (GameScreen child in this.childStates)
             {
                 if (child.IsEnabled)
                 {
@@ -98,12 +98,12 @@
         }
 
         /// <summary>
-        /// Performs draw call batching for this <see cref="GameState"/>. Called every frame.
+        /// Performs draw call batching for this <see cref="GameScreen"/>. Called every frame.
         /// </summary>
         /// <param name="sb">The <see cref="SpriteBatch"/> used for batching draw calls.</param>
         public virtual void Draw(SpriteBatch sb)
         {
-            foreach (GameState childState in this.childStates)
+            foreach (GameScreen childState in this.childStates)
             {
                 if (childState.Visible)
                 {
@@ -125,7 +125,7 @@
         }
 
         /// <summary>
-        /// Handles StateChange events for this <see cref="GameState"/>
+        /// Handles StateChange events for this <see cref="GameScreen"/>
         /// </summary>
         /// <param name="eventData">The <see cref="EventData"/> for this event.</param>
         protected internal virtual void StateChange(EventData eventData)
@@ -152,7 +152,7 @@
         {
             this.Visible = true;
             this.IsEnabled = true;
-            foreach (GameState state in this.childStates)
+            foreach (GameScreen state in this.childStates)
             {
                 state.IsEnabled = true;
                 state.Visible = true;
@@ -166,7 +166,7 @@
         {
             this.Visible = false;
             this.IsEnabled = false;
-            foreach (GameState state in this.childStates)
+            foreach (GameScreen state in this.childStates)
             {
                 state.IsEnabled = false;
                 state.Visible = false;
