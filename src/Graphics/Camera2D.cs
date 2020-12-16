@@ -88,14 +88,21 @@
         /// </summary>
         /// <param name="viewMatrix">The viewmatrix of the camera view.</param>
         /// <returns><see cref="Vector2"/></returns>
+        public Vector2 MouseScreenToWorldPoint(Matrix viewMatrix)
+        {
+            Matrix inverseViewMatrix = Matrix.Invert(viewMatrix);
+            return Vector2.Transform(InputProvider.MousePosition.ToVector2(), inverseViewMatrix);
+        }
+
+        /// <summary>
+        /// Return the 2D world point of the mouse.
+        /// </summary>
+        /// <param name="viewMatrix">The viewmatrix of the camera view.</param>
+        /// <returns><see cref="Vector2"/></returns>
         public Vector2 ScreenToWorldPoint(Matrix viewMatrix)
         {
-            Vector2 worldPoint = default(Vector2);
-
             Matrix inverseViewMatrix = Matrix.Invert(viewMatrix);
-            worldPoint = Vector2.Transform(InputWrapper.MousePosition.ToVector2(), inverseViewMatrix);
-
-            return worldPoint;
+            return Vector2.Transform(InputProvider.MousePosition.ToVector2(), inverseViewMatrix);
         }
 
         /// <summary>
@@ -106,12 +113,8 @@
         /// <returns><see cref="Vector2"/></returns>
         public Vector2 ScreenToWorldPoint(Vector2 position, Matrix viewMatrix)
         {
-            Vector2 worldPoint = default(Vector2);
-
             Matrix inverseViewMatrix = Matrix.Invert(viewMatrix);
-            worldPoint = Vector2.Transform(position, inverseViewMatrix);
-
-            return worldPoint;
+            return Vector2.Transform(position, inverseViewMatrix);
         }
     }
 }

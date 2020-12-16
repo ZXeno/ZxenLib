@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.GameState
+﻿namespace ZxenLib.GameScreen
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     using ZxenLib.Events;
 
     /// <summary>
-    /// Defines the implemenation of a GameState.
+    /// Defines the implemenation of a GameScreen.
     /// </summary>
     public abstract partial class GameScreen
     {
@@ -16,11 +16,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="GameScreen"/> class.
         /// </summary>
-        public GameScreen(GameStateManager gameStateManager, IEventDispatcher eventDispatcher)
+        public GameScreen(GameScreenManager gameScreenManager, IEventDispatcher eventDispatcher)
         {
             this.Id = Guid.NewGuid().ToString();
             this.eventDispatcher = eventDispatcher;
-            this.StateManager = gameStateManager;
+            this.StateManager = gameScreenManager;
             this.childStates = new List<GameScreen>();
             this.Tag = this;
             this.IsInitialized = false;
@@ -34,7 +34,7 @@
         /// <summary>
         /// Gets this <see cref="GameScreen"/>'s child states.
         /// </summary>
-        public IList<GameScreen> ChildStates { get => this.childStates; }
+        public IList<GameScreen> ChildScreens { get => this.childStates; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="GameScreen"/> has been initialilized.
@@ -42,7 +42,7 @@
         public bool IsInitialized { get; protected set; }
 
         /// <summary>
-        /// Gets or sets the GameState tag.
+        /// Gets or sets the GameScreen tag.
         /// </summary>
         public GameScreen Tag { get; protected set; }
 
@@ -62,16 +62,16 @@
         public int DrawOrder { get; set; }
 
         /// <summary>
-        /// Gets or sets the <see cref="GameStateManager"/> for this <see cref="GameScreen"/>.
+        /// Gets or sets the <see cref="GameScreenManager"/> for this <see cref="GameScreen"/>.
         /// </summary>
-        protected GameStateManager StateManager { get; set; }
+        protected GameScreenManager StateManager { get; set; }
 
         /// <summary>
         /// Performs initialization.
         /// </summary>
         public virtual void Initialize()
         {
-            this.eventDispatcher.Subscribe(GameStateManager.StateChangeEventId, this.StateChange, this);
+            this.eventDispatcher.Subscribe(GameScreenManager.StateChangeEventId, this.StateChange, this);
             this.IsInitialized = true;
         }
 
@@ -117,7 +117,7 @@
         /// </summary>
         public virtual void ClearState()
         {
-            this.eventDispatcher.Unsubscribe(GameStateManager.StateChangeEventId, this, this.StateChange);
+            this.eventDispatcher.Unsubscribe(GameScreenManager.StateChangeEventId, this, this.StateChange);
             this.childStates.Clear();
             this.childStates = null;
             this.StateManager = null;

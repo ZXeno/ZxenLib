@@ -18,6 +18,8 @@
 //
 //      3. This notice may not be removed or altered from any source
 //      distribution.
+//
+// Modified 2018-2020 by Jonathan Cain
 
 namespace ZxenLib.Graphics
 {
@@ -34,7 +36,6 @@ namespace ZxenLib.Graphics
         private static Texture2D pixel;
 
         #endregion
-
 
         #region Private Methods
 
@@ -53,12 +54,14 @@ namespace ZxenLib.Graphics
         /// <param name="points">The points to connect with lines</param>
         /// <param name="color">The color to use</param>
         /// <param name="thickness">The thickness of the lines</param>
-        private static void DrawPoints(SpriteBatch spriteBatch, Vector2 position, List<Vector2> points, Color color, float thickness)
+        private static void DrawPoints(SpriteBatch spriteBatch, Vector2 position, Vector2[] points, Color color, float thickness)
         {
-            if (points.Count < 2)
+            if (points.Length < 2)
+            {
                 return;
+            }
 
-            for (int i = 1; i < points.Count; i++)
+            for (int i = 1; i < points.Length; i++)
             {
                 DrawLine(spriteBatch, points[i - 1] + position, points[i] + position, color, thickness);
             }
@@ -74,7 +77,7 @@ namespace ZxenLib.Graphics
         private static List<Vector2> CreateCircle(double radius, int sides)
         {
             // Look for a cached version of this circle
-            String circleKey = radius + "x" + sides;
+            string circleKey = radius + "x" + sides;
             if (circleCache.ContainsKey(circleKey))
             {
                 return circleCache[circleKey];
@@ -139,7 +142,6 @@ namespace ZxenLib.Graphics
         }
 
         #endregion
-
 
         #region FillRectangle
 
@@ -252,7 +254,6 @@ namespace ZxenLib.Graphics
 
         #endregion
 
-
         #region DrawRectangle
 
         /// <summary>
@@ -314,7 +315,6 @@ namespace ZxenLib.Graphics
         }
 
         #endregion
-
 
         #region DrawLine
 
@@ -426,7 +426,6 @@ namespace ZxenLib.Graphics
 
         #endregion
 
-
         #region PutPixel
 
         public static void PutPixel(this SpriteBatch spriteBatch, float x, float y, Color color)
@@ -447,7 +446,6 @@ namespace ZxenLib.Graphics
 
         #endregion
 
-
         #region DrawCircle
 
         /// <summary>
@@ -460,7 +458,7 @@ namespace ZxenLib.Graphics
         /// <param name="color">The color of the circle</param>
         public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color)
         {
-            DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, 1.0f);
+            DrawPoints(spriteBatch, center, CreateCircle(radius, sides).ToArray(), color, 1.0f);
         }
 
 
@@ -475,7 +473,7 @@ namespace ZxenLib.Graphics
         /// <param name="thickness">The thickness of the lines used</param>
         public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color, float thickness)
         {
-            DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, thickness);
+            DrawPoints(spriteBatch, center, CreateCircle(radius, sides).ToArray(), color, thickness);
         }
 
 
@@ -490,7 +488,7 @@ namespace ZxenLib.Graphics
         /// <param name="color">The color of the circle</param>
         public static void DrawCircle(this SpriteBatch spriteBatch, float x, float y, float radius, int sides, Color color)
         {
-            DrawPoints(spriteBatch, new Vector2(x, y), CreateCircle(radius, sides), color, 1.0f);
+            DrawPoints(spriteBatch, new Vector2(x, y), CreateCircle(radius, sides).ToArray(), color, 1.0f);
         }
 
 
@@ -506,7 +504,7 @@ namespace ZxenLib.Graphics
         /// <param name="thickness">The thickness of the lines used</param>
         public static void DrawCircle(this SpriteBatch spriteBatch, float x, float y, float radius, int sides, Color color, float thickness)
         {
-            DrawPoints(spriteBatch, new Vector2(x, y), CreateCircle(radius, sides), color, thickness);
+            DrawPoints(spriteBatch, new Vector2(x, y), CreateCircle(radius, sides).ToArray(), color, thickness);
         }
 
         #endregion
@@ -544,7 +542,7 @@ namespace ZxenLib.Graphics
         {
             List<Vector2> arc = CreateArc(radius, sides, startingAngle, radians);
             //List<Vector2> arc = CreateArc2(radius, sides, startingAngle, degrees);
-            DrawPoints(spriteBatch, center, arc, color, thickness);
+            DrawPoints(spriteBatch, center, arc.ToArray(), color, thickness);
         }
 
         #endregion

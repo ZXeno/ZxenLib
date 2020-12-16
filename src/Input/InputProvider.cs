@@ -6,12 +6,12 @@
     /// <summary>
     /// Used to handle all input for the game.
     /// </summary>
-    public class InputWrapper
+    public class InputProvider
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="InputWrapper"/> class.
+        /// Initializes a new instance of the <see cref="InputProvider"/> class.
         /// </summary>
-        public InputWrapper()
+        public InputProvider()
         {
         }
 
@@ -43,7 +43,7 @@
         /// <summary>
         ///  Gets the current mouse position as a <see cref="Point"/> coordinate.
         /// </summary>
-        public static Point MousePosition => InputWrapper.MouseState.Position;
+        public static Point MousePosition => InputProvider.MouseState.Position;
 
         /// <summary>
         /// Determines if the provided <see cref="Keys"/> value was just lifted.
@@ -136,7 +136,7 @@
         }
 
         /// <summary>
-        /// Determines if the provided mouse button was currently down.
+        /// Determines if the provided mouse button is currently down.
         /// 0 = Left mouse button, 1 = Right mouse button, 2 = middle mouse button, 3 = XButton1, 4 = XButton 5
         /// </summary>
         /// <param name="button">Int value represenint the corresponding mouse button.</param>
@@ -169,10 +169,11 @@
         /// Converts a key to its char representation
         /// </summary>
         /// <param name="key">The key pressed.</param>
-        /// <param name="isShiftDown"><see cref="bool"/> indicating whether the shift key is currently being held.</param>
         /// <returns>A nullable <see cref="char"/> based on the key pressed.</returns>
-        public static char? ToChar(Keys key, bool isShiftDown)
+        public static char? ToChar(Keys key)
         {
+            bool isShiftDown = GetKey(Keys.LeftShift) || GetKey(Keys.RightShift);
+
             if (key == Keys.A) { return isShiftDown ? 'A' : 'a'; }
             if (key == Keys.B) { return isShiftDown ? 'B' : 'b'; }
             if (key == Keys.C) { return isShiftDown ? 'C' : 'c'; }
@@ -260,7 +261,7 @@
         }
 
         /// <summary>
-        /// Initializes the <see cref="InputWrapper"/> class.
+        /// Initializes the <see cref="InputProvider"/> class.
         /// </summary>
         public virtual void Initialize()
         {
@@ -271,7 +272,7 @@
         }
 
         /// <summary>
-        /// Updates the input states of the <see cref="InputWrapper"/> every frame.
+        /// Updates the input states of the <see cref="InputProvider"/> every frame.
         /// </summary>
         /// <param name="deltaTime">Elapsed frame time of the previous frame.</param>
         public virtual void Update(float deltaTime)

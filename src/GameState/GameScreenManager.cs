@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.GameState
+﻿namespace ZxenLib.GameScreen
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -8,7 +8,7 @@
     /// <summary>
     /// Manages the current game screen/state.
     /// </summary>
-    public class GameStateManager
+    public class GameScreenManager
     {
         /// <summary>
         /// Defines the event id of the state changed event.
@@ -22,9 +22,9 @@
         private IEventDispatcher eventDispatcher;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameStateManager"/> class.
+        /// Initializes a new instance of the <see cref="GameScreenManager"/> class.
         /// </summary>
-        public GameStateManager(IEventDispatcher eventDispatcher)
+        public GameScreenManager(IEventDispatcher eventDispatcher)
         {
             this.drawOrder = StartDrawOrder;
             this.gameStates = new Stack<GameScreen>();
