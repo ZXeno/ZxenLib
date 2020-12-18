@@ -1,15 +1,28 @@
 ﻿namespace ZxenLib.Physics
 {
-    using Microsoft.Xna.Framework;
     using System;
+    using Microsoft.Xna.Framework;
 
+    /// <summary>
+    /// Help with very basic physics and collision detections.
+    /// </summary>
     public static class PhysicsHelper
     {
+        /// <summary>
+        /// Gets the normal for a given vector.
+        /// </summary>
+        /// <param name="vector">The vector to normalize.</param>
+        /// <returns><see cref="Vector2"/> normal.</returns>
         public static Vector2 Normal(Vector2 vector)
         {
             return new Vector2(vector.Y, -vector.X);
         }
 
+        /// <summary>
+        /// Gets the normals of a provided array of verticies.
+        /// </summary>
+        /// <param name="verticies">The verticies with which to derive an array of normals.</param>
+        /// <returns><see cref="Vector2[]"/> containing a set of normals for the provided verticies.</returns>
         public static Vector2[] GetEdgeNormals(Vector2[] verticies)
         {
             if (verticies == null || verticies.Length == 0)
@@ -25,6 +38,7 @@
                 {
                     v2index = 0;
                 }
+
                 Vector2 v1 = verticies[x];
                 Vector2 v2 = verticies[v2index];
 
@@ -41,9 +55,9 @@
         /// <summary>
         /// Checks for collision between two rectangles using Separating Axis Theorem.
         /// </summary>
-        /// <param name="rect1"></param>
-        /// <param name="rect2"></param>
-        /// <returns>Minimum Penetration Axis as nullable <see cref="Vector2"/></returns>
+        /// <param name="rect1">The first rectangle to check.</param>
+        /// <param name="rect2">The second rectangle to check.</param>
+        /// <returns>Minimum Penetration Axis as nullable <see cref="Vector2"/>.</returns>
         public static Vector2? SatCollisionDetect(Rectangle rect1, Rectangle rect2)
         {
             Vector2[] rect1Verts = rect1.GetVerticies();
@@ -84,6 +98,12 @@
             return minPenetrationAxis;
         }
 
+        /// <summary>
+        /// Projects an array of vertexes onto an axis.
+        /// </summary>
+        /// <param name="verts">The vertexes to project.</param>
+        /// <param name="axis">The axis to project them on.</param>
+        /// <returns>A <see cref="Tuple{float, float}"/> where Item1 is is the minimum projecttion, and Item2 is the maximum projection.</returns>
         private static Tuple<float, float> ProjectOntoAxis(Vector2[] verts, Vector2 axis)
         {
             float min = Vector2.Dot(axis, verts[0]);

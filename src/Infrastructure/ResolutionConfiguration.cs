@@ -1,7 +1,7 @@
 ﻿namespace ZxenLib.Infrastructure
 {
+    using System.Text.Json.Serialization;
     using Microsoft.Xna.Framework;
-    using Newtonsoft.Json;
 
     /// <summary>
     /// Defines the current resolution configuration settings.

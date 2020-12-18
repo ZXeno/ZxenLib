@@ -6,16 +6,16 @@
     /// <summary>
     /// A collection of sprite helper functions.
     /// </summary>
-    public static class SpriteHelper
+    public static class GraphicsHelper
     {
         /// <summary>
-        /// Draws a box
+        /// Draws a box.
         /// </summary>
         /// <param name="sb">The <see cref="SpriteBatch"/> performing draw call batching.</param>
-        /// <param name="texture">The texture to use</param>
+        /// <param name="texture">The texture to use.</param>
         /// <param name="destinationRect">The destination bounds.</param>
         /// <param name="spriteSourceRect">The source bounds.</param>
-        /// <param name="cornerSize">The size of the corner slices used to draw the box</param>
+        /// <param name="cornerSize">The size of the corner slices used to draw the box.</param>
         /// <param name="color">The draw color. Generally Color.White.</param>
         public static void DrawBox(SpriteBatch sb, Texture2D texture, Rectangle destinationRect, Rectangle spriteSourceRect, int cornerSize, Color color)
         {

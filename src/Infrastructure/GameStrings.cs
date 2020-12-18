@@ -25,7 +25,7 @@
         /// Returns the localized string.
         /// </summary>
         /// <param name="stringId">The key ID of the localized string requested.</param>
-        /// <returns>The localized string from the asset manager's strings dictionary. Returns "TEXT_NOT_FOUND" if </returns>
+        /// <returns>The localized string from the asset manager's strings dictionary. Returns "TEXT_NOT_FOUND" if. </returns>
         public static string GetLocalizedString(string stringId)
         {
             if (AssetManager != null)

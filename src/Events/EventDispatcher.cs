@@ -68,7 +68,7 @@
                     bool wasRemoved = false;
                     while (!wasRemoved)
                     {
-                        wasRemoved = subscriptions.TryRemove(key, out currentSub);
+                        wasRemoved = subscriptions.TryRemove(key, out _);
                     }
 
                     continue;

@@ -85,8 +85,8 @@
         /// <summary>
         /// Gets a component by its type.
         /// </summary>
-        /// <typeparam name="T">The component of type </typeparam>
-        /// <returns><see cref="IEntityComponent"/> of type <typeparamref name="T"/></returns>
+        /// <typeparam name="T">The component of type. </typeparam>
+        /// <returns><see cref="IEntityComponent"/> of type <typeparamref name="T"/>.</returns>
         public T GetComponent<T>()
             where T : IEntityComponent
         {
@@ -96,8 +96,8 @@
         /// <summary>
         /// Gets all components of specified type.
         /// </summary>
-        /// <typeparam name="T">The component of type </typeparam>
-        /// <returns><see cref="IEnumerable{T}"/></returns>
+        /// <typeparam name="T">The component of type. </typeparam>
+        /// <returns><see cref="IEnumerable{T}"/>.</returns>
         public IEnumerable<T> GetComponentsOfType<T>()
             where T : IEntityComponent
         {
@@ -108,7 +108,7 @@
         /// Returns a component based on it's ID.
         /// </summary>
         /// <param name="componentId">The ID of the component to search for.</param>
-        /// <returns><see cref="IEntityComponent"/></returns>
+        /// <returns><see cref="IEntityComponent"/>.</returns>
         public IEntityComponent GetComponentById(string componentId)
         {
             if (string.IsNullOrWhiteSpace(componentId))
@@ -144,7 +144,7 @@
         /// <summary>
         /// Unregisters a component from this entity.
         /// </summary>
-        /// <param name="componentId">The ID of the component to unregister</param>
+        /// <param name="componentId">The ID of the component to unregister.</param>
         public void UnregisterComponent(string componentId)
         {
             if (string.IsNullOrWhiteSpace(componentId))

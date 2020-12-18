@@ -16,23 +16,28 @@
     /// </summary>
     public class AssetManager : IAssetManager
     {
-        private const string TextureFolderName = "Textures";
+        private const string DataDirectory = "Data";
         private const string FontFolderName = "Fonts";
         private const string SfxFolderName = "SoundFX";
         private const string SongsFolderName = "Music";
+        private const string TextureFolderName = "Textures";
         private const string StringsFileName = "strings.txt";
-        private const string DataDirectory = "Data";
 
-        private string textureDirectoryPath;
-        private string fontDirectoryPath;
+        private readonly ContentManager contentManager;
+        private readonly ISpriteManager spriteManager;
+
         private string sfxDirectoryPath;
+        private string fontDirectoryPath;
         private string songsDirectoryPath;
+        private string textureDirectoryPath;
         private string stringsDirectoryPath;
         private bool useStrings;
 
-        private ContentManager contentManager;
-        private ISpriteManager spriteManager;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AssetManager"/> class.
+        /// </summary>
+        /// <param name="game">The Monogame <see cref="Game"/> dependency.</param>
+        /// <param name="spriteManager">The ZxenLib <see cref="ISpriteManager"/> dependency.</param>
         public AssetManager(Game game, ISpriteManager spriteManager)
         {
             this.contentManager = game.Content;
@@ -129,7 +134,9 @@
         /// </summary>
         public void LoadAssets()
         {
-            // TODO: There must be a way to dynamically load these assets and sort them by type without needing to know which folders they are in beforehand.
+            /* TODO: There must be a way to dynamically load
+             * assets and sort them by type without needing
+             * to know which folders they are in beforehand. */
 
             List<string> fileNames = null;
 

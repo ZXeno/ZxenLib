@@ -4,7 +4,7 @@
     using ZxenLib.Entities.Components;
 
     /// <summary>
-    /// Interface for type <see cref="Entity"/>
+    /// Interface for type <see cref="Entity"/>.
     /// </summary>
     public interface IEntity
     {
@@ -42,22 +42,22 @@
         /// <summary>
         /// Unregisters a component from this entity.
         /// </summary>
-        /// <param name="componentId">The ID of the component to unregister</param>
+        /// <param name="componentId">The ID of the component to unregister.</param>
         void UnregisterComponent(string componentId);
 
         /// <summary>
         /// Gets a component by its type.
         /// </summary>
-        /// <typeparam name="T">The component of type </typeparam>
-        /// <returns><see cref="IEntityComponent"/> of type <typeparamref name="T"/></returns>
+        /// <typeparam name="T">The component of type. </typeparam>
+        /// <returns><see cref="IEntityComponent"/> of type <typeparamref name="T"/>.</returns>
         T GetComponent<T>()
             where T : IEntityComponent;
 
         /// <summary>
         /// Gets all components of type.
         /// </summary>
-        /// <typeparam name="T">The component of type </typeparam>
-        /// <returns><see cref="IEntityComponent"/> of type <typeparamref name="T"/></returns>
+        /// <typeparam name="T">The component of type. </typeparam>
+        /// <returns><see cref="IEntityComponent"/> of type <typeparamref name="T"/>.</returns>
         IEnumerable<T> GetComponentsOfType<T>()
             where T : IEntityComponent;
 
@@ -65,7 +65,7 @@
         /// Returns a component based on it's ID.
         /// </summary>
         /// <param name="componentId">The ID of the component to search for.</param>
-        /// <returns><see cref="IEntityComponent"/></returns>
+        /// <returns><see cref="IEntityComponent"/>.</returns>
         IEntityComponent GetComponentById(string componentId);
 
         /// <summary>

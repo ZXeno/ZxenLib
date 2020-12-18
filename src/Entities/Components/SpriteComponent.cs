@@ -11,7 +11,7 @@
     public class SpriteComponent : EntityComponent, IDrawableEntityComponent
     {
         /// <summary>
-        /// Defines the programmatic id of the <see cref="SpriteComponent"/>
+        /// Defines the programmatic id of the <see cref="SpriteComponent"/>.
         /// </summary>
         public const string SpriteComponentProgrammaticId = "SpriteComponent";
 
@@ -22,7 +22,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteComponent"/> class.
         /// </summary>
-        /// <param name="spriteManager">Existing instance of the <see cref="ISpriteManager"/></param>
+        /// <param name="spriteManager">Existing instance of the <see cref="ISpriteManager"/>.</param>
         public SpriteComponent(ISpriteManager spriteManager)
         {
             this.Id = Guid.NewGuid().ToString();
@@ -34,7 +34,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteComponent"/> class.
         /// </summary>
-        /// <param name="spriteManager">Existing instance of the <see cref="ISpriteManager"/></param>
+        /// <param name="spriteManager">Existing instance of the <see cref="ISpriteManager"/>.</param>
         /// <param name="parent">The parent <see cref="IEntity"/> for this component.</param>
         public SpriteComponent(ISpriteManager spriteManager, IEntity parent)
         {
@@ -46,7 +46,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the sprite for this <see cref="SpriteComponent"/>
+        /// Gets or sets the sprite for this <see cref="SpriteComponent"/>.
         /// </summary>
         public Sprite Sprite
         {
@@ -109,7 +109,7 @@
 
             if (this.Sprite.Slice > 0)
             {
-                SpriteHelper.DrawBox(sb, this.spriteAtlas.TextureAtlas, this.Transform.Bounds, this.Sprite.SourceRect, this.Sprite.Slice, this.Sprite.DrawColor);
+                GraphicsHelper.DrawBox(sb, this.spriteAtlas.TextureAtlas, this.Transform.Bounds, this.Sprite.SourceRect, this.Sprite.Slice, this.Sprite.DrawColor);
             }
             else
             {

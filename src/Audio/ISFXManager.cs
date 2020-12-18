@@ -1,7 +1,7 @@
 ﻿namespace ZxenLib.Audio
 {
     /// <summary>
-    /// Interface for <see cref="SFXManager"/>
+    /// Interface for <see cref="SFXManager"/>.
     /// </summary>
     public interface ISFXManager
     {
@@ -54,7 +54,7 @@
         /// <summary>
         /// Plays the music file from the provided song id.
         /// </summary>
-        /// <param name="songId">The name of the song file to play</param>
+        /// <param name="songId">The name of the song file to play.</param>
         void PlayMusic(string songId);
 
         /// <summary>

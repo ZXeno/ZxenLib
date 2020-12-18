@@ -3,48 +3,48 @@
     using System;
 
     /// <summary>
-    /// Defines an exception for configuration file loading failures.
+    /// Defines an exception for configuration file write failures.
     /// </summary>
-    public class ConfigurationLoadFailedException : Exception
+    public class ConfigurationWriteFailedException : Exception
     {
-        private const string DefaultMessage = "The configuration file failed to load.";
+        private const string DefaultMessage = "The configuration file failed to write to disk.";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationLoadFailedException"/> class.
+        /// Initializes a new instance of the <see cref="ConfigurationWriteFailedException"/> class.
         /// </summary>
-        public ConfigurationLoadFailedException()
+        public ConfigurationWriteFailedException()
             : base(DefaultMessage)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationLoadFailedException"/> class.
+        /// Initializes a new instance of the <see cref="ConfigurationWriteFailedException"/> class.
         /// </summary>
         /// <param name="path">The path to the settings file.</param>
-        public ConfigurationLoadFailedException(string path)
+        public ConfigurationWriteFailedException(string path)
             : base(DefaultMessage)
         {
             this.SettingsFilePath = path;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationLoadFailedException"/> class.
+        /// Initializes a new instance of the <see cref="ConfigurationWriteFailedException"/> class.
         /// </summary>
         /// <param name="path">The path to the settings file.</param>
         /// <param name="message">Exception message.</param>
-        public ConfigurationLoadFailedException(string path, string message = DefaultMessage)
+        public ConfigurationWriteFailedException(string path, string message = DefaultMessage)
             : base(message)
         {
             this.SettingsFilePath = path;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationLoadFailedException"/> class.
+        /// Initializes a new instance of the <see cref="ConfigurationWriteFailedException"/> class.
         /// </summary>
         /// <param name="path">The path to the settings file.</param>
         /// <param name="innerException">Reference to the inner <see cref="Exception"/> that is the cause of this exception.</param>
         /// <param name="message">Exception message.</param>
-        public ConfigurationLoadFailedException(string path, Exception innerException, string message = DefaultMessage)
+        public ConfigurationWriteFailedException(string path, Exception innerException, string message = DefaultMessage)
             : base(message, innerException)
         {
             this.SettingsFilePath = path;

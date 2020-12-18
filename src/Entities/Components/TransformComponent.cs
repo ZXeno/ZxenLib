@@ -9,7 +9,7 @@
     public class TransformComponent : EntityComponent
     {
         /// <summary>
-        /// Defines the programmatic id of the <see cref="TransformComponent"/>
+        /// Defines the programmatic id of the <see cref="TransformComponent"/>.
         /// </summary>
         public const string TransformComponentProgrammaticId = "TransformComponent";
         private Vector2 scale;
@@ -49,10 +49,10 @@
         /// </summary>
         public Vector2 Position
         {
-            get => position;
+            get => this.position;
             set
             {
-                position = value;
+                this.position = value;
                 this.isDirty = true;
             }
         }
@@ -62,11 +62,11 @@
         /// </summary>
         public Angle Angle
         {
-            get => angle;
+            get => this.angle;
             set
             {
-                angle = value;
-                isDirty = true;
+                this.angle = value;
+                this.isDirty = true;
             }
         }
 
@@ -100,7 +100,7 @@
         {
             get
             {
-                if (isDirty)
+                if (this.isDirty)
                 {
                     this.RecalculateBounds();
                 }

@@ -20,12 +20,12 @@
         }
 
         /// <summary>
-        /// Gets or sets the 2D Direction Vector
+        /// Gets or sets the 2D Direction Vector.
         /// </summary>
         public Vector2 Direction { get; set; }
 
         /// <summary>
-        /// Gets the Angle in degrees
+        /// Gets the Angle in degrees.
         /// </summary>
         public float Degrees
         {
@@ -66,7 +66,7 @@
 
         /// <summary>
         /// Directly sets object's rotation. Value must be in degrees.
-        /// Values clamped between 0 and 360;
+        /// Values clamped between 0 and 360;.
         /// </summary>
         /// <param name="degreeRotation">The rotation to set in degrees.</param>
         public void SetRotation(float degreeRotation)

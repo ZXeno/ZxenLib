@@ -3,10 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// Holds a collection of <see cref="Sprite"/> values indicated in the .
@@ -57,46 +57,30 @@
                 throw new InvalidOperationException($"{nameof(this.DataFilePath)} cannot be null or empty.");
             }
 
-            using (StreamReader file = File.OpenText(this.DataFilePath))
+            string dataFileContent = File.ReadAllText(this.DataFilePath);
+            SpriteImportModel[] importedSprites = JsonSerializer.Deserialize<SpriteImportModel[]>(dataFileContent);
+            foreach (var import in importedSprites)
             {
-                using (JsonTextReader reader = new JsonTextReader(file))
+                Rectangle sourceRect = new Rectangle(
+                        import.X,
+                        import.Y,
+                        import.Width,
+                        import.Height);
+
+                Sprite newSprite = new Sprite(this.AtlasName, import.Id, sourceRect)
                 {
-                    while (reader.Read())
-                    {
-                        if (reader.TokenType == JsonToken.StartObject)
-                        {
-                            JObject obj = JObject.Load(reader);
+                    Slice = import.Slice,
+                };
 
-                            string spriteId = obj["id"].ToString();
-                            int x = int.Parse(obj["x"].ToString());
-                            int y = int.Parse(obj["y"].ToString());
-                            int width = int.Parse(obj["width"].ToString());
-                            int height = int.Parse(obj["height"].ToString());
-                            int slice = int.Parse(obj["slice"].ToString());
-
-                            Rectangle sourceRect = new Rectangle(
-                                x,
-                                y,
-                                width,
-                                height);
-
-                            Sprite newSprite = new Sprite(this.AtlasName, spriteId, sourceRect)
-                            {
-                                Slice = slice
-                            };
-
-                            this.spriteDictionary.Add(newSprite.SpriteId, newSprite);
-                        }
-                    }
-                }
+                this.spriteDictionary.Add(newSprite.SpriteId, newSprite);
             }
         }
 
         /// <summary>
-        /// Get sprite source rectangle based on sprite ID from sprite dictionary
+        /// Get sprite source rectangle based on sprite ID from sprite dictionary.
         /// </summary>
         /// <param name="spriteId">Id of the sprite.</param>
-        /// <returns><see cref="Rectangle"/></returns>
+        /// <returns><see cref="Rectangle"/>.</returns>
         public Sprite GetSprite(string spriteId)
         {
             return this.spriteDictionary[spriteId];
@@ -109,6 +93,32 @@
         {
             this.TextureAtlas = null;
             this.DataFilePath = string.Empty;
+        }
+
+        /// <summary>
+        /// Model used exclusively for imported sprite data.
+        /// </summary>
+        internal sealed class SpriteImportModel
+        {
+            [JsonPropertyName("id")]
+#pragma warning disable SA1600 // Elements should be documented - These are self-explanatory.
+            public string Id { get; set; }
+
+            [JsonPropertyName("x")]
+            public int X { get; set; }
+
+            [JsonPropertyName("y")]
+            public int Y { get; set; }
+
+            [JsonPropertyName("width")]
+            public int Width { get; set; }
+
+            [JsonPropertyName("height")]
+            public int Height { get; set; }
+
+            [JsonPropertyName("slice")]
+            public int Slice { get; set; }
+#pragma warning restore SA1600 // Elements should be documented - These are self-explanatory.
         }
     }
 }

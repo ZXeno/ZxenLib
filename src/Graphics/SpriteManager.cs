@@ -60,7 +60,7 @@
         /// Gets an atlas from the Atlas Dictionary.
         /// </summary>
         /// <param name="atlasName">The name of the corresponding atlas.</param>
-        /// <returns><see cref="Atlas"/></returns>
+        /// <returns><see cref="Atlas"/>.</returns>
         public Atlas GetAtlas(string atlasName)
         {
             return this.AtlasDictionary[atlasName];
@@ -71,14 +71,14 @@
         /// </summary>
         /// <param name="atlasName">The atlas to find the sprite in.</param>
         /// <param name="spriteId">The sprite to retrieve.</param>
-        /// <returns><see cref="Sprite"/></returns>
+        /// <returns><see cref="Sprite"/>.</returns>
         public Sprite GetSprite(string atlasName, string spriteId)
         {
             return this.AtlasDictionary[atlasName].GetSprite(spriteId);
         }
 
         /// <summary>
-        /// Unloads an <see cref="Atlas"/> from the <see cref="SpriteManager"/>
+        /// Unloads an <see cref="Atlas"/> from the <see cref="SpriteManager"/>.
         /// </summary>
         /// <param name="atlasName">The name of the atlas.</param>
         public void UnloadAtlas(string atlasName)

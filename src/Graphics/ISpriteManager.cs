@@ -25,7 +25,7 @@
         /// Gets an <see cref="Atlas"/> from the atlas name.
         /// </summary>
         /// <param name="atlasName">The name of the atlas.</param>
-        /// <returns><see cref="Atlas"/></returns>
+        /// <returns><see cref="Atlas"/>.</returns>
         Atlas GetAtlas(string atlasName);
 
         /// <summary>
@@ -33,11 +33,11 @@
         /// </summary>
         /// <param name="atlasName">The atlas to find the sprite in.</param>
         /// <param name="spriteId">The sprite to retrieve.</param>
-        /// <returns><see cref="Sprite"/></returns>
+        /// <returns><see cref="Sprite"/>.</returns>
         Sprite GetSprite(string atlasName, string spriteId);
 
         /// <summary>
-        /// Unloads an <see cref="Atlas"/> from the <see cref="SpriteManager"/>
+        /// Unloads an <see cref="Atlas"/> from the <see cref="SpriteManager"/>.
         /// </summary>
         /// <param name="atlasName">The name of the atlas.</param>
         void UnloadAtlas(string atlasName);

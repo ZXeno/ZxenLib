@@ -10,7 +10,7 @@
     /// </summary>
     public abstract partial class GameScreen
     {
-        private IEventDispatcher eventDispatcher;
+        private readonly IEventDispatcher eventDispatcher;
         private List<GameScreen> childStates;
 
         /// <summary>
@@ -27,7 +27,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the Id of this object
+        /// Gets or sets the Id of this object.
         /// </summary>
         public string Id { get; protected set; }
 
@@ -125,7 +125,7 @@
         }
 
         /// <summary>
-        /// Handles StateChange events for this <see cref="GameScreen"/>
+        /// Handles StateChange events for this <see cref="GameScreen"/>.
         /// </summary>
         /// <param name="eventData">The <see cref="EventData"/> for this event.</param>
         protected internal virtual void StateChange(EventData eventData)

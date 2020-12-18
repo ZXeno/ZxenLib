@@ -109,7 +109,7 @@
         public int Slice { get; set; }
 
         /// <summary>
-        /// Gets or sets the destination <see cref="Rectangle"/>
+        /// Gets or sets the destination <see cref="Rectangle"/>.
         /// </summary>
         public Rectangle DestinationRect
         {

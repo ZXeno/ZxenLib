@@ -31,28 +31,28 @@
         void RemoveEntity(string id);
 
         /// <summary>
-        /// Removes all entities from the EntityManager;
+        /// Removes all entities from the EntityManager;.
         /// </summary>
         void RemoveAllEntities();
 
         /// <summary>
-        /// Gets the first <see cref="IEntity"/> that contains component of type <typeparamref name="T"/>
+        /// Gets the first <see cref="IEntity"/> that contains component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type being checked for.</typeparam>
-        /// <returns><see cref="IEntity"/></returns>
+        /// <returns><see cref="IEntity"/>.</returns>
         IEntity GetEntityWithComponentOfType<T>()
             where T : IEntityComponent;
 
         /// <summary>
-        /// Gets all <see cref="IEntity"/> objects that contain component of type <typeparamref name="T"/>
+        /// Gets all <see cref="IEntity"/> objects that contain component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type being checked for.</typeparam>
-        /// <returns><see cref="IEnumerable{IEntity}"/></returns>
+        /// <returns><see cref="IEnumerable{IEntity}"/>.</returns>
         IEnumerable<IEntity> GetAllEntitiesWithComponentOfType<T>()
             where T : IEntityComponent;
 
         /// <summary>
-        /// Frame Update function
+        /// Frame Update function.
         /// </summary>
         /// <param name="deltaTime">The time delta of last frame.</param>
         void Update(float deltaTime);

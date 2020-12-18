@@ -9,8 +9,8 @@
     /// </summary>
     public class SFXManager : ISFXManager
     {
-        private IEventDispatcher eventDispatcher;
-        private IAssetManager assetManager;
+        private readonly IEventDispatcher eventDispatcher;
+        private readonly IAssetManager assetManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SFXManager"/> class.
@@ -70,7 +70,7 @@
         /// <summary>
         /// Plays the music file from the provided song id.
         /// </summary>
-        /// <param name="songId">The name of the song file to play</param>
+        /// <param name="songId">The name of the song file to play.</param>
         public void PlayMusic(string songId)
         {
             if (string.IsNullOrWhiteSpace(songId))

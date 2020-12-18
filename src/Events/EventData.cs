@@ -18,7 +18,7 @@
         public object Sender { get; set; }
 
         /// <summary>
-        /// Gets or sets the target object Id
+        /// Gets or sets the target object Id.
         /// </summary>
         public string TargetObjectId { get; set; }
 

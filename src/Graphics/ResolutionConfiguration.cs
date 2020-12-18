@@ -51,7 +51,7 @@
         public bool IsBorderless { get; set; } = false;
 
         /// <summary>
-        /// Recalculates the screen bounds
+        /// Recalculates the screen bounds.
         /// </summary>
         public void RecalculateScreenBounds()
         {

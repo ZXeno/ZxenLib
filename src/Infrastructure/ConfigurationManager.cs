@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Text.Json;
     using System.Threading.Tasks;
-    using Newtonsoft.Json;
     using ZxenLib.Infrastructure.Exceptions;
 
     /// <summary>
@@ -22,7 +22,7 @@
         public ConfigurationManager()
         {
             this.Config = new Configuration();
-            this.SettingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games", "MyGame");
+            this.GameSettingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games", "MyGame");
             this.filePath = Path.Combine(this.settingsDirectory, FileName);
         }
 
@@ -34,7 +34,7 @@
         /// <summary>
         /// Gets or sets the path to the configuration directory and updates the filePath automatically.
         /// </summary>
-        public string SettingsDirectory
+        public string GameSettingsDirectory
         {
             get => this.settingsDirectory;
             set
@@ -47,11 +47,10 @@
         /// <summary>
         /// Loads the configuration file from the specified directory.
         ///
-        /// The default directory is "%userprofile%\Documents\My Games\MyGame"
+        /// The default directory is "%userprofile%\Documents\My Games\MyGame".
         /// </summary>
         public void LoadConfiguration()
         {
-
             Configuration newConfig = new Configuration();
 
             if (File.Exists(this.filePath))
@@ -60,38 +59,36 @@
 
                 try
                 {
-                    using (var reader = File.OpenText(this.filePath))
-                    {
-                        inputJson = reader.ReadToEnd();
-                    }
+                    using var reader = File.OpenText(this.filePath);
+                    inputJson = reader.ReadToEnd();
                 }
                 catch (Exception ex)
                 {
-                    // TODO: Implement Error handling.
-                    this.Config = newConfig;
+                    throw new ConfigurationLoadFailedException(this.filePath, ex);
                 }
 
                 try
                 {
                     if (!string.IsNullOrWhiteSpace(inputJson))
                     {
-                        this.Config = JsonConvert.DeserializeObject<Configuration>(inputJson);
+                        this.Config = JsonSerializer.Deserialize<Configuration>(inputJson);
                     }
                 }
                 catch (Exception ex)
                 {
-                    // TODO: Implement Error handling.
-                    this.Config = newConfig;
+                    throw new ConfigurationLoadFailedException(this.filePath, ex);
                 }
             }
             else
             {
-                if (!Directory.Exists(this.settingsDirectory))
+                try
                 {
-                    Directory.CreateDirectory(this.settingsDirectory);
+                    this.CreateConfigFileIfNotExist();
                 }
-
-                File.CreateText(this.filePath);
+                catch (Exception ex)
+                {
+                    throw new ConfigurationWriteFailedException(this.filePath, ex);
+                }
 
                 this.Config = newConfig;
                 Task.Factory.StartNew(async () => { await this.SaveConfiguration(); }).ConfigureAwait(false);
@@ -108,7 +105,7 @@
 
             lock (this.Config)
             {
-                serializedConfig = JsonConvert.SerializeObject(this.Config);
+                serializedConfig = JsonSerializer.Serialize(this.Config);
             }
 
             if (string.IsNullOrWhiteSpace(serializedConfig))
@@ -118,39 +115,29 @@
 
             try
             {
-                if (!Directory.Exists(this.settingsDirectory))
-                {
-                    Directory.CreateDirectory(this.SettingsDirectory);
-                }
-
-                if (!File.Exists(this.filePath))
-                {
-                    File.CreateText(this.filePath);
-                }
-
-                using (StreamWriter sw = new StreamWriter(this.filePath))
-                {
-                    try
-                    {
-                        await sw.WriteAsync(serializedConfig);
-                    }
-                    catch (Exception ex)
-                    {
-                        // TODO: Implment error handling.
-                    }
-                }
+                this.CreateConfigFileIfNotExist();
             }
             catch (Exception ex)
             {
-                // TODO: Implment error handling.
+                throw new ConfigurationWriteFailedException(this.filePath, ex);
+            }
+
+            using StreamWriter sw = new StreamWriter(this.filePath);
+            try
+            {
+                await sw.WriteAsync(serializedConfig);
+            }
+            catch (Exception ex)
+            {
+                throw new ConfigurationWriteFailedException(this.filePath, ex);
             }
         }
 
         /// <summary>
         /// Gets a configuration setting from the custom configuration properties dictionary.
         /// </summary>
-        /// <typeparam name="T">The type the configuration property should return</typeparam>
-        /// <param name="key">The property name</param>
+        /// <typeparam name="T">The type the configuration property should return.</typeparam>
+        /// <param name="key">The property name.</param>
         /// <returns>The object as the typeparam.</returns>
         public T GetConfigOption<T>(string key)
         {
@@ -161,13 +148,15 @@
                 {
                     return value.GetExpectedType<T>();
                 }
+                else
+                {
+                    throw new ExpectedTypeMismatchException(typeof(T), value.PropertyType);
+                }
             }
             else
             {
                 throw new KeyNotFoundException("The specified configuration key is not in the dictionary.");
             }
-
-            return default;
         }
 
         /// <summary>
@@ -176,8 +165,8 @@
         /// This will <b>only accepts</b> primitive types and strings. Throws an
         /// exception if provided value is not primitive or string.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="key">The key for this option.</param>
+        /// <param name="value">The value for this option.</param>
         public void SetConfigOption(string key, object value)
         {
             if (!value.GetType().IsPrimitive || value.GetType() != typeof(string))
@@ -186,6 +175,20 @@
             }
 
             this.Config.SetConfigProperty(key, value);
+        }
+
+        private void CreateConfigFileIfNotExist()
+        {
+            if (!Directory.Exists(this.settingsDirectory))
+            {
+                Directory.CreateDirectory(this.settingsDirectory);
+            }
+
+            if (!File.Exists(this.filePath))
+            {
+                using StreamWriter sw = File.CreateText(this.filePath);
+                sw.Close();
+            }
         }
     }
 }

@@ -13,7 +13,7 @@
         public async Task ConfigSystemSavesAndLoadsCustomPropertiesCorrectly()
         {
             ConfigurationManager cm = new ConfigurationManager();
-            cm.SettingsDirectory = Path.Combine(Environment.CurrentDirectory, "CONFIG_TEST");
+            cm.GameSettingsDirectory = Path.Combine(Environment.CurrentDirectory, "CONFIG_TEST");
 
             cm.Config.SetConfigProperty("test", "test");
             cm.Config.SetConfigProperty("intTest", 1);

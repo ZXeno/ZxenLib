@@ -17,13 +17,14 @@
 
         private const int StartDrawOrder = 1000;
         private const int DrawOrderInc = 100;
+        private readonly Stack<GameScreen> gameStates;
+        private readonly IEventDispatcher eventDispatcher;
         private int drawOrder;
-        private Stack<GameScreen> gameStates;
-        private IEventDispatcher eventDispatcher;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GameScreenManager"/> class.
         /// </summary>
+        /// <param name="eventDispatcher">The <see cref="IEventDispatcher"/> dependency.</param>
         public GameScreenManager(IEventDispatcher eventDispatcher)
         {
             this.drawOrder = StartDrawOrder;
@@ -127,7 +128,7 @@
         /// <summary>
         /// Removes state from the top of the stack, unregisters state from listener.
         /// </summary>
-        /// <returns><see cref="GameScreen"/></returns>
+        /// <returns><see cref="GameScreen"/>.</returns>
         private GameScreen RemoveState()
         {
             GameScreen state = this.gameStates.Peek();
