@@ -2,11 +2,11 @@
 {
     using Microsoft.Extensions.DependencyInjection;
     using ZxenLib.Audio;
+    using ZxenLib.Configuration;
     using ZxenLib.Entities;
     using ZxenLib.Events;
     using ZxenLib.GameScreen;
     using ZxenLib.Graphics;
-    using ZxenLib.Infrastructure;
     using ZxenLib.Input;
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.Infrastructure
+﻿namespace ZxenLib.Configuration
 {
     using System.Text.Json.Serialization;
     using Microsoft.Xna.Framework;

@@ -1,6 +1,5 @@
-﻿namespace ZxenLib.Infrastructure
+﻿namespace ZxenLib.Configuration
 {
-    using System;
     using ZxenLib.Infrastructure.Exceptions;
 
     /// <summary>
@@ -35,7 +34,7 @@
                 throw new ExpectedTypeMismatchException(typeof(T), this.PropertyName);
             }
 
-            return (T)Convert.ChangeType(this.RawValue, typeof(T));
+            return (T)this.RawValue;
         }
     }
 }

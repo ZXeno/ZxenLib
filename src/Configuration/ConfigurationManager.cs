@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.Infrastructure
+﻿namespace ZxenLib.Configuration
 {
     using System;
     using System.Collections.Generic;
@@ -72,6 +72,24 @@
                     if (!string.IsNullOrWhiteSpace(inputJson))
                     {
                         this.Config = JsonSerializer.Deserialize<Configuration>(inputJson);
+
+                        foreach (var property in this.Config.ConfigProperties)
+                        {
+                            if (property.Value.RawValue is JsonElement jElement)
+                            {
+                                property.Value.RawValue = jElement.ValueKind switch
+                                {
+                                    JsonValueKind.String => jElement.ToString(),
+                                    JsonValueKind.Undefined => null,
+                                    JsonValueKind.Object => throw new UnsupportedConfigValueException(),
+                                    JsonValueKind.Number => this.ParseNumberToCorrectType(jElement, property.Value.PropertyType),
+                                    JsonValueKind.True => true,
+                                    JsonValueKind.False => false,
+                                    JsonValueKind.Null => null,
+                                    _ => null
+                                };
+                            }
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -189,6 +207,23 @@
                 using StreamWriter sw = File.CreateText(this.filePath);
                 sw.Close();
             }
+        }
+
+        private object ParseNumberToCorrectType(JsonElement jElement, string targetType)
+        {
+            return targetType switch
+            {
+                "Int32" => int.Parse(jElement.ToString()),
+                "UInt32" => uint.Parse(jElement.ToString()),
+                "Byte" => byte.Parse(jElement.ToString()),
+                "Int16" => short.Parse(jElement.ToString()),
+                "UInt16" => ushort.Parse(jElement.ToString()),
+                "Single" => float.Parse(jElement.ToString()),
+                "Double" => double.Parse(jElement.ToString()),
+                "Int64" => long.Parse(jElement.ToString()),
+                "UInt64" => ulong.Parse(jElement.ToString()),
+                _ => null
+            };
         }
     }
 }

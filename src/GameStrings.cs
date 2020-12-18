@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.Infrastructure
+﻿namespace ZxenLib
 {
     /// <summary>
     /// Wrapper class for getting loaded strings values.

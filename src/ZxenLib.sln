@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZxenLib", "ZxenLib.csproj", "{A9AAC3AC-E2BE-405A-81BE-22CB495E7DD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZxenLib", "ZxenLib.csproj", "{A9AAC3AC-E2BE-405A-81BE-22CB495E7DD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZxenoLibTests", "..\tests\ZxenoLibTests\ZxenoLibTests.csproj", "{C9860647-AF32-425A-B9F6-FCF3C0E90100}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZXenLibTests", "..\ZXenLibTests\ZXenLibTests.csproj", "{EE5B25CD-0A3C-406C-9559-02BA03B26C5A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{A9AAC3AC-E2BE-405A-81BE-22CB495E7DD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9AAC3AC-E2BE-405A-81BE-22CB495E7DD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9AAC3AC-E2BE-405A-81BE-22CB495E7DD8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9860647-AF32-425A-B9F6-FCF3C0E90100}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9860647-AF32-425A-B9F6-FCF3C0E90100}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9860647-AF32-425A-B9F6-FCF3C0E90100}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9860647-AF32-425A-B9F6-FCF3C0E90100}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE5B25CD-0A3C-406C-9559-02BA03B26C5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE5B25CD-0A3C-406C-9559-02BA03B26C5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE5B25CD-0A3C-406C-9559-02BA03B26C5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE5B25CD-0A3C-406C-9559-02BA03B26C5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
