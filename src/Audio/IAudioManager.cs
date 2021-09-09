@@ -1,9 +1,9 @@
 ﻿namespace ZxenLib.Audio
 {
     /// <summary>
-    /// Interface for <see cref="SFXManager"/>.
+    /// Interface for <see cref="AudioManager"/>.
     /// </summary>
-    public interface ISFXManager
+    public interface IAudioManager
     {
         /// <summary>
         /// Gets or sets the master volume, which all other volumes are mathematically based off of.

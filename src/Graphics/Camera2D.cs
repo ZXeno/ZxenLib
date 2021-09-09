@@ -108,7 +108,7 @@
         public Vector2 MouseScreenToWorldPoint(Matrix viewMatrix)
         {
             Matrix inverseViewMatrix = Matrix.Invert(viewMatrix);
-            return Vector2.Transform(InputProvider.MousePosition.ToVector2(), inverseViewMatrix);
+            return Vector2.Transform(InputProvider.Mouse.MousePosition.ToVector2(), inverseViewMatrix);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@
         public Vector2 ScreenToWorldPoint(Matrix viewMatrix)
         {
             Matrix inverseViewMatrix = Matrix.Invert(viewMatrix);
-            return Vector2.Transform(InputProvider.MousePosition.ToVector2(), inverseViewMatrix);
+            return Vector2.Transform(InputProvider.Mouse.MousePosition.ToVector2(), inverseViewMatrix);
         }
 
         /// <summary>

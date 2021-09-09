@@ -136,7 +136,14 @@
         {
             /* TODO: There must be a way to dynamically load
              * assets and sort them by type without needing
-             * to know which folders they are in beforehand. */
+             * to know which folders they are in beforehand.
+             *
+             * Pretty sure the answer to this is import all
+             * accepted file types and have a target image
+             * file name as a property of the atlas JSON.
+             *
+             * Same for other file types, minus JSON manifests.
+             */
 
             List<string> fileNames = null;
 

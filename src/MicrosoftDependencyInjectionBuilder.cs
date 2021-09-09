@@ -27,7 +27,7 @@
             collection.AddSingleton<IEntityManager, EntityManager>();
             collection.AddSingleton<IAssetManager, AssetManager>();
             collection.AddSingleton<ISpriteManager, SpriteManager>();
-            collection.AddSingleton<ISFXManager, SFXManager>();
+            collection.AddSingleton<IAudioManager, AudioManager>();
             collection.AddSingleton<GameStrings, GameStrings>();
         }
     }

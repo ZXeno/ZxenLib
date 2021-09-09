@@ -7,15 +7,15 @@
     /// <summary>
     /// Manages and plays all sound effects for the game.
     /// </summary>
-    public class SFXManager : ISFXManager
+    public class AudioManager : IAudioManager
     {
         private readonly IEventDispatcher eventDispatcher;
         private readonly IAssetManager assetManager;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SFXManager"/> class.
+        /// Initializes a new instance of the <see cref="AudioManager"/> class.
         /// </summary>
-        public SFXManager(IEventDispatcher eventDispatcher, IAssetManager assetManager)
+        public AudioManager(IEventDispatcher eventDispatcher, IAssetManager assetManager)
         {
             this.eventDispatcher = eventDispatcher;
             this.assetManager = assetManager;
