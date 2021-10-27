@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.InteropServices;
     using System.Text.Json;
     using System.Threading.Tasks;
     using ZxenLib.Infrastructure.Exceptions;
@@ -22,8 +23,17 @@
         public ConfigurationManager()
         {
             this.Config = new Configuration();
-            this.GameSettingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games", "MyGame");
-            this.filePath = Path.Combine(this.settingsDirectory, FileName);
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+
+                this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", "MyGame");
+            }
+            else
+            {
+                this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "Roaming", "MyGame");
+            }
         }
 
         /// <summary>

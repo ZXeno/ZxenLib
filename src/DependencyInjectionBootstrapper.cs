@@ -12,7 +12,7 @@
     /// <summary>
     /// Extension class to add all types to the Microsoft.Extensions.DependencyInjection container.
     /// </summary>
-    public static class MicrosoftDependencyInjectionBuilder
+    public static class DependencyInjectionBootstrapper
     {
         /// <summary>
         /// Adds the various components of the ZxenLib library to the <see cref="IServiceCollection"/> of the Microsoft.Extensions.DependencyInjection library.

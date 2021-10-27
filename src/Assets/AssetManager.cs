@@ -154,7 +154,7 @@
                 foreach (string filePath in fileNames.Where(x => !x.EndsWith(".json")))
                 {
                     string fileName = Path.GetFileNameWithoutExtension(filePath);
-                    this.Textures.Add(fileName, this.contentManager.Load<Texture2D>($"{AssetManager.TextureFolderName}\\{fileName}"));
+                    this.Textures.Add(fileName, this.contentManager.Load<Texture2D>(Path.Join(AssetManager.TextureFolderName, fileName)));
                 }
 
                 foreach (string filePath in fileNames.Where(x => x.EndsWith(".json")))
@@ -172,7 +172,7 @@
                 foreach (string filePath in fileNames)
                 {
                     string fileName = Path.GetFileNameWithoutExtension(filePath);
-                    this.Fonts.Add(fileName, this.contentManager.Load<SpriteFont>($"{AssetManager.FontFolderName}\\{fileName}"));
+                    this.Fonts.Add(fileName, this.contentManager.Load<SpriteFont>(Path.Join(AssetManager.FontFolderName, fileName)));
                 }
             }
 
@@ -183,7 +183,7 @@
                 foreach (string filePath in fileNames)
                 {
                     string fileName = Path.GetFileNameWithoutExtension(filePath);
-                    this.SoundFX.Add(fileName, this.contentManager.Load<SoundEffect>($"{AssetManager.SfxFolderName}\\{fileName}"));
+                    this.SoundFX.Add(fileName, this.contentManager.Load<SoundEffect>(Path.Join(AssetManager.SfxFolderName, fileName)));
                 }
             }
 
@@ -194,7 +194,7 @@
                 foreach (string filePath in fileNames)
                 {
                     string fileName = Path.GetFileNameWithoutExtension(filePath);
-                    this.Songs.Add(fileName, this.contentManager.Load<Song>($"{AssetManager.SongsFolderName}\\{fileName}"));
+                    this.Songs.Add(fileName, this.contentManager.Load<Song>(Path.Join(AssetManager.SongsFolderName, fileName)));
                 }
             }
 
