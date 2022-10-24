@@ -75,7 +75,7 @@
         }
 
         /// <summary>
-        /// Rmeoves an <see cref="IEntity"/> from the EntityManager.
+        /// Removes an <see cref="IEntity"/> from the EntityManager.
         /// </summary>
         /// <param name="id">The target <see cref="IEntity"/> id.</param>
         public void RemoveEntity(string id)

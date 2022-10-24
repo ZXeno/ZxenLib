@@ -16,6 +16,7 @@
         private const string FileName = "ConfigurationSettings.json";
         private string settingsDirectory = string.Empty;
         private string filePath = string.Empty;
+        public string GameName { get; set; } = "MyGame";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationManager"/> class.
@@ -24,15 +25,14 @@
         {
             this.Config = new Configuration();
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
-                || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
 
-                this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", "MyGame");
+                this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", this.GameName);
             }
             else
             {
-                this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "Roaming", "MyGame");
+                this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), this.GameName);
             }
         }
 
