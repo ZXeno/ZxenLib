@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.Entities;
+namespace ZxenLib.Entities;
 
 using System;
 using System.Collections.Generic;

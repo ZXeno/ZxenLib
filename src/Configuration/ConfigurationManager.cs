@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.Configuration;
+namespace ZxenLib.Configuration;
 
 using System;
 using System.Collections.Generic;
@@ -22,13 +22,24 @@ public class ConfigurationManager
     /// </summary>
     public ConfigurationManager()
     {
-        this.Config = new Configuration();
+        private const string FileName = "ConfigurationSettings.json";
+        private string settingsDirectory = string.Empty;
+        private string filePath = string.Empty;
+        public string GameName { get; set; } = "MyGame";
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
             || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
 
-            this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", "MyGame");
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+
+                this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", this.GameName);
+            }
+            else
+            {
+                this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), this.GameName);
+            }
         }
         else
         {
