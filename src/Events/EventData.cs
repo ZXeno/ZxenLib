@@ -1,35 +1,34 @@
-﻿namespace ZxenLib.Events
+﻿namespace ZxenLib.Events;
+
+using System;
+
+/// <summary>
+/// Container class for <see cref="EventDispatcher"/> event data.
+/// </summary>
+public class EventData
 {
-    using System;
+    /// <summary>
+    /// Gets or sets the ID of the event.
+    /// </summary>
+    public string EventId { get; set; }
 
     /// <summary>
-    /// Container class for <see cref="EventDispatcher"/> event data.
+    /// Gets or sets the sender of the event.
     /// </summary>
-    public class EventData
-    {
-        /// <summary>
-        /// Gets or sets the ID of the event.
-        /// </summary>
-        public string EventId { get; set; }
+    public object Sender { get; set; }
 
-        /// <summary>
-        /// Gets or sets the sender of the event.
-        /// </summary>
-        public object Sender { get; set; }
+    /// <summary>
+    /// Gets or sets the target object Id.
+    /// </summary>
+    public string TargetObjectId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the target object Id.
-        /// </summary>
-        public string TargetObjectId { get; set; }
+    /// <summary>
+    /// Gets or sets the <see cref="EventArgs"/> of the event.
+    /// </summary>
+    public EventArgs EventArguments { get; set; }
 
-        /// <summary>
-        /// Gets or sets the <see cref="EventArgs"/> of the event.
-        /// </summary>
-        public EventArgs EventArguments { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the event is handled.
-        /// </summary>
-        public bool Handled { get; set; } = false;
-    }
+    /// <summary>
+    /// Gets or sets a value indicating whether the event is handled.
+    /// </summary>
+    public bool Handled { get; set; } = false;
 }

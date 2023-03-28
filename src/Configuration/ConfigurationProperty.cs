@@ -1,40 +1,39 @@
-﻿namespace ZxenLib.Configuration
+﻿namespace ZxenLib.Configuration;
+
+using ZxenLib.Infrastructure.Exceptions;
+
+/// <summary>
+/// Represents a property in the configuration file.
+/// </summary>
+public class ConfigurationProperty
 {
-    using ZxenLib.Infrastructure.Exceptions;
+    /// <summary>
+    /// The name of the conifugration property.
+    /// </summary>
+    public string PropertyName { get; set; }
 
     /// <summary>
-    /// Represents a property in the configuration file.
+    /// String representing the property Type.
     /// </summary>
-    public class ConfigurationProperty
+    public string PropertyType { get; set; }
+
+    /// <summary>
+    /// Object representing the value of the property.
+    /// </summary>
+    public object RawValue { get; set; }
+
+    /// <summary>
+    /// Gets the object as type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type being requested.</typeparam>
+    /// <returns>Attempts to return the object as type <typeparamref name="T"/>.</returns>
+    public T GetExpectedType<T>()
     {
-        /// <summary>
-        /// The name of the conifugration property.
-        /// </summary>
-        public string PropertyName { get; set; }
-
-        /// <summary>
-        /// String representing the property Type.
-        /// </summary>
-        public string PropertyType { get; set; }
-
-        /// <summary>
-        /// Object representing the value of the property.
-        /// </summary>
-        public object RawValue { get; set; }
-
-        /// <summary>
-        /// Gets the object as type <typeparamref name="T"/>.
-        /// </summary>
-        /// <typeparam name="T">The type being requested.</typeparam>
-        /// <returns>Attempts to return the object as type <typeparamref name="T"/>.</returns>
-        public T GetExpectedType<T>()
+        if (typeof(T).Name != this.PropertyType)
         {
-            if (typeof(T).Name != this.PropertyType)
-            {
-                throw new ExpectedTypeMismatchException(typeof(T), this.PropertyName);
-            }
-
-            return (T)this.RawValue;
+            throw new ExpectedTypeMismatchException(typeof(T), this.PropertyName);
         }
+
+        return (T)this.RawValue;
     }
 }
