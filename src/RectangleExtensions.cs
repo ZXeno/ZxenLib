@@ -45,10 +45,10 @@ public static class RectangleExtensions
     }
 
     /// <summary>
-    /// Gets the verticies of a rectangle as an array.
+    /// Gets the vertices of a rectangle as an array.
     /// </summary>
-    /// <param name="rect">The rect to get verticies from.</param>
-    /// <returns><see cref="Vector2[]"/> of the rectangle verticies.</returns>
+    /// <param name="rect">The rect to get vertices from.</param>
+    /// <returns><see cref="Vector2[]"/> of the rectangle vertices.</returns>
     public static Vector2[] GetVerticies(this Rectangle rect)
     {
         Vector2[] dots = new Vector2[4]; // 4 corners

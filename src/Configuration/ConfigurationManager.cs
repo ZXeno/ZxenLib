@@ -6,6 +6,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Enums;
+using ZxenLib.Configuration;
 using ZxenLib.Infrastructure.Exceptions;
 
 /// <summary>
@@ -16,35 +18,20 @@ public class ConfigurationManager
     private const string FileName = "ConfigurationSettings.json";
     private string settingsDirectory = string.Empty;
     private string filePath = string.Empty;
+    public string GameName { get; set; } = "MyGame";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationManager"/> class.
     /// </summary>
     public ConfigurationManager()
     {
-        private const string FileName = "ConfigurationSettings.json";
-        private string settingsDirectory = string.Empty;
-        private string filePath = string.Empty;
-        public string GameName { get; set; } = "MyGame";
-
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
-            || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        OsPlatformInfo osInfo = OsPlatformInfo.FromRuntimeInfo();
+        this.GameSettingsDirectory = osInfo.Platform switch
         {
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-
-                this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", this.GameName);
-            }
-            else
-            {
-                this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), this.GameName);
-            }
-        }
-        else
-        {
-            this.GameSettingsDirectory += Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "Roaming", "MyGame");
-        }
+            OperatingPlatform.Windows => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "Roaming", this.GameName),
+            OperatingPlatform.Linux => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", this.GameName),
+            _ => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", this.GameName),
+        };
     }
 
     /// <summary>
@@ -80,7 +67,7 @@ public class ConfigurationManager
 
             try
             {
-                using var reader = File.OpenText(this.filePath);
+                using StreamReader reader = File.OpenText(this.filePath);
                 inputJson = reader.ReadToEnd();
             }
             catch (Exception ex)
@@ -94,7 +81,7 @@ public class ConfigurationManager
                 {
                     this.Config = JsonSerializer.Deserialize<Configuration>(inputJson);
 
-                    foreach (var property in this.Config.ConfigProperties)
+                    foreach (KeyValuePair<string, ConfigurationProperty> property in this.Config.ConfigProperties)
                     {
                         if (property.Value.RawValue is JsonElement jElement)
                         {

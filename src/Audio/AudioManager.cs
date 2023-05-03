@@ -1,6 +1,7 @@
 ﻿namespace ZxenLib.Audio;
 
 using System;
+using Extensions;
 using Microsoft.Xna.Framework.Media;
 using ZxenLib.Events;
 
@@ -106,15 +107,12 @@ public class AudioManager : IAudioManager
     /// <param name="sfxId">The ID of the sound effect file.</param>
     public void PlayEffect(string sfxId)
     {
-        if (string.IsNullOrWhiteSpace(sfxId))
-        {
-            throw new ArgumentNullException(nameof(sfxId));
-        }
-
         if (!this.ShouldPlaySoundEffects)
         {
             return;
         }
+
+        sfxId.ThrowIfNullOrWhitespace();
 
         this.assetManager.SoundFX[sfxId].Play(this.MasterVolume * this.SoundEffectsVolume, 0, 0);
     }
@@ -125,15 +123,12 @@ public class AudioManager : IAudioManager
     /// <param name="uiSoundId">The ID of the sound effect file.</param>
     public void PlayUISound(string uiSoundId)
     {
-        if (string.IsNullOrEmpty(uiSoundId))
-        {
-            throw new ArgumentNullException(nameof(uiSoundId));
-        }
-
         if (!this.ShouldPlayUIEffects)
         {
             return;
         }
+
+        uiSoundId.ThrowIfNullOrWhitespace();
 
         this.assetManager.SoundFX[uiSoundId].Play(this.MasterVolume * this.UIVolume, 0, 0);
     }

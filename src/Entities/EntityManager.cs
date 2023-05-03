@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using ZxenLib.Entities.Components;
 using ZxenLib.Events;
 
+// TODO: Refactor this class to make more sense and be more performant. This is a core class and should be as efficient as possible!
+
 /// <summary>
 /// Used to store all objects of type <see cref="IEntity"/> and calls all Update and Draw functions for all <see cref="IEntityComponent"/> objects that implement <see cref="IUpdatableEntityComponent"/> and <see cref="IDrawableEntityComponent"/>.
 /// </summary>
@@ -75,7 +77,7 @@ public class EntityManager : IEntityManager
     }
 
     /// <summary>
-    /// Rmeoves an <see cref="IEntity"/> from the EntityManager.
+    /// Removes an <see cref="IEntity"/> from the EntityManager.
     /// </summary>
     /// <param name="id">The target <see cref="IEntity"/> id.</param>
     public void RemoveEntity(string id)

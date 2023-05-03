@@ -1,27 +1,17 @@
-﻿namespace ZxenLib.Events;
+﻿#pragma warning disable CS8600
+namespace ZxenLib.Events;
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using Extensions;
 
 /// <summary>
 /// Provides a means for subscribing and broadcasting events to a set of registered listeners.
 /// </summary>
 public class EventDispatcher : IEventDispatcher
 {
-    /// <summary>
-    /// The task factory used internally.
-    /// </summary>
-    private readonly TaskFactory taskFactory =
-        new TaskFactory(
-            CancellationToken.None,
-            TaskCreationOptions.None,
-            TaskContinuationOptions.None,
-            TaskScheduler.Default);
-
     /// <summary>
     /// The cache of subscriptions, indexed by event Id.
     /// </summary>
@@ -34,57 +24,37 @@ public class EventDispatcher : IEventDispatcher
     /// <param name="eventData">The <see cref="EventData"/> to publish.</param>
     public void Publish(EventData eventData)
     {
-        if (eventData == null)
-        {
-            throw new ArgumentNullException(nameof(eventData));
-        }
-
-        if (eventData.Sender == null)
-        {
-            throw new ArgumentNullException(nameof(EventData.Sender));
-        }
-
-        if (string.IsNullOrWhiteSpace(eventData.EventId))
-        {
-            throw new ArgumentNullException(nameof(EventData.EventId));
-        }
+        ArgumentNullException.ThrowIfNull(eventData, nameof(eventData));
+        ArgumentNullException.ThrowIfNull(eventData.Sender, nameof(eventData.Sender));
+        eventData.EventId.ThrowIfNullOrWhitespace();
 
         if (!this.subscriptionDictionary.TryGetValue(eventData.EventId, out ConcurrentDictionary<Guid, Subscription> subscriptions))
         {
             return;
         }
 
-        ConcurrentDictionary<Guid, Subscription> cachedSubs;
-        lock (subscriptions)
-        {
-            cachedSubs = subscriptions;
-        }
+        ConcurrentDictionary<Guid, Subscription> cachedSubs = new (subscriptions);
 
         foreach (Guid key in cachedSubs.Keys)
         {
-            Subscription currentSub = cachedSubs[key];
-            if (currentSub == null)
+            if (cachedSubs[key] is not Subscription currentSub)
             {
-                bool wasRemoved = false;
-                while (!wasRemoved)
-                {
-                    wasRemoved = subscriptions.TryRemove(key, out _);
-                }
-
+                subscriptions.TryRemove(key, out _);
                 continue;
             }
 
-            if (currentSub.Subscriber != null && currentSub.Method != null)
+            if (currentSub.Subscriber == null || currentSub.Method == null)
             {
-                try
-                {
-                    currentSub.Method.Invoke(eventData);
-                }
-                catch
-                {
-                    // Ignore the exception for now.
-                    // TODO: Not ignore the exception.
-                }
+                continue;
+            }
+
+            try
+            {
+                currentSub.Method.Invoke(eventData);
+            }
+            catch
+            {
+                // Handle exceptions if needed
             }
         }
     }
@@ -96,7 +66,7 @@ public class EventDispatcher : IEventDispatcher
     /// <returns>The <see cref="Task"/> for the asynchronous work.</returns>
     public async Task PublishAsync(EventData eventData)
     {
-        await this.taskFactory.StartNew(() => this.Publish(eventData));
+        await Task.Run(() => this.Publish(eventData));
     }
 
     /// <summary>
@@ -107,32 +77,13 @@ public class EventDispatcher : IEventDispatcher
     /// <param name="subscriber">The subscriber of the event.</param>
     public void Subscribe(string eventId, Action<EventData> action, object subscriber)
     {
-        if (string.IsNullOrWhiteSpace(eventId))
-        {
-            throw new ArgumentNullException(nameof(eventId));
-        }
-
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
-
-        if (subscriber == null)
-        {
-            throw new ArgumentNullException(nameof(subscriber));
-        }
+        eventId.ThrowIfNullOrWhitespace();
+        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(subscriber);
 
         Guid subscriptionKey = Guid.NewGuid();
-
-        ConcurrentDictionary<Guid, Subscription> subscriptions =
-            this.subscriptionDictionary.GetOrAdd(eventId, (key) => new ConcurrentDictionary<Guid, Subscription>());
-
-        subscriptions.TryAdd(subscriptionKey, new Subscription()
-        {
-            SubscriptionId = subscriptionKey,
-            Subscriber = subscriber,
-            Method = action
-        });
+        ConcurrentDictionary<Guid, Subscription> subscriptions = this.subscriptionDictionary.GetOrAdd(eventId, key => new ConcurrentDictionary<Guid, Subscription>());
+        subscriptions.TryAdd(subscriptionKey, new Subscription { SubscriptionId = subscriptionKey, Subscriber = subscriber, Method = action });
     }
 
     /// <summary>
@@ -148,19 +99,11 @@ public class EventDispatcher : IEventDispatcher
             return;
         }
 
-        lock (subscriptions)
-        {
-            Subscription sub = subscriptions.FirstOrDefault(x =>
-            {
-                return x.Value.Subscriber == subscriber
-                       && x.Value.Method == action;
-            }).Value;
+        Subscription sub = subscriptions.FirstOrDefault(x => x.Value.Subscriber == subscriber && x.Value.Method == action).Value;
 
-            bool wasRemoved = false;
-            while (!wasRemoved)
-            {
-                wasRemoved = subscriptions.TryRemove(sub.SubscriptionId, out sub);
-            }
+        if (sub != null)
+        {
+            subscriptions.TryRemove(sub.SubscriptionId, out _);
         }
     }
 }

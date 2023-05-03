@@ -13,6 +13,11 @@ public class ResolutionConfiguration
     private Matrix scaleMatrix = Matrix.Identity;
 
     /// <summary>
+    /// Flag indicating that we should maintain the aspect ratio of our render target. This means nothing if we aren't rendering to a render target.
+    /// </summary>
+    public bool MaintainAspectRatio { get; set; } = false;
+
+    /// <summary>
     ///  Gets or sets the X resolution configuration option. Default value is 1280.
     /// </summary>
     public int ResolutionX { get; set; } = 1280;
@@ -133,8 +138,8 @@ public class ResolutionConfiguration
     /// </summary>
     private void CalculateScaleMatrix()
     {
-        var scaleX = (float)this.ResolutionX / this.VirtualResolutionX;
-        var scaleY = (float)this.ResolutionY / this.VirtualResolutionY;
+        float scaleX = (float)this.ResolutionX / this.VirtualResolutionX;
+        float scaleY = (float)this.ResolutionY / this.VirtualResolutionY;
         this.scaleMatrix = Matrix.CreateScale(scaleX, scaleY, 1.0f);
     }
 }

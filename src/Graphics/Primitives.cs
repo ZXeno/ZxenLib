@@ -46,7 +46,7 @@ public static class Primitives
     {
         if (pixel == null)
         {
-            CreateThePixel(spriteBatch);
+            CreatePixel(spriteBatch);
         }
 
         // Simply use the function already there
@@ -64,7 +64,7 @@ public static class Primitives
     {
         if (pixel == null)
         {
-            CreateThePixel(spriteBatch);
+            CreatePixel(spriteBatch);
         }
 
         spriteBatch.Draw(pixel, rect, null, color, angle, Vector2.Zero, SpriteEffects.None, 0);
@@ -94,7 +94,7 @@ public static class Primitives
     {
         if (pixel == null)
         {
-            CreateThePixel(spriteBatch);
+            CreatePixel(spriteBatch);
         }
 
         // stretch the pixel between the two vectors
@@ -278,7 +278,7 @@ public static class Primitives
     {
         if (pixel == null)
         {
-            CreateThePixel(spriteBatch);
+            CreatePixel(spriteBatch);
         }
 
         // stretch the pixel between the two vectors
@@ -316,7 +316,7 @@ public static class Primitives
     {
         if (pixel == null)
         {
-            CreateThePixel(spriteBatch);
+            CreatePixel(spriteBatch);
         }
 
         spriteBatch.Draw(pixel, position, color);
@@ -411,7 +411,7 @@ public static class Primitives
         DrawPoints(spriteBatch, center, arc.ToArray(), color, thickness);
     }
 
-    private static void CreateThePixel(SpriteBatch spriteBatch)
+    private static void CreatePixel(SpriteBatch spriteBatch)
     {
         pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
         pixel.SetData(new[] { Color.White });

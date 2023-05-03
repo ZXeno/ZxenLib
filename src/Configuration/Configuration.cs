@@ -23,7 +23,7 @@ public class Configuration
         typeof(double),
         typeof(string),
         typeof(bool),
-        typeof(byte)
+        typeof(byte),
     };
 
     /// <summary>
@@ -44,18 +44,20 @@ public class Configuration
         PropertyInfo[] properties = config.GetType().GetProperties();
         foreach (PropertyInfo property in properties)
         {
-            if (property.CanRead
-                && property.CanWrite
-                && !Attribute.IsDefined(property, typeof(ObsoleteAttribute)))
+            if (!property.CanRead
+                || !property.CanWrite
+                || Attribute.IsDefined(property, typeof(ObsoleteAttribute)))
             {
-                var value = property.GetValue(config);
-                property.SetValue(this, value);
+                continue;
             }
+
+            object value = property.GetValue(config);
+            property.SetValue(this, value);
         }
     }
 
     /// <summary>
-    /// Gets or sets the resolution cofiguration options.
+    /// Gets or sets the resolution configuration options.
     /// </summary>
     public ResolutionConfiguration Resolution { get; set; }
 
@@ -93,7 +95,7 @@ public class Configuration
             throw new UnsupportedConfigValueException(valueType);
         }
 
-        var newProp = new ConfigurationProperty { PropertyName = key, PropertyType = valueType.Name, RawValue = value };
+        ConfigurationProperty newProp = new() { PropertyName = key, PropertyType = valueType.Name, RawValue = value };
         if (this.ConfigProperties.ContainsKey(key))
         {
             this.ConfigProperties[key] = newProp;

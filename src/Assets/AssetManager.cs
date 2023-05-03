@@ -201,11 +201,11 @@ public class AssetManager : IAssetManager
         // Load Strings
         if (this.useStrings && Directory.Exists(this.stringsDirectoryPath))
         {
-            var stringsData = File.ReadAllText(Path.Combine(this.stringsDirectoryPath, AssetManager.StringsFileName));
+            string stringsData = File.ReadAllText(Path.Combine(this.stringsDirectoryPath, AssetManager.StringsFileName));
             string[] splitdata = stringsData.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             for (int x = 0; x < splitdata.Length; x++)
             {
-                var splitLine = splitdata[x].Split(new[] { "=" }, StringSplitOptions.None);
+                string[] splitLine = splitdata[x].Split(new[] { "=" }, StringSplitOptions.None);
                 this.Strings.Add(splitLine[0].Trim(), splitLine[1].Trim());
             }
         }

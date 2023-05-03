@@ -1,21 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.1.3.0</Version>
-	  <PackageVersion>0.1.3.0</PackageVersion>
+    <Version>0.1.4.0</Version>
+	  <PackageVersion>0.1.4.0</PackageVersion>
     <Authors>Jessie Alastor</Authors>
     <Company />
     <Description>System I use for building games using the Monogame framework. This includes an event system, entity component system, sprite and animation system, gamestate system, and more.</Description>
-    <Copyright>Copyright © Jonathan Cain under the MIT license.</Copyright>
+    <Copyright>Copyright © Jessie Alastor under the MIT license.</Copyright>
     <PackageProjectUrl>https://github.com/ZXeno/ZxenLib</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ZXeno/ZxenLib</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <PackageReleaseNotes>Moving to DotNet 6 and updating all packages.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>0.1.3.0</AssemblyVersion>
-    <FileVersion>0.1.3.0</FileVersion>
+    <AssemblyVersion>0.1.4.0</AssemblyVersion>
+    <FileVersion>0.1.4.0</FileVersion>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>10</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

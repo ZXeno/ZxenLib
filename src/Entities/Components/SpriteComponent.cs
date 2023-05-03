@@ -88,7 +88,7 @@ public class SpriteComponent : EntityComponent, IDrawableEntityComponent
 
         if (this.Transform == null)
         {
-            var transformComponent = this.Parent.GetComponent<TransformComponent>();
+            TransformComponent transformComponent = this.Parent.GetComponent<TransformComponent>();
             this.Transform = transformComponent ?? throw new NullReferenceException(nameof(this.Transform));
             if (this.ShouldResizeTransform)
             {

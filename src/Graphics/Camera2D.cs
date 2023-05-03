@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ZxenLib.Input;
 
 /// <summary>
-/// Implemenation of a 2D camera.
+/// Implementation of a 2D camera.
 /// </summary>
 public class Camera2D
 {
