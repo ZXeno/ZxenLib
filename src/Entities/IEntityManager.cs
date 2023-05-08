@@ -16,7 +16,7 @@ public interface IEntityManager
     /// </summary>
     /// <param name="id">The ID to search.</param>
     /// <returns><see cref="IEntity"/> with matching ID. Null if not found.</returns>
-    IEntity GetEntityById(string id);
+    IEntity? GetEntityById(string id);
 
     /// <summary>
     /// Adds a new <see cref="Entity"/> to the EntityManager.
@@ -40,7 +40,7 @@ public interface IEntityManager
     /// </summary>
     /// <typeparam name="T">The type being checked for.</typeparam>
     /// <returns><see cref="IEntity"/>.</returns>
-    IEntity GetEntityWithComponentOfType<T>()
+    IEntity? GetEntityWithComponentOfType<T>()
         where T : IEntityComponent;
 
     /// <summary>

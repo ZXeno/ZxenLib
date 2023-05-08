@@ -1,4 +1,4 @@
-﻿namespace ZxenLib;
+﻿namespace ZxenLib.Assets;
 
 /// <summary>
 /// Wrapper class for getting loaded strings values.
@@ -19,20 +19,22 @@ public class GameStrings
     /// <summary>
     /// Gets the AssetManager dependency.
     /// </summary>
-    protected static IAssetManager AssetManager { get; private set; }
+    protected static IAssetManager? AssetManager { get; private set; }
 
     /// <summary>
     /// Returns the localized string.
     /// </summary>
     /// <param name="stringId">The key ID of the localized string requested.</param>
-    /// <returns>The localized string from the asset manager's strings dictionary. Returns "TEXT_NOT_FOUND" if. </returns>
+    /// <returns>The localized string from the asset manager's strings dictionary. Returns "TEXT_NOT_FOUND" if it's not avilable. </returns>
     public static string GetLocalizedString(string stringId)
     {
-        if (AssetManager != null)
+        if (AssetManager == null)
         {
-            return AssetManager.Strings?[stringId] ?? MissingText;
+            return MissingText;
         }
 
-        return MissingText;
+        AssetManager.Strings.TryGetValue(stringId, out string? text);
+
+        return text ?? MissingText;
     }
 }

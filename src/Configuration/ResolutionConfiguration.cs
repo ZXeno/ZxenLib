@@ -25,7 +25,7 @@ public class ResolutionConfiguration
     /// <summary>
     /// Gets or sets the Y resolution configuration option. Default value is 720.
     /// </summary>
-    public int ResolutionY { get; set; } = 720;
+    public int ResolutionY { get; set; } = 800;
 
     /// <summary>
     /// Gets the virutal X resolution.
@@ -35,7 +35,7 @@ public class ResolutionConfiguration
     /// <summary>
     /// Gets the virtual Y resolution.
     /// </summary>
-    public int VirtualResolutionY { get; } = 360;
+    public int VirtualResolutionY { get; } = 400;
 
     /// <summary>
     /// Gets the current bounds of the virtual screen.

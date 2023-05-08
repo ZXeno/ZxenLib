@@ -52,6 +52,6 @@ public abstract class EntityComponent : IEntityComponent
     public virtual void Unregister()
     {
         this.Parent.UnregisterComponent(this.Id);
-        this.Parent = null;
+        this.Parent = null!;
     }
 }

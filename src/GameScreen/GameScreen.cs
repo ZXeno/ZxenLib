@@ -3,12 +3,12 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
-using ZxenLib.Events;
+using Events;
 
 /// <summary>
-/// Defines the implemenation of a GameScreen.
+/// Defines the implementation of a GameScreen.
 /// </summary>
-public abstract partial class GameScreen
+public abstract class GameScreen
 {
     private readonly IEventDispatcher eventDispatcher;
     private List<GameScreen> childStates;
@@ -37,7 +37,7 @@ public abstract partial class GameScreen
     public IList<GameScreen> ChildScreens { get => this.childStates; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether this <see cref="GameScreen"/> has been initialilized.
+    /// Gets or sets a value indicating whether this <see cref="GameScreen"/> has been initialized.
     /// </summary>
     public bool IsInitialized { get; protected set; }
 
@@ -119,9 +119,9 @@ public abstract partial class GameScreen
     {
         this.eventDispatcher.Unsubscribe(GameScreenManager.StateChangeEventId, this, this.StateChange);
         this.childStates.Clear();
-        this.childStates = null;
-        this.StateManager = null;
-        this.Tag = null;
+        this.childStates = null!;
+        this.StateManager = null!;
+        this.Tag = null!;
     }
 
     /// <summary>

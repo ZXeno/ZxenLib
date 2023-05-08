@@ -53,63 +53,41 @@ public class Entity : IEntity
         }
     }
 
-    /// <summary>
-    /// Gets a value indicating the ID of this Entity.
-    /// </summary>
+    /// <inheritdoc />
     public string Id { get; private set; }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether this Entity is enabled.
-    /// </summary>
+    /// <inheritdoc />
     public bool IsEnabled { get; set; }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether this Entity should be removed.
-    /// </summary>
+    /// <inheritdoc />
     public bool RemoveFlag { get; set; }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether this entity is initialized.
-    /// </summary>
-    public bool IsInitialized { get; set; }
+    /// <inheritdoc />
+    public bool IsInitialized { get; private set; }
 
-    /// <summary>
-    /// Initializes the entity.
-    /// </summary>
+    /// <inheritdoc />
     public virtual void Initialize()
     {
-        this.IsEnabled = true;
+        this.Enable();
         this.IsInitialized = true;
     }
 
-    /// <summary>
-    /// Gets a component by its type.
-    /// </summary>
-    /// <typeparam name="T">The component of type. </typeparam>
-    /// <returns><see cref="IEntityComponent"/> of type <typeparamref name="T"/>.</returns>
-    public T GetComponent<T>()
+    /// <inheritdoc />
+    public T? GetComponent<T>()
         where T : IEntityComponent
     {
-        return (T)this.componentList.FirstOrDefault(x => x is T);
+        return (T?)this.componentList.FirstOrDefault(x => x is T);
     }
 
-    /// <summary>
-    /// Gets all components of specified type.
-    /// </summary>
-    /// <typeparam name="T">The component of type. </typeparam>
-    /// <returns><see cref="IEnumerable{T}"/>.</returns>
-    public IEnumerable<T> GetComponentsOfType<T>()
+    /// <inheritdoc />
+    public IEnumerable<T>? GetComponentsOfType<T>()
         where T : IEntityComponent
     {
-        return this.componentList.Where(x => x is T).Cast<T>();
+        return this.componentList.Where(x => x is T)?.Cast<T>();
     }
 
-    /// <summary>
-    /// Returns a component based on it's ID.
-    /// </summary>
-    /// <param name="componentId">The ID of the component to search for.</param>
-    /// <returns><see cref="IEntityComponent"/>.</returns>
-    public IEntityComponent GetComponentById(string componentId)
+    /// <inheritdoc />
+    public IEntityComponent? GetComponentById(string componentId)
     {
         if (string.IsNullOrWhiteSpace(componentId))
         {
@@ -119,10 +97,7 @@ public class Entity : IEntity
         return this.componentList.FirstOrDefault(x => x.Id == componentId);
     }
 
-    /// <summary>
-    /// Registers a component with this entity.
-    /// </summary>
-    /// <param name="component">The <see cref="IEntityComponent"/> to register.</param>
+    /// <inheritdoc />
     public void RegisterComponent(IEntityComponent component)
     {
         if (component == null)
@@ -141,10 +116,7 @@ public class Entity : IEntity
         }
     }
 
-    /// <summary>
-    /// Unregisters a component from this entity.
-    /// </summary>
-    /// <param name="componentId">The ID of the component to unregister.</param>
+    /// <inheritdoc />
     public void UnregisterComponent(string componentId)
     {
         if (string.IsNullOrWhiteSpace(componentId))
@@ -152,16 +124,26 @@ public class Entity : IEntity
             throw new ArgumentNullException(nameof(componentId));
         }
 
-        IEntityComponent resolvedComponent = this.componentList.FirstOrDefault(x => x.Id == componentId);
+        IEntityComponent? resolvedComponent = this.componentList.FirstOrDefault(x => x.Id == componentId);
         if (resolvedComponent != null)
         {
             this.componentList.Remove(resolvedComponent);
         }
     }
 
-    /// <summary>
-    /// Completely removes this entity from the entity system.
-    /// </summary>
+    /// <inheritdoc />
+    public void Enable()
+    {
+        this.SetEnabled(true);
+    }
+
+    /// <inheritdoc />
+    public void Disable()
+    {
+        this.SetEnabled(false);
+    }
+
+    /// <inheritdoc />
     public virtual void Destroy()
     {
         this.eventDispatcher.Publish(new EventData
@@ -172,6 +154,14 @@ public class Entity : IEntity
             EventArguments = EventArgs.Empty
         });
 
-        this.IsEnabled = false;
+        this.Disable();
+    }
+
+    private void SetEnabled(bool enabled)
+    {
+        foreach (IEntityComponent entityComponent in this.componentList)
+        {
+            entityComponent.IsEnabled = enabled;
+        }
     }
 }

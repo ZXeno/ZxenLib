@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 /// <summary>
 /// Used to handle all input for the game.
 /// </summary>
-public class InputProvider
+public class InputProvider : IInputProvider
 {
     // This is for binding specific event handlers related to input.
     private static GameWindow gameWindow;
@@ -17,6 +17,8 @@ public class InputProvider
     /// </summary>
     public InputProvider()
     {
+        Keyboard = new KeyboardController();
+        Mouse = new MouseController();
     }
 
     /// <summary>
@@ -50,8 +52,9 @@ public class InputProvider
     /// Updates the input states of the <see cref="InputProvider"/> every frame.
     /// </summary>
     /// <param name="deltaTime">Elapsed frame time of the previous frame.</param>
-    public virtual void Update(float deltaTime)
+    public virtual void Update(float deltaTime, bool windowIsActive)
     {
+        WindowIsActive = windowIsActive;
         Keyboard.Update(deltaTime);
         Mouse.Update(deltaTime);
     }

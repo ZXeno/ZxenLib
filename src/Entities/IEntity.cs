@@ -50,7 +50,7 @@ public interface IEntity
     /// </summary>
     /// <typeparam name="T">The component of type. </typeparam>
     /// <returns><see cref="IEntityComponent"/> of type <typeparamref name="T"/>.</returns>
-    T GetComponent<T>()
+    T? GetComponent<T>()
         where T : IEntityComponent;
 
     /// <summary>
@@ -58,7 +58,7 @@ public interface IEntity
     /// </summary>
     /// <typeparam name="T">The component of type. </typeparam>
     /// <returns><see cref="IEntityComponent"/> of type <typeparamref name="T"/>.</returns>
-    IEnumerable<T> GetComponentsOfType<T>()
+    IEnumerable<T>? GetComponentsOfType<T>()
         where T : IEntityComponent;
 
     /// <summary>
@@ -66,7 +66,17 @@ public interface IEntity
     /// </summary>
     /// <param name="componentId">The ID of the component to search for.</param>
     /// <returns><see cref="IEntityComponent"/>.</returns>
-    IEntityComponent GetComponentById(string componentId);
+    IEntityComponent? GetComponentById(string componentId);
+
+    /// <summary>
+    /// Enables the entity and all of its children and child components.
+    /// </summary>
+    void Enable();
+
+    /// <summary>
+    /// Disables the entity and all of its children and child components.
+    /// </summary>
+    void Disable();
 
     /// <summary>
     /// Completely removes this entity from the entity system.

@@ -1,6 +1,8 @@
 ﻿namespace ZxenLib;
 
 using System.Collections.Generic;
+using Assets;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -13,22 +15,22 @@ public interface IAssetManager
     /// <summary>
     /// Gets the dictionary of loaded <see cref="Texture2D"/>.
     /// </summary>
-    Dictionary<string, Texture2D> Textures { get; }
+    Dictionary<string, Texture2D> TexturesDictionary { get; }
 
     /// <summary>
     /// Gets the dictionary of loaded <see cref="SpriteFont"/> content.
     /// </summary>
-    Dictionary<string, SpriteFont> Fonts { get; }
+    Dictionary<string, SpriteFont> FontsDictionary { get; }
 
     /// <summary>
     /// Gets the dictionary of loaded <see cref="SoundEffect"/> content.
     /// </summary>
-    Dictionary<string, SoundEffect> SoundFX { get; }
+    Dictionary<string, SoundEffect> SoundFxdDictionary { get; }
 
     /// <summary>
     /// Gets the dicationary of loaded <see cref="Song"/> content.
     /// </summary>
-    Dictionary<string, Song> Songs { get; }
+    Dictionary<string, Song> SongsDictionary { get; }
 
     /// <summary>
     /// Gets the dictionary of loaded <see cref="string"/> content.
@@ -38,10 +40,11 @@ public interface IAssetManager
     /// <summary>
     /// Initializes the AssetManager.
     /// </summary>
+    /// <param name="game">The Game class used to set the ContentManager.</param>
     /// <param name="stringsFileName">The file name of the text file containing strings data.</param>
     /// <param name="stringsDirectory">The directory containing the strings file.</param>
     /// <param name="useStrings">Flag for if the built-in strings system should be used.</param>
-    void Initialize(string stringsFileName = "strings.txt", string stringsDirectory = "", bool useStrings = true);
+    void Initialize(Game game, string stringsFileName = "strings.txt", string stringsDirectory = "", bool useStrings = true);
 
     /// <summary>
     /// Gets all file names under a given folder path. Does not enumerate subfolders.
@@ -54,4 +57,9 @@ public interface IAssetManager
     /// Loads all assets that have been found.
     /// </summary>
     void LoadAssets();
+
+    /// <summary>
+    /// Unloads all loaded assets in the AssetManager.
+    /// </summary>
+    void UnloadAssets();
 }

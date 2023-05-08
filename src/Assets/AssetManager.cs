@@ -1,4 +1,4 @@
-﻿namespace ZxenLib;
+﻿namespace ZxenLib.Assets;
 
 using System;
 using System.Collections.Generic;
@@ -23,9 +23,9 @@ public class AssetManager : IAssetManager
     private const string TextureFolderName = "Textures";
     private const string StringsFileName = "strings.txt";
 
-    private readonly ContentManager contentManager;
     private readonly ISpriteManager spriteManager;
 
+    private ContentManager contentManager;
     private string sfxDirectoryPath;
     private string fontDirectoryPath;
     private string songsDirectoryPath;
@@ -38,31 +38,30 @@ public class AssetManager : IAssetManager
     /// </summary>
     /// <param name="game">The Monogame <see cref="Game"/> dependency.</param>
     /// <param name="spriteManager">The ZxenLib <see cref="ISpriteManager"/> dependency.</param>
-    public AssetManager(Game game, ISpriteManager spriteManager)
+    public AssetManager(ISpriteManager spriteManager)
     {
-        this.contentManager = game.Content;
         this.spriteManager = spriteManager;
     }
 
     /// <summary>
     /// Gets the dictionary of loaded <see cref="Texture2D"/>.
     /// </summary>
-    public Dictionary<string, Texture2D> Textures { get; private set; }
+    public Dictionary<string, Texture2D> TexturesDictionary { get; private set; }
 
     /// <summary>
     /// Gets the dictionary of loaded <see cref="SpriteFont"/> content.
     /// </summary>
-    public Dictionary<string, SpriteFont> Fonts { get; private set; }
+    public Dictionary<string, SpriteFont> FontsDictionary { get; private set; }
 
     /// <summary>
     /// Gets the dictionary of loaded <see cref="SoundEffect"/> content.
     /// </summary>
-    public Dictionary<string, SoundEffect> SoundFX { get; private set; }
+    public Dictionary<string, SoundEffect> SoundFxdDictionary { get; private set; }
 
     /// <summary>
-    /// Gets the dicationary of loaded <see cref="Song"/> content.
+    /// Gets the dictionary of loaded <see cref="Song"/> content.
     /// </summary>
-    public Dictionary<string, Song> Songs { get; private set; }
+    public Dictionary<string, Song> SongsDictionary { get; private set; }
 
     /// <summary>
     /// Gets the dictionary of loaded <see cref="string"/> content.
@@ -75,13 +74,14 @@ public class AssetManager : IAssetManager
     /// <param name="stringsFileName">The file name of the text file containing strings data.</param>
     /// <param name="stringsDirectory">The directory containing the strings file.</param>
     /// <param name="useStrings">Flag for if the built-in strings system should be used.</param>
-    public void Initialize(string stringsFileName = "strings.txt", string stringsDirectory = "", bool useStrings = true)
+    public void Initialize(Game game, string stringsFileName = "strings.txt", string stringsDirectory = "", bool useStrings = true)
     {
+        this.contentManager = game.Content;
         this.useStrings = useStrings;
-        this.Textures = new Dictionary<string, Texture2D>();
-        this.Fonts = new Dictionary<string, SpriteFont>();
-        this.SoundFX = new Dictionary<string, SoundEffect>();
-        this.Songs = new Dictionary<string, Song>();
+        this.TexturesDictionary = new();
+        this.FontsDictionary = new();
+        this.SoundFxdDictionary = new();
+        this.SongsDictionary = new();
 
         this.textureDirectoryPath = Path.Combine(this.contentManager.RootDirectory, AssetManager.TextureFolderName);
         this.fontDirectoryPath = Path.Combine(this.contentManager.RootDirectory, AssetManager.FontFolderName);
@@ -110,7 +110,7 @@ public class AssetManager : IAssetManager
 
         if (this.useStrings)
         {
-            this.Strings = new Dictionary<string, string>();
+            this.Strings = new();
             this.stringsDirectoryPath = Path.Combine(this.contentManager.RootDirectory, AssetManager.DataDirectory);
             if (!Directory.Exists(this.stringsDirectoryPath))
             {
@@ -154,14 +154,14 @@ public class AssetManager : IAssetManager
             foreach (string filePath in fileNames.Where(x => !x.EndsWith(".json")))
             {
                 string fileName = Path.GetFileNameWithoutExtension(filePath);
-                this.Textures.Add(fileName, this.contentManager.Load<Texture2D>(Path.Join(AssetManager.TextureFolderName, fileName)));
+                this.TexturesDictionary.Add(fileName, this.contentManager.Load<Texture2D>(Path.Join(AssetManager.TextureFolderName, fileName)));
             }
 
             foreach (string filePath in fileNames.Where(x => x.EndsWith(".json")))
             {
                 string fileName = Path.GetFileNameWithoutExtension(filePath);
                 string fullyQualifiedPath = Path.Combine(Environment.CurrentDirectory, filePath);
-                this.spriteManager.AddAtlas(fileName, this.Textures[fileName], fullyQualifiedPath);
+                this.spriteManager.AddAtlas(fileName, this.TexturesDictionary[fileName], fullyQualifiedPath);
             }
         }
 
@@ -172,7 +172,7 @@ public class AssetManager : IAssetManager
             foreach (string filePath in fileNames)
             {
                 string fileName = Path.GetFileNameWithoutExtension(filePath);
-                this.Fonts.Add(fileName, this.contentManager.Load<SpriteFont>(Path.Join(AssetManager.FontFolderName, fileName)));
+                this.FontsDictionary.Add(fileName, this.contentManager.Load<SpriteFont>(Path.Join(AssetManager.FontFolderName, fileName)));
             }
         }
 
@@ -183,7 +183,7 @@ public class AssetManager : IAssetManager
             foreach (string filePath in fileNames)
             {
                 string fileName = Path.GetFileNameWithoutExtension(filePath);
-                this.SoundFX.Add(fileName, this.contentManager.Load<SoundEffect>(Path.Join(AssetManager.SfxFolderName, fileName)));
+                this.SoundFxdDictionary.Add(fileName, this.contentManager.Load<SoundEffect>(Path.Join(AssetManager.SfxFolderName, fileName)));
             }
         }
 
@@ -194,7 +194,7 @@ public class AssetManager : IAssetManager
             foreach (string filePath in fileNames)
             {
                 string fileName = Path.GetFileNameWithoutExtension(filePath);
-                this.Songs.Add(fileName, this.contentManager.Load<Song>(Path.Join(AssetManager.SongsFolderName, fileName)));
+                this.SongsDictionary.Add(fileName, this.contentManager.Load<Song>(Path.Join(AssetManager.SongsFolderName, fileName)));
             }
         }
 
@@ -208,6 +208,27 @@ public class AssetManager : IAssetManager
                 string[] splitLine = splitdata[x].Split(new[] { "=" }, StringSplitOptions.None);
                 this.Strings.Add(splitLine[0].Trim(), splitLine[1].Trim());
             }
+        }
+    }
+
+    /// <summary>
+    /// Unloads all loaded assets in the AssetManager.
+    /// </summary>
+    public void UnloadAssets()
+    {
+        this.UnloadDictionaryAssets(this.TexturesDictionary);
+        this.UnloadDictionaryAssets(this.FontsDictionary);
+        this.UnloadDictionaryAssets(this.SoundFxdDictionary);
+        this.UnloadDictionaryAssets(this.SongsDictionary);
+    }
+
+    private void UnloadDictionaryAssets<T>(IDictionary<string, T> dict)
+    {
+        while (dict.Count > 0)
+        {
+            KeyValuePair<string, T> entry = dict.First();
+            this.contentManager.UnloadAsset(entry.Key);
+            dict.Remove(entry.Key);
         }
     }
 }

@@ -87,7 +87,7 @@ public class EntityManager : IEntityManager
             throw new ArgumentNullException(nameof(id));
         }
 
-        IEntity targetEntity = this.allEntities.SingleOrDefault(x => x.Id == id);
+        IEntity? targetEntity = this.allEntities.SingleOrDefault(x => x.Id == id);
         if (targetEntity != null)
         {
             this.RemoveEntity(targetEntity);
@@ -118,7 +118,7 @@ public class EntityManager : IEntityManager
     /// </summary>
     /// <param name="id">The ID to search.</param>
     /// <returns><see cref="IEntity"/> with matching ID. Null if not found.</returns>
-    public IEntity GetEntityById(string id)
+    public IEntity? GetEntityById(string id)
     {
         return this.allEntities.SingleOrDefault(x => x.Id == id);
     }
@@ -128,7 +128,7 @@ public class EntityManager : IEntityManager
     /// </summary>
     /// <typeparam name="T">The type being checked for.</typeparam>
     /// <returns><see cref="IEntity"/>.</returns>
-    public IEntity GetEntityWithComponentOfType<T>()
+    public IEntity? GetEntityWithComponentOfType<T>()
         where T : IEntityComponent
     {
         foreach (IEntity entity in this.allEntities)
@@ -194,57 +194,33 @@ public class EntityManager : IEntityManager
         // Enable Entities
         if (this.toEnable.Count > 0)
         {
-            List<IEntity> toEnableCache = new List<IEntity>(this.toEnable.Count);
+            IEntity[] toEnableCache = this.toEnable.ToArray();
             foreach (IEntity entityToEnable in toEnableCache)
             {
-                // Check if the component is currently in the disabled group,
-                // and remove it.
-                if (entityToEnable.IsEnabled && !entityToEnable.RemoveFlag
-                                             && this.disabledEntitiesList.Contains(entityToEnable))
+                // Check if the component is currently in the disabled group and remove it.
+                if (entityToEnable.IsEnabled
+                    && !entityToEnable.RemoveFlag
+                    && this.disabledEntitiesList.Contains(entityToEnable))
                 {
                     this.disabledEntitiesList.Remove(entityToEnable);
                 }
-                else if (entityToEnable.RemoveFlag)
+
+                if (entityToEnable.RemoveFlag)
                 {
                     // but if we have a remove flag, we definitely shouldn't enable this
-                    // entity and should instead deferr to the removal.
+                    // entity and should instead defer to the removal.
                     if (!this.toRemove.Contains(entityToEnable))
                     {
                         this.toRemove.Add(entityToEnable);
                     }
 
                     this.toEnable.Remove(entityToEnable);
-                    entityToEnable.IsEnabled = false;
-
-                    // We also want to be sure to disable any components before we
-                    // update or draw this frame. This should probably be smarter,
-                    // but will do for now.
-                    IEnumerable<IEntityComponent> componentsToDisable =
-                        entityToEnable.GetComponentsOfType<IEntityComponent>();
-
-                    if (componentsToDisable != null && componentsToDisable.Any())
-                    {
-                        foreach (IEntityComponent component in componentsToDisable)
-                        {
-                            component.IsEnabled = false;
-                        }
-                    }
+                    entityToEnable.Disable();
 
                     continue;
                 }
 
-                entityToEnable.IsEnabled = true;
-
-                // Enable any components on this entity
-                IEnumerable<IEntityComponent> entityComponents =
-                    entityToEnable.GetComponentsOfType<IEntityComponent>();
-                if (entityComponents != null && entityComponents.Any())
-                {
-                    foreach (IEntityComponent component in entityComponents)
-                    {
-                        component.IsEnabled = true;
-                    }
-                }
+                entityToEnable.Enable();
 
                 this.toEnable.Remove(entityToEnable);
             }
@@ -260,10 +236,11 @@ public class EntityManager : IEntityManager
                     if (updatableComponent.IsEnabled)
                     {
                         updatableComponent.Update(deltaTime);
-                        continue;
                     }
+                    continue;
                 }
-                else if (!updatableComponent.Parent.IsEnabled && !this.disabledEntitiesList.Contains(updatableComponent.Parent) && !this.toDisable.Contains(updatableComponent.Parent))
+
+                if (!updatableComponent.Parent.IsEnabled && !this.disabledEntitiesList.Contains(updatableComponent.Parent) && !this.toDisable.Contains(updatableComponent.Parent))
                 {
                     this.toDisable.Add(updatableComponent.Parent);
                 }
@@ -273,31 +250,32 @@ public class EntityManager : IEntityManager
         // Re-Enable previously disabled entities that are now marked as enabled.
         if (this.disabledEntitiesList.Count > 0)
         {
-            List<IEntity> toEnableCache = new List<IEntity>(this.disabledEntitiesList);
+            IEntity[] toEnableCache = this.disabledEntitiesList.ToArray();
             foreach (IEntity entity in toEnableCache)
             {
-                if (entity.IsEnabled && !this.toDisable.Contains(entity))
+                if (!entity.IsEnabled || this.toDisable.Contains(entity))
                 {
-                    // Enable any components on this entity
-                    IEnumerable<IEntityComponent> entityComponents =
-                        entity.GetComponentsOfType<IEntityComponent>();
-                    if (entityComponents != null && entityComponents.Any())
-                    {
-                        foreach (IEntityComponent component in entityComponents)
-                        {
-                            component.IsEnabled = true;
-                        }
-                    }
-
-                    this.disabledEntitiesList.Remove(entity);
+                    continue;
                 }
+
+                // Enable any components on this entity
+                IEnumerable<IEntityComponent>? entityComponents = entity.GetComponentsOfType<IEntityComponent>()?.ToArray();
+                if (entityComponents != null && entityComponents.Any())
+                {
+                    foreach (IEntityComponent component in entityComponents)
+                    {
+                        component.IsEnabled = true;
+                    }
+                }
+
+                this.disabledEntitiesList.Remove(entity);
             }
         }
 
         // These must occur after other update methods
         if (this.toDisable.Count > 0)
         {
-            List<IEntity> toDisableCache = new List<IEntity>(this.toDisable);
+            IEntity[] toDisableCache = this.toDisable.ToArray();
             foreach (IEntity entityToDisable in toDisableCache)
             {
                 if (this.toEnable.Contains(entityToDisable))
@@ -305,17 +283,7 @@ public class EntityManager : IEntityManager
                     throw new Exception("Cannot disable and enable entity in same frame. This should never happen.");
                 }
 
-                entityToDisable.IsEnabled = false;
-
-                IEnumerable<IEntityComponent> entityComponents =
-                    entityToDisable.GetComponentsOfType<IEntityComponent>();
-                if (entityComponents != null && entityComponents.Any())
-                {
-                    foreach (IEntityComponent component in entityComponents)
-                    {
-                        component.IsEnabled = false;
-                    }
-                }
+                entityToDisable.Disable();
 
                 this.disabledEntitiesList.Add(entityToDisable);
                 this.toDisable.Remove(entityToDisable);

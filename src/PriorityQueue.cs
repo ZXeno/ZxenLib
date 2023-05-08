@@ -39,10 +39,7 @@ public class PriorityQueue<T>
     /// <summary>
     /// Returns the count of the items in the <see cref="PriorityQueue{T}"/>.
     /// </summary>
-    public int Count
-    {
-        get { return this.InnerList.Count; }
-    }
+    public int Count => this.InnerList.Count;
 
     /// <summary>
     /// The inner collection used for the priority queue.
@@ -78,7 +75,6 @@ public class PriorityQueue<T>
     public int Push(T item)
     {
         int location1 = this.InnerList.Count;
-        int location2;
         this.InnerList.Add(item);
         do
         {
@@ -87,7 +83,7 @@ public class PriorityQueue<T>
                 break;
             }
 
-            location2 = (location1 - 1) / 2;
+            int location2 = (location1 - 1) / 2;
             if (this.DoCompare(location1, location2) < 0)
             {
                 this.SwitchElements(location1, location2);
@@ -153,8 +149,6 @@ public class PriorityQueue<T>
     public void Update(int changedIndex)
     {
         int index = changedIndex;
-        int nLocation;
-        int location1;
         int location2;
         do
         {
@@ -168,11 +162,10 @@ public class PriorityQueue<T>
             {
                 this.SwitchElements(index, location2);
                 index = location2;
+                continue;
             }
-            else
-            {
-                break;
-            }
+
+            break;
         }
         while (true);
 
@@ -183,8 +176,8 @@ public class PriorityQueue<T>
 
         do
         {
-            nLocation = index;
-            location1 = (2 * index) + 1;
+            int nLocation = index;
+            int location1 = (2 * index) + 1;
             location2 = (2 * index) + 2;
             if (this.InnerList.Count > location1 && this.DoCompare(index, location1) > 0)
             {

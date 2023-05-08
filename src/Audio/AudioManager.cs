@@ -90,7 +90,7 @@ public class AudioManager : IAudioManager
         }
 
         MediaPlayer.Volume = this.MasterVolume * this.MusicVolume;
-        MediaPlayer.Play(this.assetManager.Songs[songId]);
+        MediaPlayer.Play(this.assetManager.SongsDictionary[songId]);
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ public class AudioManager : IAudioManager
 
         sfxId.ThrowIfNullOrWhitespace();
 
-        this.assetManager.SoundFX[sfxId].Play(this.MasterVolume * this.SoundEffectsVolume, 0, 0);
+        this.assetManager.SoundFxdDictionary[sfxId].Play(this.MasterVolume * this.SoundEffectsVolume, 0, 0);
     }
 
     /// <summary>
@@ -130,6 +130,6 @@ public class AudioManager : IAudioManager
 
         uiSoundId.ThrowIfNullOrWhitespace();
 
-        this.assetManager.SoundFX[uiSoundId].Play(this.MasterVolume * this.UIVolume, 0, 0);
+        this.assetManager.SoundFxdDictionary[uiSoundId].Play(this.MasterVolume * this.UIVolume, 0, 0);
     }
 }

@@ -91,8 +91,7 @@ public class Atlas
     /// </summary>
     public void Dispose()
     {
-        this.TextureAtlas = null;
-        this.DataFilePath = string.Empty;
+        this.TextureAtlas.Dispose();
     }
 
     /// <summary>

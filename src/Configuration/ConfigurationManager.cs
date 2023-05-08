@@ -57,7 +57,7 @@ public class ConfigurationManager
     ///
     /// The default directory is "%userprofile%\Documents\My Games\MyGame".
     /// </summary>
-    public void LoadConfiguration()
+    public async Task LoadConfiguration()
     {
         Configuration newConfig = new Configuration();
 
@@ -117,7 +117,7 @@ public class ConfigurationManager
             }
 
             this.Config = newConfig;
-            Task.Factory.StartNew(async () => { await this.SaveConfiguration(); }).ConfigureAwait(false);
+            await this.SaveConfiguration();
         }
     }
 
@@ -148,7 +148,7 @@ public class ConfigurationManager
             throw new ConfigurationWriteFailedException(this.filePath, ex);
         }
 
-        using StreamWriter sw = new StreamWriter(this.filePath);
+        await using StreamWriter sw = new(this.filePath);
         try
         {
             await sw.WriteAsync(serializedConfig);
@@ -215,6 +215,8 @@ public class ConfigurationManager
             using StreamWriter sw = File.CreateText(this.filePath);
             sw.Close();
         }
+
+        this.Config = new();
     }
 
     private object ParseNumberToCorrectType(JsonElement jElement, string targetType)

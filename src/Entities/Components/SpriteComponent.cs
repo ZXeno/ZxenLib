@@ -13,7 +13,7 @@ public class SpriteComponent : EntityComponent, IDrawableEntityComponent
     /// <summary>
     /// Defines the programmatic id of the <see cref="SpriteComponent"/>.
     /// </summary>
-    public const string SpriteComponentProgrammaticId = "SpriteComponent";
+    public const string SpriteComponentProgrammaticId = nameof(SpriteComponent);
 
     private readonly ISpriteManager spriteManager;
     private Atlas spriteAtlas;
@@ -29,6 +29,7 @@ public class SpriteComponent : EntityComponent, IDrawableEntityComponent
         this.IsEnabled = true;
         this.ProgrammaticId = SpriteComponentProgrammaticId;
         this.spriteManager = spriteManager;
+        this.Transform = this.Parent.GetComponent<TransformComponent>()!;
     }
 
     /// <summary>
