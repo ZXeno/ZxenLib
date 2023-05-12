@@ -1,4 +1,4 @@
-namespace ZxenLib.Infrastructure.DependencyInjection;
+namespace ZxenLib.DependencyInjection;
 
 /// <summary>
 /// Defines the lifetime options of the dependency container.

@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using DependencyInjection;
 using Microsoft.Xna.Framework.Graphics;
 using ZxenLib.Events;
 
@@ -21,15 +22,19 @@ public class GameScreenManager
     private readonly IEventDispatcher eventDispatcher;
     private int drawOrder;
 
+    public readonly DependencyContainer ServiceContainer;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="GameScreenManager"/> class.
     /// </summary>
     /// <param name="eventDispatcher">The <see cref="IEventDispatcher"/> dependency.</param>
-    public GameScreenManager(IEventDispatcher eventDispatcher)
+    /// <param name="serviceContainer">The <see cref="DependencyContainer"/> dependency.</param>
+    public GameScreenManager(IEventDispatcher eventDispatcher, DependencyContainer serviceContainer)
     {
         this.drawOrder = StartDrawOrder;
         this.gameStates = new Stack<GameScreen>();
         this.eventDispatcher = eventDispatcher;
+        this.ServiceContainer = serviceContainer;
     }
 
     /// <summary>
@@ -96,7 +101,7 @@ public class GameScreenManager
     /// Performs draw call batching for currently active state. Called every frame.
     /// </summary>
     /// <param name="sb">The <see cref="SpriteBatch"/> used for batching draw calls.</param>
-    public void DrawStates(SpriteBatch sb)
+    public void DrawStates(SpriteBatch spriteBatch)
     {
         List<GameScreen> drawOrderedList = this.gameStates.OrderBy(x => x.DrawOrder).ToList();
 
@@ -104,7 +109,7 @@ public class GameScreenManager
         {
             if (state.IsInitialized && state.IsEnabled && state.Visible)
             {
-                state.Draw(sb);
+                state.Draw(spriteBatch);
             }
         }
     }

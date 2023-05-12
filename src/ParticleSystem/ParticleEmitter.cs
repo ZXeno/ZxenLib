@@ -231,7 +231,7 @@ public class ParticleEmitter : IUpdatableEntityComponent
             return;
         }
 
-        Matrix transformMatrix = Camera2D.Main.GetNewTransformation();
+        Matrix transformMatrix = Camera2D.Main.GetCurrentTransformMatrix();
         sb.Begin(
             SpriteSortMode.Deferred,
             BlendState.AlphaBlend,

@@ -50,6 +50,7 @@ public class Entity : IEntity
         foreach (IEntityComponent component in componentCollection)
         {
             this.componentList.Add(component);
+            component.Register(this);
         }
     }
 

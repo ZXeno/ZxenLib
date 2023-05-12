@@ -1,10 +1,10 @@
-namespace ZxenLib.Infrastructure.DependencyInjection;
+namespace ZxenLib.DependencyInjection;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Exceptions;
+using ZxenLib.Infrastructure.Exceptions;
 
 /// <summary>
 /// The Dependency Injection container for storing registered dependency types.

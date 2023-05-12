@@ -13,7 +13,7 @@ using ZxenLib.Infrastructure.Exceptions;
 /// <summary>
 /// Manages game configuration.
 /// </summary>
-public class ConfigurationManager
+public class ConfigurationManager : IConfigurationManager
 {
     private const string FileName = "ConfigurationSettings.json";
     private string settingsDirectory = string.Empty;

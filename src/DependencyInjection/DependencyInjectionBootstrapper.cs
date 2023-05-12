@@ -1,15 +1,16 @@
-﻿namespace ZxenLib;
+﻿namespace ZxenLib.DependencyInjection;
 
-using Assets;
-using Infrastructure.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Assets;
 using Audio;
 using Configuration;
 using Entities;
 using Events;
 using GameScreen;
 using Graphics;
+using Graphics.Rendering;
 using Input;
 
 /// <summary>
@@ -24,7 +25,7 @@ public static class DependencyInjectionBootstrapper
     /// <param name="collection">The <see cref="IServiceCollection"/> to register the various types to.</param>
     public static void AddZxenLibToMsDiContainer(this IServiceCollection collection)
     {
-        collection.AddSingleton<ConfigurationManager>();
+        collection.AddSingleton<IConfigurationManager, ConfigurationManager>();
         collection.AddSingleton<GameScreenManager>();
         collection.AddSingleton<IInputProvider, InputProvider>();
         collection.AddSingleton<IEventDispatcher, EventDispatcher>();
@@ -48,7 +49,7 @@ public static class DependencyInjectionBootstrapper
     {
         EventDispatcher eventDispatcher = new();
         ConfigurationManager cfgManager = new();
-        GameScreenManager screenMgr = new(eventDispatcher);
+        //GameScreenManager screenMgr = new(eventDispatcher);
         InputProvider inputProvider = new();
         EntityManager entityManager = new(eventDispatcher);
         SpriteManager spriteManager = new();
@@ -56,8 +57,8 @@ public static class DependencyInjectionBootstrapper
         AudioManager audioManager = new(eventDispatcher, assetManager);
         GameStrings strings = new(assetManager);
 
-        collection.AddService(cfgManager);
-        collection.AddService(screenMgr);
+        collection.AddService<IConfigurationManager>(cfgManager);
+        //collection.AddService(screenMgr);
         collection.AddService<IInputProvider>(inputProvider);
         collection.AddService<IEventDispatcher>(eventDispatcher);
         collection.AddService<IEntityManager>(entityManager);
@@ -74,15 +75,18 @@ public static class DependencyInjectionBootstrapper
     /// <param name="collection">The ZxenLib <see cref="DependencyContainer"/></param>
     public static void AddToZxenLibDiContainer(this DependencyContainer collection)
     {
-        collection.Register<ConfigurationManager>();
-        collection.Register<GameScreenManager>();
-        collection.Register<IInputProvider, InputProvider>();
+        collection.Register<IAssetManager, AssetManager>();
+        collection.Register<IAudioManager, AudioManager>();
+        collection.Register<IConfigurationManager, ConfigurationManager>();
+        collection.Register<DisplayManager>();
         collection.Register<IEventDispatcher, EventDispatcher>();
         collection.Register<IEntityManager, EntityManager>();
-        collection.Register<IAssetManager, AssetManager>();
+        collection.Register<FrameDataUtility>();
+        collection.Register<GameScreenManager>();
+        collection.Register<GameStrings>();
+        collection.Register<IInputProvider, InputProvider>();
+        collection.Register<SpriteBatch>();
         collection.Register<ISpriteManager, SpriteManager>();
-        collection.Register<IAudioManager, AudioManager>();
-        collection.Register<GameStrings, GameStrings>();
         collection.Register(collection);
     }
 }

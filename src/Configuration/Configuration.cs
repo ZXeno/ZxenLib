@@ -31,7 +31,7 @@ public class Configuration
     /// </summary>
     public Configuration()
     {
-        this.Resolution = new ResolutionConfiguration();
+        this.Graphics = new GraphicsConfiguration();
         this.ConfigProperties = new Dictionary<string, ConfigurationProperty>();
     }
 
@@ -59,12 +59,7 @@ public class Configuration
     /// <summary>
     /// Gets or sets the resolution configuration options.
     /// </summary>
-    public ResolutionConfiguration Resolution { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the mouse is visible in the game. Default value is true.
-    /// </summary>
-    public bool IsMouseVisible { get; set; } = true;
+    public GraphicsConfiguration Graphics { get; set; }
 
     /// <summary>
     /// The configuration properties for this configuration.

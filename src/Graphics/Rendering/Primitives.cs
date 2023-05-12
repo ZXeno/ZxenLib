@@ -19,9 +19,9 @@
 //     3. This notice may not be removed or altered from any source
 //     distribution.
 //
-// Modified 2018-2020 by: Jonathan Cain
+// Modified 2018-2023 by: Jessie Alastor
 
-namespace ZxenLib.Graphics;
+namespace ZxenLib.Graphics.Rendering;
 
 using System;
 using System.Collections.Generic;

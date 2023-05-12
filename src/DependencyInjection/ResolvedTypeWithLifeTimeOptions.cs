@@ -1,4 +1,4 @@
-namespace ZxenLib.Infrastructure.DependencyInjection;
+namespace ZxenLib.DependencyInjection;
 
 using System;
 

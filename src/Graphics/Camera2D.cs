@@ -1,7 +1,9 @@
 ﻿namespace ZxenLib.Graphics;
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Rendering;
 using ZxenLib.Input;
 
 /// <summary>
@@ -9,17 +11,44 @@ using ZxenLib.Input;
 /// </summary>
 public class Camera2D
 {
-    private Viewport myviewport;
-    private float zoom;
+    private readonly DisplayManager displayManager;
 
+    private Viewport myViewport;
+    private float zoom;
+    private bool isMain;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Camera2D"/> class.
+    /// </summary>
+    public Camera2D(DisplayManager displayManager, bool isMain = false)
+    {
+        this.displayManager = displayManager;
+        this.zoom = 1.0f;
+        this.Rotation = 0.0f;
+        this.myViewport = new Viewport(
+            0, 0,
+            displayManager.VirtualResolutionX,
+            displayManager.VirtualResolutionY);
+
+        this.isMain = isMain;
+        if (this.isMain)
+        {
+            Camera2D.Main = this;
+        }
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Camera2D"/> class.
+    /// </summary>
     public Camera2D(int x, int y, int w, int h, bool isMain = false)
     {
-        this.myviewport = new Viewport(x, y, w, h);
+        this.myViewport = new Viewport(x, y, w, h);
         this.zoom = 1.0f;
         this.Rotation = 0.0f;
         this.Position = new Vector2(x, y);
+        this.isMain = isMain;
 
-        if (isMain)
+        if (this.isMain)
         {
             Camera2D.Main = this;
         }
@@ -33,13 +62,14 @@ public class Camera2D
         this.zoom = 1.0f;
         this.Rotation = 0.0f;
         this.Position = position;
+        this.isMain = isMain;
 
-        if (isMain)
+        if (this.isMain)
         {
             Camera2D.Main = this;
         }
 
-        this.myviewport = viewport;
+        this.myViewport = viewport;
     }
 
     /// <summary>
@@ -52,23 +82,8 @@ public class Camera2D
     /// </summary>
     public float Zoom
     {
-        get
-        {
-            return this.zoom;
-        }
-
-        set
-        {
-            this.zoom = value;
-            if (this.zoom < 0.1f)
-            {
-                this.zoom = 0.1f;
-            }
-            else if (this.zoom > 1.0f)
-            {
-                this.zoom = 1.0f;
-            }
-        }
+        get => this.zoom;
+        set => this.zoom = Math.Clamp(value, 0.1f, 1.0f);
     }
 
     /// <summary>
@@ -87,16 +102,29 @@ public class Camera2D
     public Vector2 Position { get; set; }
 
     /// <summary>
-    /// Gets a newly created instance of the <see cref="Camera2D"/>'s matrix transformation.
+    /// Sets the camera viewport.
     /// </summary>
-    /// <returns><see cref="Matrix"/>.</returns>
-    public Matrix GetNewTransformation()
+    /// <param name="viewport"></param>
+    public void SetCameraViewport(Viewport viewport)
     {
+        this.myViewport = viewport;
+    }
+
+    /// <summary>
+    /// Gets a new instance of the <see cref="Camera2D"/>'s current matrix transform.
+    /// </summary>
+    /// <returns><see cref="Matrix"/></returns>
+    public Matrix GetCurrentTransformMatrix(Matrix? scale = null)
+    {
+        scale ??= Matrix.Identity;
+        Matrix cameraZoomMatrix = Matrix.CreateScale(new Vector3(this.Zoom, this.Zoom, 1));
+
         this.Transform =
             Matrix.CreateTranslation(new Vector3(-this.Position.X, -this.Position.Y, 0)) *
             Matrix.CreateRotationZ(this.Rotation) *
-            Matrix.CreateScale(new Vector3(this.Zoom, this.Zoom, 1)) *
-            Matrix.CreateTranslation(new Vector3(this.myviewport.Width * 0.5f, this.myviewport.Height * 0.5f, 0));
+            cameraZoomMatrix *
+            scale.Value *
+            Matrix.CreateTranslation(new Vector3(this.myViewport.Width * 0.5f, this.myViewport.Height * 0.5f, 0));
         return this.Transform;
     }
 

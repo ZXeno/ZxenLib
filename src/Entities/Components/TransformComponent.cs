@@ -11,12 +11,14 @@ public class TransformComponent : EntityComponent
     /// <summary>
     /// Defines the programmatic id of the <see cref="TransformComponent"/>.
     /// </summary>
-    public const string TransformComponentProgrammaticId = "TransformComponent";
+    public const string TransformComponentProgrammaticId = nameof(TransformComponent);
+
     private Vector2 scale;
     private Vector2 position;
     private bool isDirty;
     private Angle angle;
     private Rectangle bounds;
+    private Vector2 localPosition;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TransformComponent"/> class.
@@ -42,6 +44,16 @@ public class TransformComponent : EntityComponent
         this.Parent = parent;
         this.ProgrammaticId = TransformComponentProgrammaticId;
         this.isDirty = true;
+    }
+
+    public Vector2 LocalPostion
+    {
+        get => this.localPosition;
+        set
+        {
+            this.localPosition = value;
+            this.isDirty = true;
+        }
     }
 
     /// <summary>
@@ -153,10 +165,29 @@ public class TransformComponent : EntityComponent
     /// <summary>
     /// Adds passed vector to object's scale.
     /// </summary>
-    /// <param name="scale">The amoutn to scale the object.</param>
+    /// <param name="scale">The amount to scale the object.</param>
     public void ScaleTransform(Vector2 scale)
     {
         this.Scale += scale;
+    }
+
+    /// <summary>
+    /// Transforms a vector from local space to world space.
+    /// </summary>
+    /// <param name="vectorToTransform"></param>
+    /// <returns></returns>
+    public Vector2 TransformLocalVectorToWorld(Vector2 vectorToTransform)
+    {
+        // Create a rotation matrix from the object's rotation angle
+        Matrix rotationMatrix = Matrix.CreateRotationZ(this.Angle.Radians);
+
+        // Transform the local coordinates using the rotation matrix
+        Vector2 rotatedCoordinates = Vector2.Transform(vectorToTransform, rotationMatrix);
+
+        // Add the object's position to the rotated coordinates to get the world coordinates
+        Vector2 worldCoordinates = rotatedCoordinates + this.LocalPostion;
+
+        return worldCoordinates;
     }
 
     private void RecalculateBounds()

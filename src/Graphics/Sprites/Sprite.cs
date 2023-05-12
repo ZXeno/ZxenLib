@@ -24,7 +24,8 @@ public class Sprite
         this.Id = Guid.NewGuid().ToString();
         this.Xoffset = 0;
         this.Yoffset = 0;
-        this.RotationOffset = -1.5708f;
+        //this.RotationOffset = -1.5708f;
+        this.RotationOffset = 0;
         this.ParentAtlas = parentAtlasId;
         this.SpriteId = spriteId;
         this.SourceRect = sourceRectangle;
@@ -34,7 +35,7 @@ public class Sprite
         this.Layer = 0;
         this.SpriteEffects = SpriteEffects.None;
         this.Rotation = 0;
-        this.OriginIsCenter = false;
+        this.OriginIsCenter = true;
         this.origin = new Vector2(0, 0);
     }
 
