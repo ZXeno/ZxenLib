@@ -1,6 +1,7 @@
 namespace ZxenLib.Graphics.Rendering;
 
 using System;
+using System.Collections.Generic;
 using Configuration;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,10 +9,11 @@ using Microsoft.Xna.Framework.Graphics;
 public class DisplayManager
 {
     private readonly Camera2D mainCamera;
+    private readonly IConfigurationManager configManager;
     private readonly GameWindow window;
     private readonly GraphicsConfiguration configuration;
     private readonly GraphicsDeviceManager graphicsManager;
-    private readonly SamplerState samplerState = SamplerState.PointClamp;
+    private readonly List<Camera2D> cameras;
     private readonly SpriteBatch sb;
 
     private bool dirty;
@@ -19,18 +21,20 @@ public class DisplayManager
     private float scaleFactorX = 0;
     private float scaleFactorY = 0;
     private Viewport viewport;
-    private RenderTarget2D? virtualScreen;
     private Rectangle screenBounds = Rectangle.Empty;
     private Matrix scaleMatrix = Matrix.Identity;
     private Rectangle virtualScreenBounds = Rectangle.Empty;
 
     public DisplayManager(GraphicsDeviceManager manager, SpriteBatch sb, IConfigurationManager configManager, GameWindow window)
     {
+        this.configManager = configManager;
         this.configuration = configManager.Config.Graphics;
         this.graphicsManager = manager;
+        this.cameras = new List<Camera2D>(32);
+        this.mainCamera = new Camera2D(this, true);
+        this.cameras.Add(this.mainCamera);
         this.sb = sb;
         this.window = window;
-        this.mainCamera = new Camera2D(this, true);
         this.ApplySettings();
     }
 
@@ -203,6 +207,8 @@ public class DisplayManager
         }
     }
 
+    public SpriteBatch SpriteBatch => this.sb;
+
     /// <summary>
     /// Sets the real screen Width/Height, which is applied to the preferred backbuffer.
     /// </summary>
@@ -216,20 +222,23 @@ public class DisplayManager
     }
 
     /// <summary>
-    /// Gets the current RenderTarget. If the render target resolution doesn't match our current<br/>
-    /// configuration, build a new one, set it, and return.
+    /// Adds a camera to the list of cameras. If the sort index is less than the last camera, the draw order list will be resorted.
     /// </summary>
-    /// <returns><see cref="RenderTarget2D"/></returns>
-    public RenderTarget2D GetVirtualScreen()
+    /// <param name="newCamera"></param>
+    public void AddCamera(Camera2D newCamera)
     {
-        if (this.virtualScreen == null
-            || this.virtualScreen.Width != this.VirtualResolutionX
-            || this.virtualScreen.Height != this.VirtualResolutionY)
-        {
-            this.RebuildRenderTarget();
-        }
+        // if (this.cameras.Count == 0)
+        // {
+        //     this.cameras.Add(newCamera);
+        //     return;
+        // }
 
-        return this.virtualScreen;
+        ushort lastCameraSortIndex = this.cameras[^1].CameraSortId;
+        this.cameras.Add(newCamera);
+        if (newCamera.CameraSortId < lastCameraSortIndex)
+        {
+            this.cameras.Sort((a, b) => a.CameraSortId.CompareTo(b.CameraSortId));
+        }
     }
 
     /// <summary>
@@ -270,9 +279,6 @@ public class DisplayManager
                 0,
                 this.ResolutionX,
                 this.ResolutionY);
-
-        // Recalculate scale matrix.
-        this.CalculateScaleMatrix();
     }
 
     private void ApplySettings()
@@ -298,43 +304,68 @@ public class DisplayManager
         this.dirty = true;
     }
 
+    /// <summary>
+    /// Creates a new render target. Uses the Virtual Resolution if parameters are not provided.
+    /// </summary>
+    /// <param name="vResX">Width of the virtual screen to use.</param>
+    /// <param name="vResY">Height of the virtual screen to use.</param>
+    /// <returns></returns>
+    public RenderTarget2D CreateRenderTarget(int vResX = -1, int vResY = -1)
+    {
+
+        if (vResX <= 0)
+        {
+            vResX = this.VirtualResolutionX;
+        }
+
+        if (vResY <= 0)
+        {
+            vResY = this.VirtualResolutionY;
+        }
+
+        return new RenderTarget2D(this.graphicsManager.GraphicsDevice, vResX, vResY);
+    }
+
+    /// <summary>
+    /// Clears the <see cref="GraphicsDevice"/> back buffer and removes the current render target.
+    /// </summary>
     public void ClearBackbuffer()
     {
         this.Clean();
-        this.graphicsManager.GraphicsDevice.SetRenderTarget(this.GetVirtualScreen());
-        this.graphicsManager.GraphicsDevice.Clear(Color.Black);
+        this.SetCurrentRenderTarget(null);
     }
 
-    public void BeginEntityDraw()
+    /// <summary>
+    /// Sets the <see cref="GraphicsDevice"/> to a new render target and clears the target.
+    /// </summary>
+    /// <param name="renderTarget"></param>
+    public void SetCurrentRenderTarget(RenderTarget2D? renderTarget, Color? clearColor = null)
     {
-        this.sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Camera2D.Main.GetCurrentTransformMatrix());
+        clearColor ??= Color.Black;
+        this.graphicsManager.GraphicsDevice.SetRenderTarget(renderTarget);
+        this.graphicsManager.GraphicsDevice.Clear(clearColor.Value);
     }
 
-    public void EndEntityDraw()
-    {
-        this.sb.End();
-    }
-
-    public void BeginUiDraw()
-    {
-        this.sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
-    }
-
-    public void EndUiDraw()
-    {
-        this.sb.End();
-    }
-
+    /// <summary>
+    /// Clears the buffer, loops through all cameras and draws their render targets to the screen.
+    /// </summary>
     public void Render()
     {
         this.graphicsManager.GraphicsDevice.SetRenderTarget(null);
-
         this.graphicsManager.GraphicsDevice.Clear(Color.CornflowerBlue);
+
         this.sb.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp); // Use PointClamp for crisp pixel art scaling
-        this.sb.Draw(this.GetVirtualScreen(), this.ScreenBounds, Color.White);
+        foreach (Camera2D camera in this.cameras)
+        {
+            camera.Render(this.sb);
+        }
         this.sb.End();
     }
 
+    /// <summary>
+    /// If a configuration setting was changed, or the window was resized, we clean those here,<br/>
+    /// then mark all cameras as dirty;
+    /// </summary>
     private void Clean()
     {
         if (!this.dirty)
@@ -360,13 +391,17 @@ public class DisplayManager
             }
 
             // Create Viewport at target aspect ratio, centered in screen.
-            this.viewport = new Viewport();
-            this.viewport.X = (int)((this.ResolutionX * 0.5f) - (width * 0.5f));
-            this.viewport.Y = (int)((this.ResolutionY * 0.5f) - (height * 0.5f));
-            this.viewport.Width = width;
-            this.viewport.Height = height;
-            this.viewport.MinDepth = 0;
-            this.viewport.MaxDepth = 1;
+            this.viewport = new Viewport
+            {
+                X = (int)((this.ResolutionX * 0.5f) - (width * 0.5f)),
+                Y = (int)((this.ResolutionY * 0.5f) - (height * 0.5f)),
+                Width = width,
+                Height = height,
+                MinDepth = 0,
+                MaxDepth = 1,
+            };
+
+            this.mainCamera.SetCameraViewport(this.viewport);
         }
 
         // find closest integer target
@@ -374,27 +409,9 @@ public class DisplayManager
         {
             this.VirtualResolutionX  = this.ResolutionX;
             this.VirtualResolutionY =  this.ResolutionY;
-            this.viewport = new Viewport()
-            {
-                X = 0,
-                Y = 0,
-                Width = this.ResolutionX,
-                Height = this.ResolutionY,
-                Bounds = this.screenBounds,
-                MaxDepth = 1,
-                MinDepth = 0,
-            };
-
-            this.RecalculateScreenBounds();
-            this.RebuildRenderTarget();
-            this.CalculateScaleMatrix();
-
-            this.dirty = false;
-            return;
         }
 
         this.RecalculateScreenBounds();
-        this.RebuildRenderTarget();
         this.CalculateScaleMatrix();
 
         this.dirty = false;
@@ -423,13 +440,5 @@ public class DisplayManager
 
         // Create the scale matrix using the calculated scaling factors
         this.scaleMatrix = Matrix.CreateScale(this.scaleFactorX, this.scaleFactorY, 1.0f);
-    }
-
-    private void RebuildRenderTarget()
-    {
-        this.virtualScreen?.Dispose();
-        this.virtualScreen = new RenderTarget2D(this.graphicsManager.GraphicsDevice, this.VirtualResolutionX, this.VirtualResolutionY);
-        this.viewport = new Viewport(0, 0, this.VirtualResolutionX, this.VirtualResolutionY);
-        this.mainCamera.SetCameraViewport(this.viewport);
     }
 }
