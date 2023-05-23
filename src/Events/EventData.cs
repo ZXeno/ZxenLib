@@ -20,7 +20,7 @@ public class EventData
     /// <summary>
     /// Gets or sets the target object Id.
     /// </summary>
-    public string TargetObjectId { get; set; }
+    public uint TargetObjectId { get; set; }
 
     /// <summary>
     /// Gets or sets the <see cref="EventArgs"/> of the event.

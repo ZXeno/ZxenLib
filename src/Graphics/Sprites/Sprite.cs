@@ -21,7 +21,7 @@ public class Sprite
     /// <param name="sourceRectangle">The source rectangle on the atlas for this sprite.</param>
     public Sprite(string parentAtlasId, string spriteId, Rectangle sourceRectangle)
     {
-        this.Id = Guid.NewGuid().ToString();
+        this.Id = Ids.GetNewId();
         this.Xoffset = 0;
         this.Yoffset = 0;
         //this.RotationOffset = -1.5708f;
@@ -42,7 +42,7 @@ public class Sprite
     /// <summary>
     /// Gets the unique identifier for this object.
     /// </summary>
-    public string Id { get; private set; }
+    public uint Id { get; private set; }
 
     /// <summary>
     /// Gets or sets the readable name for this sprite.

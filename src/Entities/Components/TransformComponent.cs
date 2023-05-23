@@ -1,5 +1,6 @@
 ﻿namespace ZxenLib.Entities.Components;
 
+using System;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 
@@ -8,11 +9,6 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class TransformComponent : EntityComponent
 {
-    /// <summary>
-    /// Defines the programmatic id of the <see cref="TransformComponent"/>.
-    /// </summary>
-    public const string TransformComponentProgrammaticId = nameof(TransformComponent);
-
     private Vector2 scale;
     private Vector2 position;
     private bool isDirty;
@@ -27,8 +23,7 @@ public class TransformComponent : EntityComponent
     {
         this.Scale = Vector2.One;
         this.Size = Vector2.One;
-        this.Angle = new Angle();
-        this.ProgrammaticId = TransformComponentProgrammaticId;
+        this.angle = new Angle();
         this.isDirty = true;
     }
 
@@ -40,9 +35,8 @@ public class TransformComponent : EntityComponent
     {
         this.Scale = Vector2.One;
         this.Size = Vector2.One;
-        this.Angle = new Angle();
+        this.angle = new Angle();
         this.Parent = parent;
-        this.ProgrammaticId = TransformComponentProgrammaticId;
         this.isDirty = true;
     }
 
@@ -197,5 +191,7 @@ public class TransformComponent : EntityComponent
             (int)(this.Position.Y - (this.Size.Y / 2 * this.Scale.Y)),
             (int)(this.Size.X * this.Scale.X),
             (int)(this.Size.Y * this.Scale.Y));
+
+        this.isDirty = false;
     }
 }

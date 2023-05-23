@@ -1,6 +1,5 @@
 ﻿namespace ZxenLib.Entities.Components;
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ZxenLib.Graphics;
@@ -10,11 +9,6 @@ using ZxenLib.Graphics;
 /// </summary>
 public class SpriteComponent : EntityComponent, IDrawableEntityComponent
 {
-    /// <summary>
-    /// Defines the programmatic id of the <see cref="SpriteComponent"/>.
-    /// </summary>
-    public const string SpriteComponentProgrammaticId = nameof(SpriteComponent);
-
     private readonly ISpriteManager spriteManager;
     private Atlas spriteAtlas;
     private Sprite sprite;
@@ -28,9 +22,8 @@ public class SpriteComponent : EntityComponent, IDrawableEntityComponent
     /// <param name="spriteId">Sprite ID for the sprite being assigned to this component.</param>
     public SpriteComponent(ISpriteManager spriteManager, string? atlasId = null, string? spriteId = null)
     {
-        this.Id = Guid.NewGuid().ToString();
+        this.Id = Ids.GetNewId();
         this.IsEnabled = true;
-        this.ProgrammaticId = SpriteComponentProgrammaticId;
         this.spriteManager = spriteManager;
 
         if (atlasId != null && spriteId != null)
@@ -49,9 +42,8 @@ public class SpriteComponent : EntityComponent, IDrawableEntityComponent
     /// <param name="parent">The parent <see cref="IEntity"/> for this component.</param>
     public SpriteComponent(ISpriteManager spriteManager, IEntity parent, string? atlasId = null, string? spriteId = null)
     {
-        this.Id = Guid.NewGuid().ToString();
+        this.Id = Ids.GetNewId();
         this.IsEnabled = true;
-        this.ProgrammaticId = SpriteComponentProgrammaticId;
         this.spriteManager = spriteManager;
         this.Parent = parent;
 

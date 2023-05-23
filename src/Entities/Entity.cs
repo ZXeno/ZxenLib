@@ -27,19 +27,21 @@ public class Entity : IEntity
     /// <summary>
     /// Initializes a new instance of the <see cref="Entity"/> class.
     /// </summary>
+    /// <param name="eventDispatcher">Implementation of <see cref="IEventDispatcher"/> used for creation/removal entity events.</param>
     public Entity(IEventDispatcher eventDispatcher)
     {
-        this.Id = Guid.NewGuid().ToString();
+        this.Id = Ids.GetNewId();
         this.eventDispatcher = eventDispatcher;
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Entity"/> class.
     /// </summary>
+    /// <param name="eventDispatcher">Implementation of <see cref="IEventDispatcher"/> used for creation/removal entity events.</param>
     /// <param name="componentCollection">The collection of components to initialize this <see cref="Entity"/> with.</param>
     public Entity(IEventDispatcher eventDispatcher, IEnumerable<IEntityComponent> componentCollection)
     {
-        this.Id = Guid.NewGuid().ToString();
+        this.Id = Ids.GetNewId();
         this.eventDispatcher = eventDispatcher;
 
         if (componentCollection == null)
@@ -55,7 +57,7 @@ public class Entity : IEntity
     }
 
     /// <inheritdoc />
-    public string Id { get; private set; }
+    public uint Id { get; private set; }
 
     /// <inheritdoc />
     public bool IsEnabled { get; set; }
@@ -88,13 +90,8 @@ public class Entity : IEntity
     }
 
     /// <inheritdoc />
-    public IEntityComponent? GetComponentById(string componentId)
+    public IEntityComponent? GetComponentById(uint componentId)
     {
-        if (string.IsNullOrWhiteSpace(componentId))
-        {
-            throw new ArgumentNullException(nameof(componentId));
-        }
-
         return this.componentList.FirstOrDefault(x => x.Id == componentId);
     }
 
@@ -118,13 +115,8 @@ public class Entity : IEntity
     }
 
     /// <inheritdoc />
-    public void UnregisterComponent(string componentId)
+    public void UnregisterComponent(uint componentId)
     {
-        if (string.IsNullOrWhiteSpace(componentId))
-        {
-            throw new ArgumentNullException(nameof(componentId));
-        }
-
         IEntityComponent? resolvedComponent = this.componentList.FirstOrDefault(x => x.Id == componentId);
         if (resolvedComponent != null)
         {

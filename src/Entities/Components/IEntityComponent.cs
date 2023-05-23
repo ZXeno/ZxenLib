@@ -8,12 +8,7 @@ public interface IEntityComponent
     /// <summary>
     /// Gets a value indicating the ID of this component.
     /// </summary>
-    string Id { get; }
-
-    /// <summary>
-    /// Gets a value indicating the programmatic id of this component.
-    /// </summary>
-    string ProgrammaticId { get; }
+    uint Id { get; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the EntityComponent is enabled.

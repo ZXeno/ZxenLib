@@ -26,20 +26,33 @@ public class EntityManager : IEntityManager
     private readonly List<IUpdatableEntityComponent> updatableComponents;
     private readonly List<IDrawableEntityComponent> drawableEntityComponents;
 
+    private SpriteBatch spriteBatch;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="EntityManager"/> class.
     /// </summary>
     public EntityManager(IEventDispatcher eventDispatcher)
     {
-        this.disabledEntitiesList = new List<IEntity>();
-        this.allEntities = new List<IEntity>();
-        this.toEnable = new List<IEntity>();
-        this.toDisable = new List<IEntity>();
-        this.toRemove = new List<IEntity>();
-        this.updatableComponents = new List<IUpdatableEntityComponent>();
-        this.drawableEntityComponents = new List<IDrawableEntityComponent>();
+        this.disabledEntitiesList = new();
+        this.allEntities = new();
+        this.toEnable = new();
+        this.toDisable = new();
+        this.toRemove = new();
+        this.updatableComponents = new();
+        this.drawableEntityComponents = new();
 
         this.eventDispatcher = eventDispatcher;
+    }
+
+    /// <summary>
+    /// Performs initialization for the EntityManager.
+    /// </summary>
+    /// <param name="spriteBatch"><see cref="SpriteBatch"/> for calling <see cref="IDrawableEntityComponent.Draw"/> on <see cref="IDrawableEntityComponent"/> components.</param>
+    public void Initialize(SpriteBatch spriteBatch)
+    {
+        ArgumentNullException.ThrowIfNull(spriteBatch);
+
+        this.spriteBatch = spriteBatch;
     }
 
     /// <summary>
@@ -60,15 +73,15 @@ public class EntityManager : IEntityManager
 
         this.allEntities.Add(newEntity);
 
-        this.updatableComponents.AddRange(newEntity.GetComponentsOfType<IUpdatableEntityComponent>());
-        this.drawableEntityComponents.AddRange(newEntity.GetComponentsOfType<IDrawableEntityComponent>());
+        this.updatableComponents.AddRange(newEntity.GetComponentsOfType<IUpdatableEntityComponent>() ?? Enumerable.Empty<IUpdatableEntityComponent>());
+        this.drawableEntityComponents.AddRange(newEntity.GetComponentsOfType<IDrawableEntityComponent>() ?? Enumerable.Empty<IDrawableEntityComponent>());
 
         if (!newEntity.IsInitialized)
         {
             newEntity.Initialize();
         }
 
-        this.eventDispatcher.Publish(new EventData()
+        this.eventDispatcher.Publish(new()
         {
             EventId = Entity.EntityCreatedProgrammaticId,
             Sender = this,
@@ -80,13 +93,8 @@ public class EntityManager : IEntityManager
     /// Removes an <see cref="IEntity"/> from the EntityManager.
     /// </summary>
     /// <param name="id">The target <see cref="IEntity"/> id.</param>
-    public void RemoveEntity(string id)
+    public void RemoveEntity(uint id)
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            throw new ArgumentNullException(nameof(id));
-        }
-
         IEntity? targetEntity = this.allEntities.SingleOrDefault(x => x.Id == id);
         if (targetEntity != null)
         {
@@ -118,7 +126,7 @@ public class EntityManager : IEntityManager
     /// </summary>
     /// <param name="id">The ID to search.</param>
     /// <returns><see cref="IEntity"/> with matching ID. Null if not found.</returns>
-    public IEntity? GetEntityById(string id)
+    public IEntity? GetEntityById(uint id)
     {
         return this.allEntities.SingleOrDefault(x => x.Id == id);
     }
@@ -150,7 +158,7 @@ public class EntityManager : IEntityManager
     public IEnumerable<IEntity> GetAllEntitiesWithComponentOfType<T>()
         where T : IEntityComponent
     {
-        List<IEntity> retval = new List<IEntity>();
+        List<IEntity> retval = new();
 
         foreach (IEntity entity in this.allEntities)
         {
@@ -280,7 +288,7 @@ public class EntityManager : IEntityManager
             {
                 if (this.toEnable.Contains(entityToDisable))
                 {
-                    throw new Exception("Cannot disable and enable entity in same frame. This should never happen.");
+                    throw new("Cannot disable and enable entity in same frame. This should never happen.");
                 }
 
                 entityToDisable.Disable();
@@ -293,9 +301,9 @@ public class EntityManager : IEntityManager
         // Destroy entities queued for removal
         if (this.toRemove.Count > 0)
         {
-            List<IEntity> removeListCache = new List<IEntity>(this.toDisable);
+            List<IEntity> removeListCache = new(this.toDisable);
 
-            foreach (Entity entityToRemove in removeListCache)
+            foreach (IEntity entityToRemove in removeListCache)
             {
                 this.RemoveEntity(entityToRemove);
                 this.toRemove.Remove(entityToRemove);
@@ -308,19 +316,19 @@ public class EntityManager : IEntityManager
     /// Called every frame draw. Processes all registered drawable entity components.
     /// </summary>
     /// <param name="sb">The <see cref="SpriteBatch"/> for the Draw method call.</param>
-    public void Draw(SpriteBatch sb)
+    public void Draw()
     {
         foreach (IDrawableEntityComponent drawableComponent in this.drawableEntityComponents)
         {
             if (drawableComponent.IsEnabled)
             {
-                drawableComponent.Draw(sb);
+                drawableComponent.Draw(this.spriteBatch);
             }
         }
     }
 
     /// <summary>
-    /// Rmeoves an <see cref="IEntity"/> from the EntityManager.
+    /// Removes an <see cref="IEntity"/> from the EntityManager.
     /// </summary>
     /// <param name="entity">The target <see cref="Entity"/>.</param>
     private void RemoveEntity(IEntity entity)
@@ -343,7 +351,7 @@ public class EntityManager : IEntityManager
         }
 
         IEnumerable<IUpdatableEntityComponent> entityUpdatableComponents =
-            entity.GetComponentsOfType<IUpdatableEntityComponent>();
+            entity.GetComponentsOfType<IUpdatableEntityComponent>() ?? Enumerable.Empty<IUpdatableEntityComponent>();
         if (entityUpdatableComponents != null && entityUpdatableComponents.Any())
         {
             foreach (IUpdatableEntityComponent updatableComponent in entityUpdatableComponents)
@@ -353,7 +361,7 @@ public class EntityManager : IEntityManager
         }
 
         IEnumerable<IDrawableEntityComponent> entityDrawableComponents =
-            entity.GetComponentsOfType<IDrawableEntityComponent>();
+            entity.GetComponentsOfType<IDrawableEntityComponent>() ?? Enumerable.Empty<IDrawableEntityComponent>();
         if (entityDrawableComponents != null && entityDrawableComponents.Any())
         {
             foreach (IDrawableEntityComponent drawableComponent in entityDrawableComponents)
@@ -364,7 +372,7 @@ public class EntityManager : IEntityManager
 
         entity.Destroy();
 
-        this.eventDispatcher.Publish(new EventData()
+        this.eventDispatcher.Publish(new()
         {
             EventId = Entity.EntityRemovedProgrammaticId,
             Sender = this,

@@ -12,11 +12,17 @@ using ZxenLib.Entities.Components;
 public interface IEntityManager
 {
     /// <summary>
+    /// Performs initialization for the EntityManager.
+    /// </summary>
+    /// <param name="spriteBatch"><see cref="SpriteBatch"/> for calling <see cref="IDrawableEntityComponent.Draw"/> on <see cref="IDrawableEntityComponent"/> components.</param>
+    void Initialize(SpriteBatch spriteBatch);
+
+    /// <summary>
     /// Gets an entity from the EntityManager by its ID.
     /// </summary>
     /// <param name="id">The ID to search.</param>
     /// <returns><see cref="IEntity"/> with matching ID. Null if not found.</returns>
-    IEntity? GetEntityById(string id);
+    IEntity? GetEntityById(uint id);
 
     /// <summary>
     /// Adds a new <see cref="Entity"/> to the EntityManager.
@@ -28,7 +34,7 @@ public interface IEntityManager
     /// Removes an <see cref="Entity"/> from the EntityManager.
     /// </summary>
     /// <param name="id">The target <see cref="IEntity"/> id.</param>
-    void RemoveEntity(string id);
+    void RemoveEntity(uint id);
 
     /// <summary>
     /// Removes all entities from the EntityManager;.
@@ -61,7 +67,7 @@ public interface IEntityManager
     /// Called every frame draw.
     /// </summary>
     /// <param name="sb">The <see cref="SpriteBatch"/> for the Draw method call.</param>
-    void Draw(SpriteBatch sb);
+    void Draw();
 
     /// <summary>
     /// Initiates all data saves for entities.

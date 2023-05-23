@@ -1,3 +1,5 @@
+#pragma warning disable CS8965
+// ReSharper disable NotResolvedInText
 namespace ZxenLib.Extensions;
 
 using System;

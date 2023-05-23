@@ -190,10 +190,12 @@ public class DisplayManager
     }
 
     /// <summary>
-    /// Flag indicating if the screen x-axis should be scaled with real resolution. (PxHOR+)
+    /// Flag indicating if the screen x-axis should be scaled with real resolution. (PxHOR+) NOT IMPLEMENTED YET!
     /// </summary>
     public bool ScaleX
     {
+        // TODO: Implement this feature
+
         get => this.configuration.ScaleX;
         set
         {
@@ -206,6 +208,11 @@ public class DisplayManager
             this.dirty = true;
         }
     }
+
+    /// <summary>
+    /// The current RenderTarget of the <see cref="GraphicsDevice"/>.
+    /// </summary>
+    public RenderTarget2D? CurrentRenderTarget { get; set; }
 
     public SpriteBatch SpriteBatch => this.sb;
 
@@ -329,10 +336,12 @@ public class DisplayManager
     /// <summary>
     /// Clears the <see cref="GraphicsDevice"/> back buffer and removes the current render target.
     /// </summary>
-    public void ClearBackbuffer()
+    public void ClearBackbuffer(Color? clearColor = null)
     {
         this.Clean();
         this.SetCurrentRenderTarget(null);
+        clearColor ??= Color.Black;
+        this.graphicsManager.GraphicsDevice.Clear(clearColor.Value);
     }
 
     /// <summary>
@@ -343,6 +352,7 @@ public class DisplayManager
     {
         clearColor ??= Color.Black;
         this.graphicsManager.GraphicsDevice.SetRenderTarget(renderTarget);
+        this.CurrentRenderTarget = renderTarget;
         this.graphicsManager.GraphicsDevice.Clear(clearColor.Value);
     }
 

@@ -13,7 +13,7 @@ public static class Ids
     /// <summary>
     /// Returns a new unsigned integer ID starting from 1000.
     /// </summary>
-    /// <returns></returns>
+    /// <returns><see cref="uint"/></returns>
     public static uint GetNewId()
     {
         return currIdVal++;
@@ -22,7 +22,7 @@ public static class Ids
     /// <summary>
     /// Returns a new <see cref="Guid"/> ID.
     /// </summary>
-    /// <returns></returns>
+    /// <returns><see cref="Guid"/></returns>
     public static Guid GetNewGuidId()
     {
         return Guid.NewGuid();
@@ -31,7 +31,7 @@ public static class Ids
     /// <summary>
     /// Creates a new string ID by generating a new <see cref="Guid"/> and returning the value as a string.
     /// </summary>
-    /// <returns></returns>
+    /// <returns><see cref="string"/></returns>
     public static string GetNewStringId()
     {
         return Guid.NewGuid().ToString();
@@ -40,7 +40,7 @@ public static class Ids
     /// <summary>
     /// Gets a new camera draw order index starting from 0.
     /// </summary>
-    /// <returns></returns>
+    /// <returns><see cref="ushort"/></returns>
     public static ushort GetNewCameraIndex()
     {
         return cameraIds++;

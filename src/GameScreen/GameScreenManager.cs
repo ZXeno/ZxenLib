@@ -32,7 +32,7 @@ public class GameScreenManager
     public GameScreenManager(IEventDispatcher eventDispatcher, DependencyContainer serviceContainer)
     {
         this.drawOrder = StartDrawOrder;
-        this.gameStates = new Stack<GameScreen>();
+        this.gameStates = new();
         this.eventDispatcher = eventDispatcher;
         this.ServiceContainer = serviceContainer;
     }
@@ -50,6 +50,11 @@ public class GameScreenManager
     /// </summary>
     public virtual void Initialize()
     {
+    }
+
+    public void RegisterScreenType<T>() where T : GameScreen
+    {
+        this.ServiceContainer.Register<T>();
     }
 
     /// <summary>
@@ -101,7 +106,7 @@ public class GameScreenManager
     /// Performs draw call batching for currently active state. Called every frame.
     /// </summary>
     /// <param name="sb">The <see cref="SpriteBatch"/> used for batching draw calls.</param>
-    public void DrawStates(SpriteBatch spriteBatch)
+    public void DrawStates()
     {
         List<GameScreen> drawOrderedList = this.gameStates.OrderBy(x => x.DrawOrder).ToList();
 
@@ -109,17 +114,22 @@ public class GameScreenManager
         {
             if (state.IsInitialized && state.IsEnabled && state.Visible)
             {
-                state.Draw(spriteBatch);
+                state.Draw();
             }
         }
     }
 
     /// <summary>
-    /// Changes the game state the provided new state.
+    /// Changes the game state to the provided new state.
     /// </summary>
     /// <param name="newState"><see cref="GameScreen"/> being added to the manager.</param>
-    public void ChangeState(GameScreen newState)
+    public void ChangeState(GameScreen newState, bool registerWithContainer = false)
     {
+        if (registerWithContainer && newState != null)
+        {
+            this.ServiceContainer.Register(newState);
+        }
+
         while (this.gameStates.Count > 0)
         {
             this.RemoveState();
@@ -128,6 +138,12 @@ public class GameScreenManager
         newState.DrawOrder = StartDrawOrder;
         this.drawOrder = StartDrawOrder;
         this.AddState(newState);
+    }
+
+    public void ChangeState<T>() where T : GameScreen
+    {
+        GameScreen resolvedGameScreen = this.ServiceContainer.Resolve<T>();
+        this.ChangeState(resolvedGameScreen);
     }
 
     /// <summary>

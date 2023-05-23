@@ -29,7 +29,7 @@ public class ParticleEmitter : IUpdatableEntityComponent
         this.spriteIds = spriteIdList.ToArray();
         this.atlasId = atlasId;
         this.particles = new();
-        this.Id = Guid.NewGuid().ToString();
+        this.Id = Ids.GetNewId();
         this.random = random;
         this.ApplyGravity = false;
         this.GravityAcceleration = 3400.0f;
@@ -46,9 +46,7 @@ public class ParticleEmitter : IUpdatableEntityComponent
         this.ParticleTimeToLive = 1f;
     }
 
-    public string Id { get; }
-
-    public string ProgrammaticId => nameof(ParticleEmitter);
+    public uint Id { get; }
 
     public bool IsEnabled { get; set; }
 

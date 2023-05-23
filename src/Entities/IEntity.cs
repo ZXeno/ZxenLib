@@ -11,7 +11,7 @@ public interface IEntity
     /// <summary>
     /// Gets a value indicating the ID of this Entity.
     /// </summary>
-    string Id { get; }
+    uint Id { get; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this Entity is enabled.
@@ -43,7 +43,7 @@ public interface IEntity
     /// Unregisters a component from this entity.
     /// </summary>
     /// <param name="componentId">The ID of the component to unregister.</param>
-    void UnregisterComponent(string componentId);
+    void UnregisterComponent(uint componentId);
 
     /// <summary>
     /// Gets a component by its type.
@@ -66,7 +66,7 @@ public interface IEntity
     /// </summary>
     /// <param name="componentId">The ID of the component to search for.</param>
     /// <returns><see cref="IEntityComponent"/>.</returns>
-    IEntityComponent? GetComponentById(string componentId);
+    IEntityComponent? GetComponentById(uint componentId);
 
     /// <summary>
     /// Enables the entity and all of its children and child components.

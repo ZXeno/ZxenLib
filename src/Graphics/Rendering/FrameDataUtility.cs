@@ -36,10 +36,8 @@ public class FrameDataUtility
         this.spriteBatch = spriteBatch;
     }
 
-    public void Update(GameTime gameTime)
+    public void Update(float deltaTime)
     {
-        double deltaTime = gameTime.ElapsedGameTime.TotalSeconds;
-
         this.frameTime = deltaTime;
         this.accumulatedFrameTimes += deltaTime;
         this.frameTimes.Enqueue(deltaTime);

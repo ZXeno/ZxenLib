@@ -10,12 +10,7 @@ public abstract class EntityComponent : IEntityComponent
     /// <summary>
     /// Gets or sets gets a value indicating the ID of this component.
     /// </summary>
-    public string Id { get; protected set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating the programmatic id of this component.
-    /// </summary>
-    public string ProgrammaticId { get; protected set; }
+    public uint Id { get; protected set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the EntityComponent is enabled.

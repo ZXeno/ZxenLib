@@ -74,6 +74,7 @@ public class Camera2D
         this.Position = position;
         this.myViewport = viewport;
         this.CameraSortId = Ids.GetNewCameraIndex();
+        this.Id = Ids.GetNewId();
 
         if (isMain)
         {
@@ -87,6 +88,8 @@ public class Camera2D
     /// Gets the main camera instance for all cameras.
     /// </summary>
     public static Camera2D Main { get; private set; }
+
+    public uint Id { get; }
 
     /// <summary>
     /// Determines in what order this camera will have its Render function called by the DisplayManager.
@@ -117,44 +120,68 @@ public class Camera2D
     /// </summary>
     public Vector2 Position { get; set; }
 
+    /// <summary>
+    /// Gets or sets the <see cref="Microsoft.Xna.Framework.Graphics.SpriteSortMode"/> for this camera's draw call.
+    /// </summary>
     public SpriteSortMode SpriteSortMode
     {
         get => this.spriteSortMode;
         set => this.spriteSortMode = value;
     }
 
+    /// <summary>
+    /// Gets or sets the <see cref="Microsoft.Xna.Framework.Graphics.BlendState"/> for this camera's draw call.
+    /// </summary>
     public BlendState BlendState
     {
         get => this.blendState;
         set => this.blendState = value;
     }
 
+    /// <summary>
+    /// Gets or sets the <see cref="Microsoft.Xna.Framework.Graphics.SamplerState"/> for this camera's draw call.
+    /// </summary>
     public SamplerState SamplerState
     {
         get => this.samplerState;
         set => this.samplerState = value;
     }
 
+    /// <summary>
+    /// Gets or sets the <see cref="Microsoft.Xna.Framework.Graphics.DepthStencilState"/> for this camera's draw call. Default value is null.
+    /// </summary>
     public DepthStencilState? DepthStencilState
     {
         get => this.depthStencilState;
         set => this.depthStencilState = value;
     }
 
+    /// <summary>
+    /// Gets or sets the <see cref="Microsoft.Xna.Framework.Graphics.RasterizerState"/> for this camera's draw call. Default value is null.
+    /// </summary>
     public RasterizerState? RasterizerState
     {
         get => this.rasterizerState;
         set => this.rasterizerState = value;
     }
 
+    /// <summary>
+    /// Gets or sets the <see cref="Microsoft.Xna.Framework.Graphics.Effect"/> for this camera's draw call. Default value is null.
+    /// </summary>
     public Effect? Effect
     {
         get => this.effect;
         set => this.effect = value;
     }
 
+    /// <summary>
+    /// When the <see cref="GraphicsDevice"/> backbuffer is cleared, this is the color written. The default is <see cref="Color.Black"/>.
+    /// </summary>
     public Color ClearBackbufferColor { get; set; } = Color.Black;
 
+    /// <summary>
+    /// Flag indicating if the camera should use the Transform Matrix during the draw call. Default is true. Set false for not
+    /// </summary>
     public bool UseTransformMatrix { get; set; } = true;
 
     /// <summary>
@@ -218,34 +245,51 @@ public class Camera2D
         return Vector2.Transform(position, inverseViewMatrix);
     }
 
+    /// <summary>
+    /// Calls the <see cref="DisplayManager"/>'s <see cref="DisplayManager.ClearBackbuffer"/> method, preparing for a new frame.
+    /// </summary>
     public void ClearBuffer()
     {
         this.displayManager.ClearBackbuffer();
     }
 
+    /// <summary>
+    /// Sets the render target to this camera's render target, then calls <see cref="SpriteBatch.Begin"/>.
+    /// </summary>
     public void BeginDraw()
     {
         this.displayManager.SetCurrentRenderTarget(this.GetRenderTarget(), this.ClearBackbufferColor);
         this.SpriteBatch.Begin(
-            this.spriteSortMode,
-            this.blendState,
-            this.samplerState,
-            this.depthStencilState,
-            this.rasterizerState,
-            this.effect,
+            this.SpriteSortMode,
+            this.BlendState,
+            this.SamplerState,
+            this.DepthStencilState,
+            this.RasterizerState,
+            this.Effect,
             this.UseTransformMatrix ? this.GetCurrentTransformMatrix() : Matrix.Identity);
     }
 
+    /// <summary>
+    /// Calls <see cref="SpriteBatch.End"/>.
+    /// </summary>
     public void EndDraw()
     {
         this.SpriteBatch.End();
     }
 
+    /// <summary>
+    /// Draws this camera's <see cref="RenderTarget2D"/> to the provided <see cref="SpriteBatch"/>.
+    /// </summary>
+    /// <param name="renderBatch">The draw target for this camera's <see cref="RenderTarget2D"/>.</param>
     public void Render(SpriteBatch renderBatch)
     {
         renderBatch.Draw(this.myRenderTarget, this.displayManager.ScreenBounds, Color.White);
     }
 
+    /// <summary>
+    /// Either gets this camera's existing <see cref="RenderTarget2D"/>, or creates a new one.
+    /// </summary>
+    /// <returns></returns>
     private RenderTarget2D GetRenderTarget()
     {
         if (this.myRenderTarget == null
@@ -263,6 +307,9 @@ public class Camera2D
         return this.myRenderTarget;
     }
 
+    /// <summary>
+    /// Calls dispose on this camera's disposable assets.
+    /// </summary>
     public void Dispose()
     {
         this.myRenderTarget?.Dispose();

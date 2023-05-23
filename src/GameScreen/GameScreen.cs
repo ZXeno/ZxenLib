@@ -18,7 +18,7 @@ public abstract class GameScreen
     /// </summary>
     public GameScreen(GameScreenManager gameScreenManager, IEventDispatcher eventDispatcher)
     {
-        this.Id = Guid.NewGuid().ToString();
+        this.Id = Ids.GetNewId();
         this.eventDispatcher = eventDispatcher;
         this.StateManager = gameScreenManager;
         this.childStates = new List<GameScreen>();
@@ -29,7 +29,7 @@ public abstract class GameScreen
     /// <summary>
     /// Gets or sets the Id of this object.
     /// </summary>
-    public string Id { get; protected set; }
+    public uint Id { get; protected set; }
 
     /// <summary>
     /// Gets this <see cref="GameScreen"/>'s child states.
@@ -100,14 +100,13 @@ public abstract class GameScreen
     /// <summary>
     /// Performs draw call batching for this <see cref="GameScreen"/>. Called every frame.
     /// </summary>
-    /// <param name="sb">The <see cref="SpriteBatch"/> used for batching draw calls.</param>
-    public virtual void Draw(SpriteBatch sb)
+    public virtual void Draw()
     {
         foreach (GameScreen childState in this.childStates)
         {
             if (childState.Visible)
             {
-                childState.Draw(sb);
+                childState.Draw();
             }
         }
     }
