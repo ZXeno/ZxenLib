@@ -6,19 +6,16 @@ public static class RandomExtensions
 {
     /// <summary>
     /// Gets a float value within a random range. Not precise, not fast. Use sparingly.<br/>
-    /// <para>This works by taking the float numbers, multiplying them by the precision parameter,
-    /// then calling Random.Next(min, max), and return the result divided by precision.</para>
+    /// <para>generating a random double between 0.0 and 1.0, scaling it to the desired range
+    /// by multiplying it with the difference between the maximum and minimum values (`maxValue - minValue`),
+    /// and then shifting the range to start at the minimum value (+ minValue).</para>
     /// </summary>
     /// <param name="random">The instance of <see cref="Random"/>.</param>
     /// <param name="min">The inclusive minimum boundary of the range.</param>
     /// <param name="max">The inclusive upper boundary of the range.</param>
-    /// <param name="precision">Divisor.</param>
     /// <returns></returns>
-    public static float RangeSingle(this Random random, float min, float max, float precision = 1000f)
+    public static float RangeSingle(this Random random, float min, float max)
     {
-        int lowerBound = (int)(min * precision);
-        int upperBound = (int)(max * precision + 1);
-        int retVal = random.Next(lowerBound, upperBound);
-        return retVal / precision;
+        return (float)(random.NextDouble() * (min - max) + min);
     }
 }

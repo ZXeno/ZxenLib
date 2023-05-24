@@ -31,10 +31,10 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// A collection of primitives functions for Monogame.
 /// </summary>
-public static class Primitives
+public static class RenderPrimitives
 {
     private static readonly Dictionary<string, List<Vector2>> CircleCache = new Dictionary<string, List<Vector2>>();
-    private static Texture2D pixel;
+    private static Texture2D? pixel;
 
     /// <summary>
     /// Draws a filled rectangle.
@@ -268,13 +268,14 @@ public static class Primitives
     /// <summary>
     /// Draws a line from point1 to point2 with an offset.
     /// </summary>
-    /// <param name="spriteBatch">The destination drawing surface.</param>
+    /// <param name="spriteBatch">The destination drawing batch.</param>
     /// <param name="point">The starting point.</param>
     /// <param name="length">The length of the line.</param>
     /// <param name="angle">The angle of this line from the starting point.</param>
     /// <param name="color">The color to use.</param>
     /// <param name="thickness">The thickness of the line.</param>
-    public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point, float length, float angle, Color color, float thickness)
+    /// <param name="depth">The depth at which the line should be drawn.</param>
+    public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point, float length, float angle, Color color, float thickness, float depth = 0)
     {
         if (pixel == null)
         {
@@ -291,7 +292,7 @@ public static class Primitives
             Vector2.Zero,
             new Vector2(length, thickness),
             SpriteEffects.None,
-            0);
+            depth);
     }
 
     /// <summary>
@@ -448,9 +449,9 @@ public static class Primitives
     {
         // Look for a cached version of this circle
         string circleKey = radius + "x" + sides;
-        if (CircleCache.ContainsKey(circleKey))
+        if (CircleCache.TryGetValue(circleKey, out List<Vector2>? circle))
         {
-            return CircleCache[circleKey];
+            return circle;
         }
 
         List<Vector2> vectors = new List<Vector2>();

@@ -5,6 +5,12 @@ using Microsoft.Xna.Framework;
 
 public static class RectangleExtensions
 {
+    /// <summary>
+    /// Determines intersection depth of two <see cref="Rectangle"/>.
+    /// </summary>
+    /// <param name="rectA">The first rect.</param>
+    /// <param name="rectB">The second rect.</param>
+    /// <returns>Returns a <see cref="Vector2"/> indicating depth and direction.</returns>
     public static Vector2 GetIntersectionDepth(this Rectangle rectA, Rectangle rectB)
     {
         // Calculate half sizes.
@@ -71,5 +77,21 @@ public static class RectangleExtensions
     public static Vector2 GetTopCenter(this Rectangle rect)
     {
         return new Vector2(rect.X + rect.Width / 2.0f, rect.Top);
+    }
+
+    /// <summary>
+    /// Gets the vertices of a rectangle as an array.
+    /// </summary>
+    /// <param name="rect">The rect to get vertices from.</param>
+    /// <returns><see cref="Vector2[]"/> of the rectangle vertices.</returns>
+    public static Span<Vector2> GetVertices(this Rectangle rect)
+    {
+        return new Span<Vector2>(new[]
+        {
+            new Vector2(rect.X, rect.Y),
+            new Vector2(rect.X + rect.Width, rect.Y),
+            new Vector2(rect.X + rect.Width, rect.Y + rect.Height),
+            new Vector2(rect.X, rect.Y + rect.Height),
+        });
     }
 }

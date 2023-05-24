@@ -1,6 +1,7 @@
 ﻿namespace ZxenLib.Physics;
 
 using System;
+using Extensions;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -11,7 +12,7 @@ public static class PhysicsHelper
     /// <summary>
     /// Gets the normal for a given vector.
     /// </summary>
-    /// <param name="vector">The vector to normalize.</param>
+    /// <param name="vector">The vector.</param>
     /// <returns><see cref="Vector2"/> normal.</returns>
     public static Vector2 Normal(Vector2 vector)
     {
@@ -19,28 +20,28 @@ public static class PhysicsHelper
     }
 
     /// <summary>
-    /// Gets the normals of a provided array of verticies.
+    /// Gets the normals of a provided array of vertices.
     /// </summary>
-    /// <param name="verticies">The verticies with which to derive an array of normals.</param>
-    /// <returns><see cref="Vector2[]"/> containing a set of normals for the provided verticies.</returns>
-    public static Vector2[] GetEdgeNormals(Vector2[] verticies)
+    /// <param name="vertices">The vertices with which to derive an array of normals.</param>
+    /// <returns><see cref="Vector2"/> array containing a set of normals for the provided vertices.</returns>
+    public static Span<Vector2> GetEdgeNormals(Span<Vector2> vertices)
     {
-        if (verticies == null || verticies.Length == 0)
+        if (vertices == null || vertices.Length == 0)
         {
-            throw new ArgumentException($"{nameof(verticies)} value is null or 0");
+            throw new ArgumentException($"{nameof(vertices)} value is null or 0");
         }
 
-        Vector2[] normals = new Vector2[verticies.Length];
-        for (int x = 0; x < verticies.Length; x++)
+        Span<Vector2> normals = new Span<Vector2>(new Vector2[vertices.Length]);
+        for (int x = 0; x < vertices.Length; x++)
         {
             int v2index = x + 1;
-            if (v2index >= verticies.Length)
+            if (v2index >= vertices.Length)
             {
                 v2index = 0;
             }
 
-            Vector2 v1 = verticies[x];
-            Vector2 v2 = verticies[v2index];
+            Vector2 v1 = vertices[x];
+            Vector2 v2 = vertices[v2index];
 
             Vector2 edgeVector = v1 - v2;
             Vector2 edgeNormal = PhysicsHelper.Normal(edgeVector);
@@ -60,13 +61,13 @@ public static class PhysicsHelper
     /// <returns>Minimum Penetration Axis as nullable <see cref="Vector2"/>.</returns>
     public static Vector2? SatCollisionDetect(Rectangle rect1, Rectangle rect2)
     {
-        Vector2[] rect1Verts = rect1.GetVerticies();
-        Vector2[] rect2Verts = rect2.GetVerticies();
-        Vector2[] rect1Normals = PhysicsHelper.GetEdgeNormals(rect1Verts);
-        Vector2[] rect2Normals = PhysicsHelper.GetEdgeNormals(rect2Verts);
-        Vector2[] allNormals = new Vector2[rect1Normals.Length + rect2Normals.Length]; // new List<Vector2>(rect1Normals.Count + rect2Normals.Count);
-        rect1Normals.CopyTo(allNormals, 0);
-        rect2Normals.CopyTo(allNormals, rect1Normals.Length);
+        Span<Vector2> rect1Verts = rect1.GetVertices();
+        Span<Vector2> rect2Verts = rect2.GetVertices();
+        Span<Vector2> rect1Normals = PhysicsHelper.GetEdgeNormals(rect1Verts);
+        Span<Vector2> rect2Normals = PhysicsHelper.GetEdgeNormals(rect2Verts);
+        Vector2[] allNormals = new Vector2[rect1Normals.Length + rect2Normals.Length];
+        rect1Normals.CopyTo(allNormals);
+        rect2Normals.CopyTo(allNormals.AsSpan(rect1Normals.Length));
         float overlap = float.MaxValue;
         Vector2 minPenetrationAxis = Vector2.Zero;
 
@@ -75,18 +76,18 @@ public static class PhysicsHelper
             Vector2 axis = rect1Normals[x];
 
             // Project onto current axis
-            Tuple<float, float> rect1Projection = PhysicsHelper.ProjectOntoAxis(rect1Verts, axis);
-            Tuple<float, float> rect2Projection = PhysicsHelper.ProjectOntoAxis(rect2Verts, axis);
+            Span<float> rect1Projection = PhysicsHelper.ProjectOntoAxis(rect1Verts, axis);
+            Span<float> rect2Projection = PhysicsHelper.ProjectOntoAxis(rect2Verts, axis);
 
             // check for no overlap
-            if (rect1Projection.Item1 > rect2Projection.Item2
-                || rect2Projection.Item1 > rect1Projection.Item2)
+            if (rect1Projection[0] > rect2Projection[1]
+                || rect2Projection[0] > rect1Projection[1])
             {
                 return null;
             }
 
             // otherwise, get overlap
-            float o = Math.Min(rect1Projection.Item2, rect2Projection.Item2) - Math.Max(rect1Projection.Item1, rect2Projection.Item1);
+            float o = Math.Min(rect1Projection[1], rect2Projection[1]) - Math.Max(rect1Projection[0], rect2Projection[0]);
             if (o < overlap)
             {
                 overlap = o;
@@ -99,12 +100,12 @@ public static class PhysicsHelper
     }
 
     /// <summary>
-    /// Projects an array of vertexes onto an axis.
+    /// Projects an array of vertices onto an axis.
     /// </summary>
     /// <param name="verts">The vertexes to project.</param>
     /// <param name="axis">The axis to project them on.</param>
-    /// <returns>A <see cref="Tuple{float, float}"/> where Item1 is is the minimum projecttion, and Item2 is the maximum projection.</returns>
-    private static Tuple<float, float> ProjectOntoAxis(Vector2[] verts, Vector2 axis)
+    /// <returns>A <see cref="Span{float}"/> where index 0 is is the minimum projection, and index 1 is the maximum projection.</returns>
+    public static Span<float> ProjectOntoAxis(Span<Vector2> verts, Vector2 axis)
     {
         float min = Vector2.Dot(axis, verts[0]);
         float max = min;
@@ -122,6 +123,6 @@ public static class PhysicsHelper
             }
         }
 
-        return new Tuple<float, float>(min, max);
+        return new float[] { min, max };
     }
 }

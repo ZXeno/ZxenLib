@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZxenLib", "ZxenLib.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZXenLibTests", "..\ZXenLibTests\ZXenLibTests.csproj", "{EE5B25CD-0A3C-406C-9559-02BA03B26C5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZxenLibBenchy", "..\ZxenLibBenchy\ZxenLibBenchy.csproj", "{1525C4E6-B19B-4982-9D01-9F5C57AE6833}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{EE5B25CD-0A3C-406C-9559-02BA03B26C5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE5B25CD-0A3C-406C-9559-02BA03B26C5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE5B25CD-0A3C-406C-9559-02BA03B26C5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1525C4E6-B19B-4982-9D01-9F5C57AE6833}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1525C4E6-B19B-4982-9D01-9F5C57AE6833}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1525C4E6-B19B-4982-9D01-9F5C57AE6833}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1525C4E6-B19B-4982-9D01-9F5C57AE6833}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

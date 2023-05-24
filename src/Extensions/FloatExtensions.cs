@@ -1,16 +1,30 @@
 namespace ZxenLib.Extensions;
 
+using System;
+
 public static class FloatExtensions
 {
+    public const float DefaultEpsilon = .000001f;
+
     /// <summary>
-    /// Determines if a float value is within a given threshold between the negative and positive value of the limit.
-    /// Useful for determining if a tiny float value is within a margin of error without rewriting the check.
+    /// Checks if the absolute value of the given float x is less than or equal to the absolute value of a provided threshold
     /// </summary>
-    /// <param name="val"></param>
-    /// <param name="threshHold"></param>
-    /// <returns></returns>
-    public static bool WithinThreshold(this float val, float threshHold)
+    /// <param name="x">The value being checked.</param>
+    /// <param name="epsilon">The margin of error. Default value is <see cref="DefaultEpsilon"/>.</param>
+    /// <returns>True if the absolute value of `x` is within the absolute value of `epsilon`.</returns>
+    public static bool WithinThreshold(this float x, float epsilon = DefaultEpsilon)
     {
-        return val <= threshHold && val >= -threshHold;
+        return Math.Abs(x) <= Math.Abs(epsilon);
+    }
+
+    /// <summary>
+    /// Compares two float values, x and y, for equality within a given relative tolerance.
+    /// <param name="x">The first value being checked.</param>
+    /// <param name="y">The second value being compared.</param>
+    /// <param name="epsilon">The margin of error. Default value is <see cref="DefaultEpsilon"/>.</param>
+    /// <returns>"Good enough" if the absolute value of `x - y` is within the scale of `epsilon` tolerance based on the values.</returns>
+    public static bool Compare(this float x, float y, float epsilon = DefaultEpsilon)
+    {
+        return Math.Abs(x - y) <= Math.Abs(epsilon);
     }
 }
