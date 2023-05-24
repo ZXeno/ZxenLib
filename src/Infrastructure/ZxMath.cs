@@ -26,7 +26,7 @@ public static class ZxMath
     /// <returns>"Good enough" if the absolute value of `x - y` is within the scale of `epsilon` tolerance based on the values.</returns>
     public static bool Compare(float x, float y, float epsilon = float.MinValue)
     {
-        return Math.Abs(x - y) <= epsilon * Math.Max(1.0f, Math.Max(Math.Abs(x), Math.Abs(y)));
+        return Math.Abs(x - y) <= Math.Abs(epsilon);
     }
 
     /// <summary>

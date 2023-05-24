@@ -5,10 +5,9 @@ using System;
 public static class RandomExtensions
 {
     /// <summary>
-    /// Gets a float value within a random range. Not precise, not fast. Use sparingly.<br/>
-    /// <para>generating a random double between 0.0 and 1.0, scaling it to the desired range
-    /// by multiplying it with the difference between the maximum and minimum values (`maxValue - minValue`),
-    /// and then shifting the range to start at the minimum value (+ minValue).</para>
+    /// Gets a random float in a given range.<br/><para>First, gets an integer value
+    /// between the min and max value. Then gets a random double (between 0.0 and 1.0)
+    /// and adds these two numbers together when returning.</para>
     /// </summary>
     /// <param name="random">The instance of <see cref="Random"/>.</param>
     /// <param name="min">The inclusive minimum boundary of the range.</param>
@@ -16,6 +15,19 @@ public static class RandomExtensions
     /// <returns></returns>
     public static float RangeSingle(this Random random, float min, float max)
     {
-        return (float)(random.NextDouble() * (min - max) + min);
+        if (min == max)
+        {
+            return min;
+        }
+
+        if (min > max)
+        {
+            throw new ArgumentException($"{nameof(min)} cannot be greater than {nameof(max)}");
+        }
+
+        int wholeNumber = random.Next((int)min, (int)max);
+        float irrationalNumber = random.NextSingle();
+        irrationalNumber = wholeNumber < 0 ? -irrationalNumber : irrationalNumber;
+        return wholeNumber + irrationalNumber;
     }
 }

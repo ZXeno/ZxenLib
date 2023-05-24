@@ -7,6 +7,8 @@ using Primitives;
 
 public class IntersectionDetector2D
 {
+    private const float Epsilon = .000001f;
+
     public static bool PointOnLine(Vector2 point, Line2D line)
     {
         float dy = line.End.Y - line.Start.Y;
@@ -14,7 +16,7 @@ public class IntersectionDetector2D
 
         if (dx == 0f)
         {
-            return ZxMath.Compare(point.X, line.Start.X);
+            return ZxMath.Compare(point.X, line.Start.X, Epsilon);
         }
 
         float m = dy / dx;
