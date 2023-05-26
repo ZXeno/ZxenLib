@@ -8,9 +8,9 @@ using ZxenLib.Physics.Primitives;
 public class CircleTests
 {
     [DataTestMethod]
-    [DataRow(0, 0, 1)]
-    [DataRow(3, 4, 5)]
-    public void Constructor_SetsValuesCorrectly(double x, double y, double radius)
+    [DataRow(0f, 0f, 1f)]
+    [DataRow(3f, 4f, 5f)]
+    public void Constructor_SetsValuesCorrectly(float x, float y, float radius)
     {
         Circle circle = new Circle(x, y, radius);
 

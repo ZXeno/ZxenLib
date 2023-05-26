@@ -69,4 +69,28 @@ public static class Vector2Extensions
     {
         return new(vector.X, vector.Y);
     }
+
+    /// <summary>
+    /// Copies the values from another vector onto this vector.
+    /// </summary>
+    /// <param name="vector">The target vector.</param>
+    /// <param name="source">The source vector.</param>
+    /// <returns></returns>
+    public static void CopyFrom(this Vector2 vector, Vector2 source)
+    {
+        vector.X = source.X;
+        vector.Y = source.Y;
+    }
+
+    /// <summary>
+    /// Copies the values from this vector onto a target vector.
+    /// </summary>
+    /// <param name="source">The target vector.</param>
+    /// <param name="target">The source vector.</param>
+    /// <returns></returns>
+    public static void CopyTo(this Vector2 source, Vector2 target)
+    {
+        target.X = source.X;
+        target.Y = source.Y;
+    }
 }

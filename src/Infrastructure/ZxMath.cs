@@ -7,22 +7,10 @@ public static class ZxMath
 {
     /// <summary>
     /// Compares two float values, x and y, for equality within a given relative tolerance.
-    /// The relative tolerance is calculated as epsilon times the maximum of 1, the absolute
-    /// value of x, and the absolute value of y.
-    /// <para>Here's how it works:
-    /// <ul>
-    ///     <li>It calculates the absolute difference between x and y.</li>
-    ///     <li>It calculates a scaled epsilon that's based on the magnitude
-    ///         of the larger value between `x` and `y`. If both `x` and `y` are less
-    ///         than 1, it uses `epsilon` as it is. This is done to account for
-    ///         the scale of the values being compared.</li>
-    ///     <li>It checks if the absolute difference from step 1 is less than
-    ///         or equal to the scaled epsilon from step 2.</li>
-    /// </ul></para>
     /// </summary>
     /// <param name="x">The first value being checked.</param>
     /// <param name="y">The second value being compared.</param>
-    /// <param name="epsilon">The margin of error. Default value is <see cref="float.MinValue"/>.</param>
+    /// <param name="epsilon">The margin of error. Default value is <see cref="DefaultEpsilon"/>.</param>
     /// <returns>"Good enough" if the absolute value of `x - y` is within the scale of `epsilon` tolerance based on the values.</returns>
     public static bool Compare(float x, float y, float epsilon = float.MinValue)
     {
@@ -43,7 +31,7 @@ public static class ZxMath
     }
 
     /// <summary>
-    /// Impure method that rotates a pair of floating point coordinates around an origin pair of floating point coordinates by the provided degrees.
+    /// Rotates a pair of floating point coordinates around an origin pair of floating point coordinates by the provided degrees.
     /// </summary>
     /// <param name="pX">X coordinate of point.</param>
     /// <param name="pY">Y coordinate of point.</param>

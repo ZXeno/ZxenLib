@@ -54,7 +54,7 @@ public class Box2DTests
             Size = new(sizeX, sizeY),
         };
 
-        Vector2 result = box.GetMin();
+        Vector2 result = box.GetLocalMin();
 
         Assert.AreEqual(new(boxX - sizeX / 2f, boxY - sizeY / 2f), result);
     }
@@ -70,7 +70,7 @@ public class Box2DTests
             Size = new Vector2(sizeX, sizeY),
         };
 
-        Vector2 result = box.GetMax();
+        Vector2 result = box.GetLocalMax();
 
         Assert.AreEqual(new Vector2(boxX + sizeX / 2f, boxY + sizeY / 2f), result);
     }

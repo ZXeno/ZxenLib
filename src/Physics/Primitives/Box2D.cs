@@ -2,9 +2,10 @@ namespace ZxenLib.Physics.Primitives;
 
 using System;
 using Extensions;
+using Interfaces;
 using Microsoft.Xna.Framework;
 
-public class Box2D
+public class Box2D : IVertexes2D, IContains2D
 {
     private Vector2 center;
     private Vector2 halfSize;
@@ -20,8 +21,8 @@ public class Box2D
 
     public Box2D(Vector2 min, Vector2 max)
     {
-        this.Size = max.Clone() - min;
-        this.Position = (max.Clone() + min) / 2f;
+        this.Size = max - min;
+        this.Position = (max + min) / 2f;
     }
 
     public Box2D(Vector2 size, Vector2 position, float rotation)
@@ -38,6 +39,10 @@ public class Box2D
         get => this.size;
         set
         {
+            if (value.X < 0 || value.Y < 0)
+            {
+                throw new ArgumentException("Size must be a positive value!");
+            }
             this.size = value;
             this.halfSize = new Vector2(
                 this.size.X / 2f,
@@ -57,20 +62,20 @@ public class Box2D
         set => this.rotation = value;
     }
 
-    public Vector2 GetMin()
+    public Vector2 GetLocalMin()
     {
         return this.position - this.halfSize;
     }
 
-    public Vector2 GetMax()
+    public Vector2 GetLocalMax()
     {
         return this.position + this.halfSize;
     }
 
     public Span<Vector2> GetVertices()
     {
-        Vector2 min = this.GetMin();
-        Vector2 max = this.GetMax();
+        Vector2 min = this.GetLocalMin();
+        Vector2 max = this.GetLocalMax();
 
         Span<Vector2> vertices = new Span<Vector2>(new[]
         {
@@ -90,16 +95,26 @@ public class Box2D
 
     public bool Contains(Point point)
     {
-        return Contains(point.ToVector2());
+        return this.Contains(point.ToVector2());
     }
 
     public bool Contains(Vector2 point)
     {
-        Vector2 localPoint = new Vector2(point.X, point.Y);
+        return this.Contains((double)point.X, (double)point.Y);
+    }
+
+    public bool Contains(double x, double y)
+    {
+        return this.Contains((float)x, (float)y);
+    }
+
+    public bool Contains(float x, float y)
+    {
+        Vector2 localPoint = new Vector2(x, y);
         localPoint.Rotate(this.position, this.rotation);
 
-        Vector2 min = this.GetMin();
-        Vector2 max = this.GetMax();
+        Vector2 min = this.GetLocalMin();
+        Vector2 max = this.GetLocalMax();
         return localPoint.X <= max.X && min.X <= localPoint.X && localPoint.Y <= max.Y && min.Y <= localPoint.Y;
     }
 }

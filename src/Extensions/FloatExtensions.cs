@@ -19,6 +19,7 @@ public static class FloatExtensions
 
     /// <summary>
     /// Compares two float values, x and y, for equality within a given relative tolerance.
+    /// </summary>
     /// <param name="x">The first value being checked.</param>
     /// <param name="y">The second value being compared.</param>
     /// <param name="epsilon">The margin of error. Default value is <see cref="DefaultEpsilon"/>.</param>
@@ -26,5 +27,15 @@ public static class FloatExtensions
     public static bool Compare(this float x, float y, float epsilon = DefaultEpsilon)
     {
         return Math.Abs(x - y) <= Math.Abs(epsilon);
+    }
+
+    /// <summary>
+    /// Squares the value.
+    /// </summary>
+    /// <param name="val">The value to square</param>
+    /// <returns><see cref="float"/></returns>
+    public static float Sqr(this float val)
+    {
+        return val * val;
     }
 }

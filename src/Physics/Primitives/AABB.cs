@@ -1,13 +1,15 @@
 // ReSharper disable InconsistentNaming
 namespace ZxenLib.Physics.Primitives;
 
+using System;
 using Extensions;
+using Interfaces;
 using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Axis-Aligned Bounding Box
 /// </summary>
-public class AABB
+public class AABB : IVertexes2D, IContains2D
 {
     private Vector2 halfSize;
     private Vector2 size;
@@ -21,8 +23,20 @@ public class AABB
 
     public AABB(Vector2 min, Vector2 max)
     {
-        this.Size = max.Clone() - min;
-        this.Position = (max.Clone() + min) / 2f;
+        this.Size = max - min;
+        this.Position = (max + min) / 2f;
+    }
+
+    public AABB(Vector2 position, float size)
+    {
+        this.Size = new(Math.Abs(size));
+        this.Position = position;
+    }
+
+    public AABB(Vector2 position, float sizeX, float sizeY)
+    {
+        this.Size = new(Math.Abs(sizeX), Math.Abs(sizeY));
+        this.Position = position;
     }
 
     public Vector2 Size
@@ -51,14 +65,14 @@ public class AABB
         return this.position + this.halfSize;
     }
 
-    public bool Contains(Vector2 point)
-    {
-        return this.Contains((double)point.X, point.Y);
-    }
-
     public bool Contains(Point point)
     {
-        return this.Contains((double)point.X, point.Y);
+        return this.Contains((double)point.X, (double)point.Y);
+    }
+
+    public bool Contains(Vector2 point)
+    {
+        return this.Contains((double)point.X, (double)point.Y);
     }
 
     public bool Contains(float x, float y)
@@ -72,5 +86,19 @@ public class AABB
         Vector2 max = this.GetMax();
 
         return x >= min.X && x <= max.X && y >= min.Y && y <= max.Y;
+    }
+
+    public Span<Vector2> GetVertices()
+    {
+        Vector2 min = this.GetMin();
+        Vector2 max = this.GetMax();
+
+        return new Span<Vector2>(new[]
+        {
+            new Vector2(min.X, min.Y),
+            new Vector2(min.X, max.Y),
+            new Vector2(max.X, min.Y),
+            new Vector2(max.X, max.Y),
+        });
     }
 }

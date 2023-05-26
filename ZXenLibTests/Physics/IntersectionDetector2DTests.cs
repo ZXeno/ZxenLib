@@ -192,4 +192,260 @@ public class IntersectionDetector2DTests
 
         Assert.IsFalse(result);
     }
+
+    [TestMethod]
+    public void Raycast_ShouldReturnTrue_WhenRayIntersectsCircle()
+    {
+        // Arrange
+        Circle circle = new Circle(1, 1, 1);
+        Ray2D ray = new Ray2D(new Vector2(0, 0), new Vector2(1, 1));
+        RaycastResult result = new RaycastResult();
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.Raycast(circle, ray, result);
+
+        // Assert
+        Assert.IsTrue(doesIntersect);
+        Assert.IsTrue(result.Hit);
+    }
+
+    [TestMethod]
+    public void Raycast_ShouldReturnFalse_WhenRayDoesNotIntersectCircle()
+    {
+        // Arrange
+        Circle circle = new Circle(10, 10, 1);
+        Ray2D ray = new Ray2D(new Vector2(0, 0), new Vector2(1, 0));
+        RaycastResult result = new RaycastResult();
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.Raycast(circle, ray, result);
+
+        // Assert
+        Assert.IsFalse(doesIntersect);
+        Assert.IsFalse(result.Hit);
+    }
+
+    [TestMethod]
+    public void Raycast_ShouldReturnTrue_WhenRayOriginIsInsideCircle()
+    {
+        // Arrange
+        Circle circle = new Circle(1, 1, 5);
+        Ray2D ray = new Ray2D(new Vector2(1, 1), new Vector2(1, 0));
+        RaycastResult result = new RaycastResult();
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.Raycast(circle, ray, result);
+
+        // Assert
+        Assert.IsTrue(doesIntersect);
+        Assert.IsTrue(result.Hit);
+    }
+
+    [TestMethod]
+    public void Raycast_ShouldNotModifyRaycastResult_WhenRaycastResultIsNull()
+    {
+        // Arrange
+        Circle circle = new Circle(1, 1, 5);
+        Ray2D ray = new Ray2D(new Vector2(1, 1), new Vector2(1, 0));
+        RaycastResult raycastResult = null;
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.Raycast(circle, ray, raycastResult);
+
+        // Assert
+        Assert.IsTrue(doesIntersect);
+        Assert.IsNull(raycastResult);
+    }
+
+    [TestMethod]
+    public void Raycast_AABB_ShouldReturnTrue_WhenRayIntersectsBox()
+    {
+        // Arrange
+        AABB box = new AABB(new Vector2(0, 0), new Vector2(2, 2));
+        Ray2D ray = new Ray2D(new Vector2(-1, 1), new Vector2(2, 1));
+        RaycastResult result = new RaycastResult();
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.Raycast(box, ray, result);
+
+        // Assert
+        Assert.IsTrue(doesIntersect);
+        Assert.IsTrue(result.Hit);
+    }
+
+    [TestMethod]
+    public void Raycast_AABB_ShouldReturnFalse_WhenRayDoesNotIntersectBox()
+    {
+        // Arrange
+        AABB box = new AABB(new Vector2(2, 2), new Vector2(3, 3));
+        Ray2D ray = new Ray2D(new Vector2(0, 0), new Vector2(1, 0));
+        RaycastResult result = new RaycastResult();
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.Raycast(box, ray, result);
+
+        // Assert
+        Assert.IsFalse(doesIntersect);
+        Assert.IsFalse(result.Hit);
+    }
+
+    [TestMethod]
+    public void Raycast_Box2D_ShouldReturnTrue_WhenRayIntersectsBox()
+    {
+        // Arrange
+        Box2D box = new Box2D(new Vector2(2f), new Vector2(), 0f);
+        Ray2D ray = new Ray2D(new Vector2(-2, 0), new Vector2(2, 0));
+        RaycastResult result = new RaycastResult();
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.Raycast(box, ray, result);
+
+        // Assert
+        Assert.IsTrue(doesIntersect);
+        Assert.IsTrue(result.Hit);
+    }
+
+    [TestMethod]
+    public void Raycast_Box2D_ShouldReturnFalse_WhenRayDoesNotIntersectBox()
+    {
+        // Arrange
+        Box2D box = new Box2D(new Vector2(2f), new Vector2(2f), 0f);
+        Ray2D ray = new Ray2D(new Vector2(0, 0), new Vector2(1, 0));
+        RaycastResult result = new RaycastResult();
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.Raycast(box, ray, result);
+
+        // Assert
+        Assert.IsFalse(doesIntersect);
+        Assert.IsFalse(result.Hit);
+    }
+
+    [TestMethod]
+    public void Raycast_Box2D_ShouldReturnTrue_WhenRayIntersectsRotatedBox()
+    {
+        // Arrange
+        Box2D box = new Box2D(new Vector2(2), new Vector2(0), 45);
+        Ray2D ray = new Ray2D(new Vector2(-2.5f, 1), new Vector2(1, -1));
+        RaycastResult result = new RaycastResult();
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.Raycast(box, ray, result);
+
+        // Assert
+        Assert.IsTrue(doesIntersect);
+        Assert.IsTrue(result.Hit);
+    }
+
+    [TestMethod]
+    public void CircleVsCircle_ShouldReturnTrue_WhenCirclesOverlap()
+    {
+        // Arrange
+        Circle circle1 = new Circle(new Vector2(0, 0), 1);
+        Circle circle2 = new Circle(new Vector2(1, 0), 1);
+
+        // Act
+        bool doOverlap = IntersectionDetector2D.CircleVsCircle(circle1, circle2);
+
+        // Assert
+        Assert.IsTrue(doOverlap);
+    }
+
+    [TestMethod]
+    public void CircleVsCircle_ShouldReturnFalse_WhenCirclesDoNotOverlap()
+    {
+        // Arrange
+        Circle circle1 = new Circle(new Vector2(0, 0), 1);
+        Circle circle2 = new Circle(new Vector2(3, 0), 1);
+
+        // Act
+        bool doOverlap = IntersectionDetector2D.CircleVsCircle(circle1, circle2);
+
+        // Assert
+        Assert.IsFalse(doOverlap);
+    }
+
+    [TestMethod]
+    public void CircleVsAabb_ShouldReturnTrue_WhenCircleIntersectsBox()
+    {
+        // Arrange
+        Circle circle = new Circle(new Vector2(0, 0), 1);
+        AABB box = new AABB(new Vector2(-1, -1), new Vector2(1, 1));
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.CircleVsAabb(circle, box);
+
+        // Assert
+        Assert.IsTrue(doesIntersect);
+    }
+
+    [TestMethod]
+    public void CircleVsAabb_ShouldReturnFalse_WhenCircleDoesNotIntersectBox()
+    {
+        // Arrange
+        Circle circle = new Circle(new Vector2(3, 0), 1);
+        AABB box = new AABB(new Vector2(-1, -1), new Vector2(1, 1));
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.CircleVsAabb(circle, box);
+
+        // Assert
+        Assert.IsFalse(doesIntersect);
+    }
+
+    [TestMethod]
+    public void CircleVsBox2D_ShouldReturnTrue_WhenCircleIntersectsBox()
+    {
+        // Arrange
+        Circle circle = new Circle(new Vector2(0, 0), 2.5f);
+        Box2D box = new Box2D(new Vector2(1), new Vector2(2, 2), 0);
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.CircleVsBox2D(circle, box);
+
+        // Assert
+        Assert.IsTrue(doesIntersect);
+    }
+
+    [TestMethod]
+    public void CircleVsBox2D_ShouldReturnFalse_WhenCircleDoesNotIntersectBox()
+    {
+        // Arrange
+        Circle circle = new Circle(new Vector2(3, 0), 1f);
+        Box2D box = new Box2D(new Vector2(1, 1), new Vector2(2, 2), 0);
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.CircleVsBox2D(circle, box);
+
+        // Assert
+        Assert.IsFalse(doesIntersect);
+    }
+
+    [TestMethod]
+    public void VertexShapeVsVertexShape_ShouldReturnTrue_WhenShapeIntersects()
+    {
+        // Arrange
+        AABB box1 = new AABB(new Vector2(0, 0), 2.5f);
+        Box2D box2 = new Box2D(new Vector2(1,1), new Vector2(1.5f, 1.5f), 45);
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.VertexShapeVsVertexShape(box1, box2);
+
+        // Assert
+        Assert.IsTrue(doesIntersect);
+    }
+
+    [TestMethod]
+    public void VertexShapeVsVertexShape_ShouldReturnFalse_WhenShapeDoesNotIntersect()
+    {
+        // Arrange
+        AABB box1 = new AABB(new Vector2(3, 0), 1f);
+        Box2D box2 = new Box2D(new Vector2(1, 1), new Vector2(2, 2), 0);
+
+        // Act
+        bool doesIntersect = IntersectionDetector2D.VertexShapeVsVertexShape(box1, box2);
+
+        // Assert
+        Assert.IsFalse(doesIntersect);
+    }
 }

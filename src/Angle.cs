@@ -1,14 +1,17 @@
 ﻿namespace ZxenLib;
 
 using System;
+using Extensions;
 using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Implementation of Angle and its relative methods and information.
 /// </summary>
-public class Angle
+public struct Angle
 {
     private float degrees;
+    private float cos;
+    private float sin;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Angle"/> class.
@@ -16,6 +19,8 @@ public class Angle
     public Angle()
     {
         this.degrees = 0;
+        this.cos = 0;
+        this.sin = 0;
         this.Direction = new Vector2(0, 0);
     }
 
@@ -33,7 +38,9 @@ public class Angle
         private set
         {
             this.degrees = value;
-            this.Direction = new Vector2((float)Math.Cos(this.Degrees), (float)Math.Sin(this.Degrees));
+            this.cos = (float)Math.Cos(this.Degrees);
+            this.sin = (float)Math.Sin(this.Degrees);
+            this.Direction = new Vector2(this.cos, this.sin);
         }
     }
 
@@ -41,6 +48,16 @@ public class Angle
     /// Gets the angle in radians.
     /// </summary>
     public float Radians => MathHelper.ToRadians(this.Degrees);
+
+    /// <summary>
+    /// The cosine of the angle.
+    /// </summary>
+    public float Cos => this.cos;
+
+    /// <summary>
+    /// The sine of the angle.
+    /// </summary>
+    public float Sin => this.sin;
 
     /// <summary>
     /// Adds passed rotation amount in radians to object's rotation.
@@ -66,11 +83,39 @@ public class Angle
 
     /// <summary>
     /// Directly sets object's rotation. Value must be in degrees.
-    /// Values clamped between 0 and 360;.
     /// </summary>
     /// <param name="degreeRotation">The rotation to set in degrees.</param>
     public void SetRotation(float degreeRotation)
     {
+        if (degreeRotation > 360)
+        {
+            degreeRotation -= 360;
+        }
+
+        if (degreeRotation < 0)
+        {
+            degreeRotation += 360;
+        }
+
         this.Degrees = MathHelper.Clamp(degreeRotation, 0, 360);
+    }
+
+    public static bool operator ==(Angle value1, Angle value2) => value1.Equals(value2);
+
+    public static bool operator !=(Angle value1, Angle value2) => !value1.Equals(value2);
+
+    public bool Equals(Angle other)
+    {
+        return this.degrees.Equals(other.degrees) && this.cos.Equals(other.cos) && this.sin.Equals(other.sin) && this.Direction.Equals(other.Direction);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is Angle other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(this.degrees, this.cos, this.sin, this.Direction);
     }
 }

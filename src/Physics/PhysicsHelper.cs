@@ -2,6 +2,7 @@
 
 using System;
 using Extensions;
+using Interfaces;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -54,6 +55,36 @@ public static class PhysicsHelper
     }
 
     /// <summary>
+    /// Uses Separating Axis Theorem to determine if two polygonal objects, represented by
+    /// their collection of vertices, is overlapping on any given axis.
+    /// </summary>
+    /// <param name="verts1"></param>
+    /// <param name="verts2"></param>
+    /// <returns></returns>
+    public static bool SatDetectOverlap(Span<Vector2> verts1, Span<Vector2>verts2)
+    {
+        Span<Vector2> rect1Normals = GetEdgeNormals(verts1);
+        Span<Vector2> rect2Normals = GetEdgeNormals(verts2);
+        Vector2[] allNormals = new Vector2[rect1Normals.Length + rect2Normals.Length];
+        rect1Normals.CopyTo(allNormals);
+        rect2Normals.CopyTo(allNormals.AsSpan(rect1Normals.Length));
+
+        for (int x = 0; x < allNormals.Length; x++)
+        {
+            Vector2 axis = allNormals[x];
+
+            // check for overlap, return if we find one
+            if (!HasOverlapOnAxis(verts1, verts2, axis))
+            {
+                return false;
+            }
+        }
+
+        // no overlap
+        return true;
+    }
+
+    /// <summary>
     /// Checks for collision between two rectangles using Separating Axis Theorem.
     /// </summary>
     /// <param name="rect1">The first rectangle to check.</param>
@@ -76,18 +107,18 @@ public static class PhysicsHelper
             Vector2 axis = rect1Normals[x];
 
             // Project onto current axis
-            Span<float> rect1Projection = PhysicsHelper.ProjectOntoAxis(rect1Verts, axis);
-            Span<float> rect2Projection = PhysicsHelper.ProjectOntoAxis(rect2Verts, axis);
+            Vector2 rect1Projection = PhysicsHelper.ProjectVertsOntoAxis(rect1Verts, axis);
+            Vector2 rect2Projection = PhysicsHelper.ProjectVertsOntoAxis(rect2Verts, axis);
 
             // check for no overlap
-            if (rect1Projection[0] > rect2Projection[1]
-                || rect2Projection[0] > rect1Projection[1])
+            if (rect1Projection.X > rect2Projection.Y
+                || rect2Projection.X > rect1Projection.Y)
             {
                 return null;
             }
 
             // otherwise, get overlap
-            float o = Math.Min(rect1Projection[1], rect2Projection[1]) - Math.Max(rect1Projection[0], rect2Projection[0]);
+            float o = Math.Min(rect1Projection.X, rect2Projection.Y) - Math.Max(rect1Projection.X, rect2Projection.Y);
             if (o < overlap)
             {
                 overlap = o;
@@ -105,7 +136,7 @@ public static class PhysicsHelper
     /// <param name="verts">The vertexes to project.</param>
     /// <param name="axis">The axis to project them on.</param>
     /// <returns>A <see cref="Span{float}"/> where index 0 is is the minimum projection, and index 1 is the maximum projection.</returns>
-    public static Span<float> ProjectOntoAxis(Span<Vector2> verts, Vector2 axis)
+    public static Vector2 ProjectVertsOntoAxis(Span<Vector2> verts, Vector2 axis)
     {
         float min = Vector2.Dot(axis, verts[0]);
         float max = min;
@@ -123,6 +154,21 @@ public static class PhysicsHelper
             }
         }
 
-        return new float[] { min, max };
+        return new Vector2(min, max);
+    }
+
+    /// <summary>
+    /// Determines if the specified set of projected vertices have an overlap on the provided axis.
+    /// </summary>
+    /// <param name="verts1">Set of vertices for the first shape.</param>
+    /// <param name="verts2">Set of vertices for the second shape.</param>
+    /// <param name="axis">The axis the projection is made to.</param>
+    /// <returns>True if an overlap is detected between the vertices on the provided axis.</returns>
+    public static bool HasOverlapOnAxis(Span<Vector2> verts1, Span<Vector2> verts2, Vector2 axis)
+    {
+        Vector2 projection1 = PhysicsHelper.ProjectVertsOntoAxis(verts1, axis);
+        Vector2 projection2 = PhysicsHelper.ProjectVertsOntoAxis(verts2, axis);
+
+        return projection2.X <= projection1.Y && projection1.X <= projection2.Y;
     }
 }
