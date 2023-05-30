@@ -25,4 +25,9 @@ public class Line2D
     {
         return Vector2.DistanceSquared(this.Start, this.End);
     }
+
+    public Line2D Clone()
+    {
+        return new Line2D(this.Start, this.End);
+    }
 }

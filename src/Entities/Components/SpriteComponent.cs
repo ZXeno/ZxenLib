@@ -73,21 +73,21 @@ public class SpriteComponent : EntityComponent, IDrawableEntityComponent
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether this <see cref="SpriteComponent"/> should resize the <see cref="Entity"/>'s <see cref="TransformComponent"/>.
+    /// Gets or sets a value indicating whether this <see cref="SpriteComponent"/> should resize the <see cref="Entity"/>'s <see cref="Components.Transform"/>.
     /// </summary>
     public bool ShouldResizeTransform { get; set; }
 
     /// <summary>
-    /// Gets or sets the <see cref="TransformComponent"/> dependency. Used for sprite positioning.
+    /// Gets or sets the <see cref="Components.Transform"/> dependency. Used for sprite positioning.
     /// </summary>
-    public TransformComponent? Transform { get; set; }
+    public Transform? Transform { get; set; }
 
     /// <inheritdoc />
     public override void Register(IEntity parent)
     {
         base.Register(parent);
 
-        this.Transform = this.Parent.GetComponent<TransformComponent>()!;
+        this.Transform = this.Parent.GetComponent<Transform>()!;
 
         if (this.ShouldResizeTransform)
         {
@@ -146,7 +146,7 @@ public class SpriteComponent : EntityComponent, IDrawableEntityComponent
     {
         if (this.Transform == null)
         {
-            this.Transform = this.Parent.GetComponent<TransformComponent>();
+            this.Transform = this.Parent.GetComponent<Transform>();
         }
 
         this.ResizeTransform();

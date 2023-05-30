@@ -28,10 +28,7 @@ public abstract class EntityComponent : IEntityComponent
     /// <param name="parent">The <see cref="IEntity"/> object parent of this <see cref="IEntityComponent"/>.</param>
     public virtual void Register(IEntity parent)
     {
-        if (parent == null)
-        {
-            throw new ArgumentNullException(nameof(parent));
-        }
+        ArgumentNullException.ThrowIfNull(parent);
 
         if (this.Parent?.Id != parent.Id)
         {

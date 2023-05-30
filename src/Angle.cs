@@ -1,13 +1,12 @@
 ﻿namespace ZxenLib;
 
 using System;
-using Extensions;
 using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Implementation of Angle and its relative methods and information.
 /// </summary>
-public struct Angle
+public class Angle
 {
     private float degrees;
     private float cos;
@@ -104,11 +103,24 @@ public struct Angle
 
     public static bool operator !=(Angle value1, Angle value2) => !value1.Equals(value2);
 
+    /// <summary>
+    /// Performance an equality check against another <see cref="Angle"/> object.
+    /// The two objects are equal if both have matching <see cref="Degrees"/>, <see cref="Cos"/>, <see cref="Sin"/>, and <see cref="Direction"/> values.
+    /// </summary>
+    /// <param name="other">The <see cref="Angle"/> being compared against.</param>
+    /// <returns>True if all checks are equal.</returns>
     public bool Equals(Angle other)
     {
         return this.degrees.Equals(other.degrees) && this.cos.Equals(other.cos) && this.sin.Equals(other.sin) && this.Direction.Equals(other.Direction);
     }
 
+    /// <summary>
+    /// Performance an equality check against another object.
+    /// The two objects are equal if both are <see cref="Angle"/> types, have matching
+    /// <see cref="Degrees"/>, <see cref="Cos"/>, <see cref="Sin"/>, and <see cref="Direction"/> values.
+    /// </summary>
+    /// <param name="obj">The object being compared against.</param>
+    /// <returns>True if the other object is an angle and all checks are equal.</returns>
     public override bool Equals(object? obj)
     {
         return obj is Angle other && Equals(other);

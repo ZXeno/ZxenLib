@@ -22,56 +22,56 @@ public class IntersectionDetector2DTests
     }
 
     [TestMethod]
-    public void CircleContains_ReturnsTrue_WhenCircleContainsPoint()
+    public void ShapeContains_ReturnsTrue_WhenCircleContainsPoint()
     {
         Circle circle = new Circle(0, 0, 1);
         Vector2 point = new Vector2(0, 0);
 
-        bool result = IntersectionDetector2D.CircleContains(point, circle);
+        bool result = IntersectionDetector2D.ShapeContains(point, circle);
 
         Assert.IsTrue(result);
     }
 
     [TestMethod]
-    public void CircleContains_ReturnsFalse_WhenCircleDoesNotContainPoint()
+    public void ShapeContains_ReturnsFalse_WhenCircleDoesNotContainPoint()
     {
         Circle circle = new Circle(0, 0, 1);
         Vector2 point = new Vector2(2, 0);
 
-        bool result = IntersectionDetector2D.CircleContains(point, circle);
+        bool result = IntersectionDetector2D.ShapeContains(point, circle);
 
         Assert.IsFalse(result);
     }
 
     [TestMethod]
-    public void AabbContains_ReturnsTrue_WhenAABBContainsPoint()
+    public void ShapeContains_ReturnsTrue_WhenAABBContainsPoint()
     {
         AABB box = new AABB(new Vector2(-1, -1), new Vector2(1, 1));
         Vector2 point = new Vector2(0, 0);
 
-        bool result = IntersectionDetector2D.AabbContains(point, box);
+        bool result = IntersectionDetector2D.ShapeContains(point, box);
 
         Assert.IsTrue(result);
     }
 
     [TestMethod]
-    public void Box2dContains_ReturnsTrue_WhenBoxContainsPoint()
+    public void ShapeContains_ReturnsTrue_WhenBoxContainsPoint()
     {
         Box2D box = new Box2D(new Vector2(-1, -1), new Vector2(1, 1));
         Vector2 point = new Vector2(0, 0);
 
-        bool result = IntersectionDetector2D.Box2dContains(point, box);
+        bool result = IntersectionDetector2D.ShapeContains(point, box);
 
         Assert.IsTrue(result);
     }
 
     [TestMethod]
-    public void Box2dContains_ReturnsFalse_WhenBoxDoesNotContainPoint()
+    public void ShapeContains_ReturnsFalse_WhenBoxDoesNotContainPoint()
     {
         Box2D box = new Box2D(new Vector2(-1, -1), new Vector2(1, 1));
         Vector2 point = new Vector2(2, 0);
 
-        bool result = IntersectionDetector2D.Box2dContains(point, box);
+        bool result = IntersectionDetector2D.ShapeContains(point, box);
 
         Assert.IsFalse(result);
     }
@@ -127,7 +127,7 @@ public class IntersectionDetector2DTests
     [DataRow(-1, -1, 1, 1, 0, -2, 1, 2)]
     [DataRow(-1, -1, 1, 1, -2, -2, 2, 2)]
     [DataRow(-1, -1, 1, 1, 2, 2, -2, -2)]
-    public void LineIntersectsAabb_ReturnsTrue_WhenLineIntersectsAabb(
+    public void LineIntersectsPolygon_ReturnsTrue_WhenLineIntersectsAabb(
         float minX,
         float minY,
         float maxX,
@@ -140,18 +140,18 @@ public class IntersectionDetector2DTests
         AABB box = new AABB(new Vector2(minX, minY), new Vector2(maxX, maxY));
         Line2D line = new Line2D(new Vector2(lstartX, lstartY), new Vector2(lendX, lendY));
 
-        bool result = IntersectionDetector2D.LineIntersectsAabb(line, box);
+        bool result = IntersectionDetector2D.LineIntersectsPolygon(line, box);
 
         Assert.IsTrue(result);
     }
 
     [TestMethod]
-    public void LineIntersectsAabb_ReturnsFalse_WhenLineDoesNotIntersectAabb()
+    public void LineIntersectsPolygon_ReturnsFalse_WhenLineDoesNotIntersectAabb()
     {
         AABB box = new AABB(new Vector2(-1, -1), new Vector2(1, 1));
         Line2D line = new Line2D(new Vector2(-2, -2), new Vector2(-2, 2));
 
-        bool result = IntersectionDetector2D.LineIntersectsAabb(line, box);
+        bool result = IntersectionDetector2D.LineIntersectsPolygon(line, box);
 
         Assert.IsFalse(result);
     }
@@ -164,7 +164,7 @@ public class IntersectionDetector2DTests
     [DataRow(-1, -1, 1, 1, -2, -2, 2, 2)]
     [DataRow(-1, -1, 1, 1, 2, 2, -2, -2)]
     [DataRow(0, 0, 8, 8, 3, -2, 11, 4)]
-    public void LineIntersectsBox2D_ReturnsTrue_WhenLineIntersectsBox(
+    public void LineIntersectsPolygon_ReturnsTrue_WhenLineIntersectsBox(
         float minX,
         float minY,
         float maxX,
@@ -177,18 +177,18 @@ public class IntersectionDetector2DTests
         Box2D box = new Box2D(new Vector2(minX, minY), new Vector2(maxX, maxY));
         Line2D line = new Line2D(new Vector2(lstartX, lstartY), new Vector2(lendX, lendY));
 
-        bool result = IntersectionDetector2D.LineIntersectsBox2D(line, box);
+        bool result = IntersectionDetector2D.LineIntersectsPolygon(line, box);
 
         Assert.IsTrue(result);
     }
 
     [TestMethod]
-    public void LineIntersectsBox2D_ReturnsFalse_WhenLineDoesNotIntersectBox()
+    public void LineIntersectsPolygon_ReturnsFalse_WhenLineDoesNotIntersectBox()
     {
         Box2D box = new Box2D(new Vector2(-1, -1), new Vector2(1, 1));
         Line2D line = new Line2D(new Vector2(-2, -2), new Vector2(-2, 2));
 
-        bool result = IntersectionDetector2D.LineIntersectsBox2D(line, box);
+        bool result = IntersectionDetector2D.LineIntersectsPolygon(line, box);
 
         Assert.IsFalse(result);
     }
@@ -366,56 +366,56 @@ public class IntersectionDetector2DTests
     }
 
     [TestMethod]
-    public void CircleVsAabb_ShouldReturnTrue_WhenCircleIntersectsBox()
+    public void CircleVsPolygon_ShouldReturnTrue_WhenCircleIntersectsAABB()
     {
         // Arrange
         Circle circle = new Circle(new Vector2(0, 0), 1);
         AABB box = new AABB(new Vector2(-1, -1), new Vector2(1, 1));
 
         // Act
-        bool doesIntersect = IntersectionDetector2D.CircleVsAabb(circle, box);
+        bool doesIntersect = IntersectionDetector2D.CircleVsPolygon(circle, box);
 
         // Assert
         Assert.IsTrue(doesIntersect);
     }
 
     [TestMethod]
-    public void CircleVsAabb_ShouldReturnFalse_WhenCircleDoesNotIntersectBox()
+    public void CircleVsPolygon_ShouldReturnFalse_WhenCircleDoesNotIntersectAABB()
     {
         // Arrange
         Circle circle = new Circle(new Vector2(3, 0), 1);
         AABB box = new AABB(new Vector2(-1, -1), new Vector2(1, 1));
 
         // Act
-        bool doesIntersect = IntersectionDetector2D.CircleVsAabb(circle, box);
+        bool doesIntersect = IntersectionDetector2D.CircleVsPolygon(circle, box);
 
         // Assert
         Assert.IsFalse(doesIntersect);
     }
 
     [TestMethod]
-    public void CircleVsBox2D_ShouldReturnTrue_WhenCircleIntersectsBox()
+    public void CircleVsPolygon_ShouldReturnTrue_WhenCircleIntersectsBox2D()
     {
         // Arrange
         Circle circle = new Circle(new Vector2(0, 0), 2.5f);
         Box2D box = new Box2D(new Vector2(1), new Vector2(2, 2), 0);
 
         // Act
-        bool doesIntersect = IntersectionDetector2D.CircleVsBox2D(circle, box);
+        bool doesIntersect = IntersectionDetector2D.CircleVsPolygon(circle, box);
 
         // Assert
         Assert.IsTrue(doesIntersect);
     }
 
     [TestMethod]
-    public void CircleVsBox2D_ShouldReturnFalse_WhenCircleDoesNotIntersectBox()
+    public void CircleVsPolygon_ShouldReturnFalse_WhenCircleDoesNotIntersectBox2D()
     {
         // Arrange
         Circle circle = new Circle(new Vector2(3, 0), 1f);
         Box2D box = new Box2D(new Vector2(1, 1), new Vector2(2, 2), 0);
 
         // Act
-        bool doesIntersect = IntersectionDetector2D.CircleVsBox2D(circle, box);
+        bool doesIntersect = IntersectionDetector2D.CircleVsPolygon(circle, box);
 
         // Assert
         Assert.IsFalse(doesIntersect);

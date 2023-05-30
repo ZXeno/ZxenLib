@@ -24,7 +24,7 @@ public class ParticleEmitter : IUpdatableEntityComponent
     public ParticleEmitter(IEntity parent, ISpriteManager spriteManager, IEnumerable<string> spriteIdList, string atlasId, Random random = null!, Vector2? location = null, int maxParticles = 0)
     {
         this.Parent = parent;
-        this.Transform = parent.GetComponent<TransformComponent>()!;
+        this.Transform = parent.GetComponent<Transform>()!;
         this.spriteManager = spriteManager;
         this.spriteIds = spriteIdList.ToArray();
         this.atlasId = atlasId;
@@ -52,12 +52,12 @@ public class ParticleEmitter : IUpdatableEntityComponent
 
     public IEntity Parent { get; private set; }
 
-    public TransformComponent Transform { get; set; }
+    public Transform Transform { get; set; }
 
     public void Register(IEntity parent)
     {
         this.Parent = parent;
-        this.Transform = parent.GetComponent<TransformComponent>()!;
+        this.Transform = parent.GetComponent<Transform>()!;
     }
 
     public void Unregister()

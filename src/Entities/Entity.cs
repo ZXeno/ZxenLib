@@ -21,8 +21,9 @@ public class Entity : IEntity
     /// </summary>
     public const string EntityCreatedProgrammaticId = "EntityCreated";
 
-    private readonly IList<IEntityComponent> componentList = new List<IEntityComponent>();
     private readonly IEventDispatcher eventDispatcher;
+    private readonly IList<IEntity> children = new List<IEntity>();
+    private readonly IList<IEntityComponent> componentList = new List<IEntityComponent>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Entity"/> class.
@@ -57,7 +58,7 @@ public class Entity : IEntity
     }
 
     /// <inheritdoc />
-    public uint Id { get; private set; }
+    public uint Id { get; protected set; }
 
     /// <inheritdoc />
     public bool IsEnabled { get; set; }
@@ -69,6 +70,9 @@ public class Entity : IEntity
     public bool IsInitialized { get; private set; }
 
     /// <inheritdoc />
+    public IEntity? Parent { get; set; }
+
+    /// <inheritdoc />
     public virtual void Initialize()
     {
         this.Enable();
@@ -76,10 +80,89 @@ public class Entity : IEntity
     }
 
     /// <inheritdoc />
+    public virtual IEnumerable<IEntity> GetChildren()
+    {
+        return this.children.ToArray();
+    }
+
+    /// <inheritdoc />
+    public virtual IEntity? GetChild(uint childId)
+    {
+        for (int x = 0; x < this.children.Count; x++)
+        {
+            if (this.children[x].Id == childId)
+            {
+                return this.children[x];
+            }
+        }
+
+        return null;
+    }
+
+    /// <inheritdoc />
+    public virtual IEntity? GetFirstChild()
+    {
+        return this.children.Count > 0 ? this.children[0] : null;
+    }
+
+    /// <inheritdoc />
+    public virtual IEntity? GetLastChild()
+    {
+        return this.children.Count > 0 ? this.children[this.children.Count - 1] : null;
+    }
+
+    /// <inheritdoc />
+    public virtual void AddChild(IEntity child)
+    {
+        if (!this.children.Contains(child))
+        {
+            this.children.Add(child);
+        }
+
+        if (child.Parent?.Id == this.Id)
+        {
+            return;
+        }
+
+        child.Parent = this;
+    }
+
+    /// <inheritdoc />
+    public virtual void RemoveChild(uint childId)
+    {
+        IEntity? resolvedEntity = null;
+        for (int x = 0; x < this.componentList.Count; x++)
+        {
+            if (this.children[x].Id == childId)
+            {
+                resolvedEntity = this.children[x];
+                break;
+            }
+        }
+
+        if (resolvedEntity != null)
+        {
+            this.children.Remove(resolvedEntity);
+            if (resolvedEntity.Parent?.Id == this.Id)
+            {
+                resolvedEntity.Parent = null;
+            }
+        }
+    }
+
+    /// <inheritdoc />
     public T? GetComponent<T>()
         where T : IEntityComponent
     {
-        return (T?)this.componentList.FirstOrDefault(x => x is T);
+        for (int x = 0; x < this.componentList.Count; x++)
+        {
+            if (this.componentList[x] is T resolvedType)
+            {
+                return resolvedType;
+            }
+        }
+
+        return default;
     }
 
     /// <inheritdoc />
@@ -92,32 +175,48 @@ public class Entity : IEntity
     /// <inheritdoc />
     public IEntityComponent? GetComponentById(uint componentId)
     {
-        return this.componentList.FirstOrDefault(x => x.Id == componentId);
+        for (int x = 0; x < this.componentList.Count; x++)
+        {
+            if (this.componentList[x].Id == componentId)
+            {
+                return this.componentList[x];
+            }
+        }
+
+        return null;
     }
 
     /// <inheritdoc />
     public void RegisterComponent(IEntityComponent component)
     {
-        if (component == null)
+        ArgumentNullException.ThrowIfNull(component);
+
+        if (this.componentList.Contains(component))
         {
-            throw new ArgumentNullException(nameof(component));
+            return;
         }
 
-        if (!this.componentList.Contains(component))
-        {
-            this.componentList.Add(component);
+        this.componentList.Add(component);
 
-            if (component.Parent?.Id != this.Id)
-            {
-                component.Register(this);
-            }
+        if (component.Parent?.Id != this.Id)
+        {
+            component.Register(this);
         }
     }
 
     /// <inheritdoc />
     public void UnregisterComponent(uint componentId)
     {
-        IEntityComponent? resolvedComponent = this.componentList.FirstOrDefault(x => x.Id == componentId);
+        IEntityComponent? resolvedComponent = null;
+        for (int x = 0; x < this.componentList.Count; x++)
+        {
+            if (this.componentList[x].Id == componentId)
+            {
+                resolvedComponent = this.componentList[x];
+                break;
+            }
+        }
+
         if (resolvedComponent != null)
         {
             this.componentList.Remove(resolvedComponent);

@@ -29,6 +29,11 @@ public interface IEntity
     bool IsInitialized { get; }
 
     /// <summary>
+    /// Gets or sets the parent of this entity. If this value is null, it is a root entity object.
+    /// </summary>
+    IEntity? Parent { get; set; }
+
+    /// <summary>
     /// Initializes the entity.
     /// </summary>
     void Initialize();
@@ -82,4 +87,41 @@ public interface IEntity
     /// Completely removes this entity from the entity system.
     /// </summary>
     void Destroy();
+
+    /// <summary>
+    /// Gets all children of this entity.
+    /// </summary>
+    /// <returns>An array of the children of this entity.</returns>
+    IEnumerable<IEntity> GetChildren();
+
+    /// <summary>
+    /// Gets the child with the specified ID.
+    /// </summary>
+    /// <param name="childId"></param>
+    /// <returns></returns>
+    IEntity? GetChild(uint childId);
+
+    /// <summary>
+    /// Gets the first child of this entity.
+    /// </summary>
+    /// <returns>The first <see cref="IEntity"/> child. It will return null if there are no children.</returns>
+    IEntity? GetFirstChild();
+
+    /// <summary>
+    /// Gets the last child in the child collection of this entity.
+    /// </summary>
+    /// <returns>The last <see cref="IEntity"/> element in the children collection.</returns>
+    IEntity? GetLastChild();
+
+    /// <summary>
+    /// Adds a new <see cref="IEntity"/> child.
+    /// </summary>
+    /// <param name="child"></param>
+    void AddChild(IEntity child);
+
+    /// <summary>
+    /// Removes an <see cref="IEntity"/> from the children of this entity.
+    /// </summary>
+    /// <param name="childId"></param>
+    void RemoveChild(uint childId);
 }

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Defines the position component for entities.
 /// </summary>
-public class TransformComponent : EntityComponent
+public class Transform : EntityComponent
 {
     private Vector2 scale;
     private Vector2 position;
@@ -15,11 +15,12 @@ public class TransformComponent : EntityComponent
     private Angle angle;
     private Rectangle bounds;
     private Vector2 localPosition;
+    private Transform? parentTransform;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TransformComponent"/> class.
+    /// Initializes a new instance of the <see cref="Transform"/> class.
     /// </summary>
-    public TransformComponent()
+    public Transform()
     {
         this.Scale = Vector2.One;
         this.Size = Vector2.One;
@@ -28,26 +29,23 @@ public class TransformComponent : EntityComponent
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TransformComponent"/> class.
+    /// Initializes a new instance of the <see cref="Transform"/> class with a provided parent.
     /// </summary>
     /// <param name="parent">The parent of this component.</param>
-    public TransformComponent(IEntity parent)
+    public Transform(IEntity parent)
     {
         this.Scale = Vector2.One;
         this.Size = Vector2.One;
         this.angle = new Angle();
         this.Parent = parent;
-        this.isDirty = true;
-    }
 
-    public Vector2 LocalPostion
-    {
-        get => this.localPosition;
-        set
+        Transform? proposedParent = parent?.GetComponent<Transform>();
+        if (proposedParent != null)
         {
-            this.localPosition = value;
-            this.isDirty = true;
+            this.parentTransform = proposedParent;
         }
+
+        this.isDirty = true;
     }
 
     /// <summary>
@@ -121,6 +119,26 @@ public class TransformComponent : EntityComponent
     public Vector2 Velocity { get; set; }
 
     /// <summary>
+    /// Gets the current <see cref="Transform"/> of the passed entity.
+    /// If one is not found, it will register a new one and return it to the caller.
+    /// </summary>
+    /// <param name="parent">The parent <see cref="IEntity"/> of the <see cref="Transform"/></param>
+    /// <returns>Existing <see cref="Transform"/> if one is found, or a new instance if not.</returns>
+    public static Transform GetOrAddTransform(IEntity parent)
+    {
+        Transform? parentTransform = parent.GetComponent<Transform>();
+        if (parentTransform != null)
+        {
+            return parentTransform;
+        }
+
+        parentTransform = new Transform(parent);
+        parent.RegisterComponent(parentTransform);
+
+        return parentTransform;
+    }
+
+    /// <summary>
     /// Adds passed vector to object's position.
     /// </summary>
     /// <param name="vector">The coordinates to append to the position.</param>
@@ -132,7 +150,7 @@ public class TransformComponent : EntityComponent
     /// <summary>
     /// Adds passed vector to object's velocity.
     /// </summary>
-    /// <param name="velocityToAdd">The volicity to be appended.</param>
+    /// <param name="velocityToAdd">The velocity to be appended.</param>
     public void AddVelocity(Vector2 velocityToAdd)
     {
         this.Velocity += velocityToAdd;
@@ -179,9 +197,34 @@ public class TransformComponent : EntityComponent
         Vector2 rotatedCoordinates = Vector2.Transform(vectorToTransform, rotationMatrix);
 
         // Add the object's position to the rotated coordinates to get the world coordinates
-        Vector2 worldCoordinates = rotatedCoordinates + this.LocalPostion;
+        Vector2 worldCoordinates = rotatedCoordinates + this.position + (this.parentTransform?.position ?? Vector2.Zero);
 
         return worldCoordinates;
+    }
+
+    /// <summary>
+    /// Registers the component with a parent entity.
+    /// </summary>
+    /// <param name="parent">The <see cref="IEntity"/> object parent of this <see cref="IEntityComponent"/>.</param>
+    public virtual void Register(IEntity parent)
+    {
+        ArgumentNullException.ThrowIfNull(parent);
+        
+        if (this.Parent?.Id != parent.Id)
+        {
+            this.Parent = parent;
+        }
+
+        parent.RegisterComponent(this);
+    }
+
+    /// <summary>
+    /// Unregisters the component from its parent.
+    /// </summary>
+    public virtual void Unregister()
+    {
+        this.Parent.UnregisterComponent(this.Id);
+        this.Parent = null!;
     }
 
     private void RecalculateBounds()

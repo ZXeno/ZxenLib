@@ -5,7 +5,7 @@ using Extensions;
 using Interfaces;
 using Microsoft.Xna.Framework;
 
-public class Box2D : IVertexes2D, IContains2D
+public class Box2D : IPolygon2D, IContains2D
 {
     private Vector2 center;
     private Vector2 halfSize;
@@ -33,6 +33,8 @@ public class Box2D : IVertexes2D, IContains2D
     }
 
     public Vector2 HalfSize => this.halfSize;
+
+    public Vector2 Center { get; set; }
 
     public Vector2 Size
     {

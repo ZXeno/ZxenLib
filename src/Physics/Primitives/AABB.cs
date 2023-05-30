@@ -2,14 +2,14 @@
 namespace ZxenLib.Physics.Primitives;
 
 using System;
-using Extensions;
+using System.Diagnostics;
 using Interfaces;
 using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Axis-Aligned Bounding Box
 /// </summary>
-public class AABB : IVertexes2D, IContains2D
+public class AABB : IPolygon2D, IContains2D
 {
     private Vector2 halfSize;
     private Vector2 size;
@@ -39,6 +39,23 @@ public class AABB : IVertexes2D, IContains2D
         this.Position = position;
     }
 
+    public Vector2 Center { get; set; }
+
+    /// <summary>
+    /// For all other shapes, this should be set. But the AABB should always have a rotation of 0
+    /// </summary>
+    public float Rotation
+    {
+        get => 0f;
+        set
+        {
+            Debug.Assert(value == 0, "Rotation of an AABB should always be 0.");
+            return;
+        }
+    }
+
+    public Vector2 HalfSize => this.halfSize;
+
     public Vector2 Size
     {
         get => this.size;
@@ -55,12 +72,12 @@ public class AABB : IVertexes2D, IContains2D
         set => this.position = value;
     }
 
-    public Vector2 GetMin()
+    public Vector2 GetLocalMin()
     {
         return this.position - this.halfSize;
     }
 
-    public Vector2 GetMax()
+    public Vector2 GetLocalMax()
     {
         return this.position + this.halfSize;
     }
@@ -82,16 +99,16 @@ public class AABB : IVertexes2D, IContains2D
 
     public bool Contains(double x, double y)
     {
-        Vector2 min = this.GetMin();
-        Vector2 max = this.GetMax();
+        Vector2 min = this.GetLocalMin();
+        Vector2 max = this.GetLocalMax();
 
         return x >= min.X && x <= max.X && y >= min.Y && y <= max.Y;
     }
 
     public Span<Vector2> GetVertices()
     {
-        Vector2 min = this.GetMin();
-        Vector2 max = this.GetMax();
+        Vector2 min = this.GetLocalMin();
+        Vector2 max = this.GetLocalMax();
 
         return new Span<Vector2>(new[]
         {
