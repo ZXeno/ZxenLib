@@ -14,8 +14,8 @@ public class CircleTests
     {
         Circle circle = new Circle(x, y, radius);
 
-        Assert.AreEqual(x, circle.X);
-        Assert.AreEqual(y, circle.Y);
+        Assert.AreEqual(x, circle.Position.X);
+        Assert.AreEqual(y, circle.Position.Y);
         Assert.AreEqual(radius, circle.Radius);
     }
 

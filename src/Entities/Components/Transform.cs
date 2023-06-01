@@ -79,11 +79,7 @@ public class Transform : EntityComponent
     /// </summary>
     public Vector2 Scale
     {
-        get
-        {
-            return this.scale;
-        }
-
+        get => this.scale;
         set
         {
             Debug.Assert(value.X > 0, "Scale value X must be greater than 0.");
@@ -116,6 +112,7 @@ public class Transform : EntityComponent
     /// <summary>
     /// Gets or sets the velocity of this transform.
     /// </summary>
+    [Obsolete("This will be removed in the near future. If you need velocity, use the ZxPhysics2D system.")]
     public Vector2 Velocity { get; set; }
 
     /// <summary>
@@ -209,7 +206,7 @@ public class Transform : EntityComponent
     public virtual void Register(IEntity parent)
     {
         ArgumentNullException.ThrowIfNull(parent);
-        
+
         if (this.Parent?.Id != parent.Id)
         {
             this.Parent = parent;

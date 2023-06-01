@@ -9,11 +9,12 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Axis-Aligned Bounding Box
 /// </summary>
-public class AABB : IPolygon2D, IContains2D
+public class AABB : IPolygon2D
 {
     private Vector2 halfSize;
     private Vector2 size;
     private Vector2 position;
+    private Rigidbody2D? rigidBody;
 
     public AABB()
     {
@@ -70,6 +71,14 @@ public class AABB : IPolygon2D, IContains2D
     {
         get => this.position;
         set => this.position = value;
+    }
+
+    public Vector2 WorldPosition => this.rigidBody?.WorldPosition ?? Vector2.Zero + this.position;
+
+    public Rigidbody2D? Rigidbody
+    {
+        get => this.rigidBody;
+        set => this.rigidBody = value;
     }
 
     public Vector2 GetLocalMin()

@@ -5,13 +5,14 @@ using Extensions;
 using Interfaces;
 using Microsoft.Xna.Framework;
 
-public class Box2D : IPolygon2D, IContains2D
+public class Box2D : IPolygon2D
 {
     private Vector2 center;
     private Vector2 halfSize;
     private Vector2 size;
     private Vector2 position;
     private float rotation;
+    private Rigidbody2D? rigidBody;
 
     public Box2D()
     {
@@ -46,9 +47,7 @@ public class Box2D : IPolygon2D, IContains2D
                 throw new ArgumentException("Size must be a positive value!");
             }
             this.size = value;
-            this.halfSize = new Vector2(
-                this.size.X / 2f,
-                this.size.Y / 2f);
+            this.halfSize = this.size / 2f;
         }
     }
 
@@ -56,6 +55,14 @@ public class Box2D : IPolygon2D, IContains2D
     {
         get => this.position;
         set => this.position = value;
+    }
+
+    public Vector2 WorldPosition => this.rigidBody?.WorldPosition ?? Vector2.Zero + this.position;
+
+    public Rigidbody2D? Rigidbody
+    {
+        get => this.rigidBody;
+        set => this.rigidBody = value;
     }
 
     public float Rotation

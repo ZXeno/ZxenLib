@@ -8,20 +8,19 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Struct representing a circle.
 /// </summary>
-public class Circle : IContains2D
+public class Circle : IShape
 {
-    private float x;
-    private float y;
+    private Vector2 position;
     private float radius;
     private float rSqr;
+    private Rigidbody2D? rigidBody;
 
     /// <summary>
     /// Creates a new <see cref="Circle"/> at X: 0, Y: 0, with a radius of 1.
     /// </summary>
     public Circle()
     {
-        this.x = 0;
-        this.y = 0;
+        this.position = new Vector2();
         this.radius = 1f;
         this.rSqr = this.radius.Sqr();
     }
@@ -34,8 +33,7 @@ public class Circle : IContains2D
     /// <param name="radius"></param>
     public Circle(float x, float y, float radius)
     {
-        this.x = x;
-        this.y = y;
+        this.position = new Vector2(x, y);
         this.radius = Math.Clamp(radius, 0, float.MaxValue);
         this.rSqr = radius * radius;
     }
@@ -47,28 +45,9 @@ public class Circle : IContains2D
     /// <param name="radius">The radius of the circle.</param>
     public Circle(Vector2 position, float radius)
     {
-        this.x = position.X;
-        this.y = position.Y;
+        this.position = position;
         this.radius = radius;
         this.rSqr = radius.Sqr();
-    }
-
-    /// <summary>
-    /// The X axis coordinate of the circle.
-    /// </summary>
-    public float X
-    {
-        get => this.x;
-        set => this.x = value;
-    }
-
-    /// <summary>
-    /// The Y axis coordinate of the circle.
-    /// </summary>
-    public float Y
-    {
-        get => this.y;
-        set => this.y = value;
     }
 
     /// <summary>
@@ -88,6 +67,20 @@ public class Circle : IContains2D
     /// The Radius squared of the circle.
     /// </summary>
     public float RSqr => this.rSqr;
+
+    public Vector2 Position
+    {
+        get => this.position;
+        set => this.position = value;
+    }
+
+    public Vector2 WorldPosition => this.rigidBody?.WorldPosition ?? Vector2.Zero + this.Position;
+
+    public Rigidbody2D? Rigidbody
+    {
+        get => this.rigidBody;
+        set => this.rigidBody = value;
+    }
 
     /// <summary>
     /// Checks if a <see cref="Point"/> is located inside the circle.
@@ -128,18 +121,9 @@ public class Circle : IContains2D
     /// <returns>True if the px and py values are both located inside the circle.</returns>
     public bool Contains(double px, double py)
     {
-        double xDistance = Math.Abs(this.x - px);
-        double yDistance = Math.Abs(this.y - py);
+        double xDistance = Math.Abs(this.position.X - px);
+        double yDistance = Math.Abs(this.position.Y - py);
 
         return xDistance <= this.radius && yDistance <= this.radius;
-    }
-
-    /// <summary>
-    /// Returns the position of the circle as a <see cref="Vector2"/>.
-    /// </summary>
-    /// <returns><see cref="Vector2"/></returns>
-    public Vector2 GetPositionVector()
-    {
-        return new Vector2((float)this.x, (float)this.y);
     }
 }

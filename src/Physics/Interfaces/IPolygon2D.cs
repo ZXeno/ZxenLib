@@ -3,15 +3,13 @@ namespace ZxenLib.Physics.Interfaces;
 using System;
 using Microsoft.Xna.Framework;
 
-public interface IPolygon2D
+public interface IPolygon2D : IShape
 {
     Vector2 Center { get; set; }
 
     Vector2 Size { get; set; }
 
     Vector2 HalfSize { get; }
-
-    Vector2 Position { get; set; }
 
     float Rotation { get; set; }
 

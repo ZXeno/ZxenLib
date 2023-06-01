@@ -27,7 +27,7 @@ public class IntersectionDetector2D
         return point.Y.Compare(m * point.X + b);
     }
 
-    public static bool ShapeContains(Vector2 point, IContains2D shape)
+    public static bool ShapeContains(Vector2 point, IShape shape)
     {
         return shape.Contains(point);
     }
@@ -41,7 +41,7 @@ public class IntersectionDetector2D
         }
 
         Vector2 ab = line.End - line.Start;
-        Vector2 circleCenter = circle.GetPositionVector();
+        Vector2 circleCenter = circle.Position;
         Vector2 centerToLineStart = circleCenter - line.Start;
         float t = Vector2.Dot(centerToLineStart, ab) / Vector2.Dot(ab, ab);
 
@@ -55,24 +55,24 @@ public class IntersectionDetector2D
         return circle.Contains(closestPoint);
     }
 
-    public static bool LineIntersectsPolygon(Line2D line, IPolygon2D shape)
+    public static bool LineIntersectsPolygon(Line2D line, IPolygon2D polygon)
     {
-        if (shape is IContains2D container && (container.Contains(line.Start) || container.Contains(line.End)))
+        if (polygon.Contains(line.Start) || polygon.Contains(line.End))
         {
             return true;
         }
 
-        float theta = -shape.Rotation;
+        float theta = -polygon.Rotation;
         Vector2 localStart = line.Start;
         Vector2 localEnd = line.End;
 
         Line2D localLine = null!;
 
-        if (shape.Rotation != 0f)
+        if (polygon.Rotation != 0f)
         {
-            Vector2 center = shape.Center;
-            localStart.Rotate(center, theta);
-            localEnd.Rotate(center, theta);
+            Vector2 center = polygon.Center;
+            localStart = localStart.Rotate(center, theta);
+            localEnd = localEnd.Rotate(center, theta);
             localLine = new Line2D(localStart, localEnd);
         }
 
@@ -83,9 +83,9 @@ public class IntersectionDetector2D
         unitVector.X = unitVector.X != 0 ? 1.0f / unitVector.X : float.MinValue;
         unitVector.Y = unitVector.Y != 0 ? 1.0f / unitVector.Y : float.MinValue;
 
-        Vector2 min = shape.GetLocalMin();
+        Vector2 min = polygon.GetLocalMin();
         min = (min - localLine.Start) * unitVector;
-        Vector2 max = shape.GetLocalMax();
+        Vector2 max = polygon.GetLocalMax();
         max = (max - localLine.Start) * unitVector;
 
         float tmin = Math.Max(Math.Min(min.X, max.X), Math.Min(min.Y, max.Y));
@@ -105,7 +105,7 @@ public class IntersectionDetector2D
     {
         result?.Reset();
 
-        Vector2 originToCircle = circle.GetPositionVector().Clone() - ray.Origin;
+        Vector2 originToCircle = circle.Position - ray.Origin;
         float radiusSquared = (float)circle.RSqr;
         float originToCircleLengthSqr = originToCircle.LengthSquared();
 
@@ -135,8 +135,8 @@ public class IntersectionDetector2D
 
         if (result != null)
         {
-            Vector2 point = ray.Origin.Clone() + ray.Direction.Clone() * t;
-            Vector2 normal = point.Clone() - circle.GetPositionVector();
+            Vector2 point = ray.Origin + ray.Direction * t;
+            Vector2 normal = point - circle.Position;
             normal.Normalize();
 
             result.Init(point, normal, t, true);
@@ -149,7 +149,7 @@ public class IntersectionDetector2D
     {
         result?.Reset();
 
-        Vector2 unitVector = ray.Direction.Clone();
+        Vector2 unitVector = ray.Direction;
         unitVector.Normalize();
         unitVector.X = unitVector.X != 0 ? 1.0f / unitVector.X : float.MinValue;
         unitVector.Y = unitVector.Y != 0 ? 1.0f / unitVector.Y : float.MinValue;
@@ -191,11 +191,11 @@ public class IntersectionDetector2D
         result?.Reset();
 
         float theta = -box.Rotation;
-        Vector2 center = box.Position.Clone();
-        Vector2 localRayOrigin = ray.Origin.Clone();
-        Vector2 localRayDirection = ray.Direction.Clone();
-        localRayOrigin.Rotate(center, theta);
-        localRayDirection.Rotate(center, theta);
+        Vector2 center = box.Position;
+        Vector2 localRayOrigin = ray.Origin;
+        Vector2 localRayDirection = ray.Direction;
+        localRayOrigin = localRayOrigin.Rotate(center, theta);
+        localRayDirection = localRayDirection.Rotate(center, theta);
 
         AABB aabb = box.ToAabb();
         bool hit = Raycast(aabb, new Ray2D(localRayOrigin, localRayDirection), result);
@@ -204,8 +204,14 @@ public class IntersectionDetector2D
             return false;
         }
 
-        result?.Point.Rotate(center, box.Rotation);
-        result?.Normal.Rotate(center, box.Rotation);
+        if (result != null)
+        {
+            bool rhit = result.Hit;
+            float rt = result.T;
+            Vector2 rPoint = result.Point.Rotate(center, box.Rotation);
+            Vector2 rNorm = result.Normal.Rotate(center, box.Rotation);
+            result.Init(rPoint, rNorm, rt, rhit);
+        }
 
         return true;
     }
@@ -213,14 +219,14 @@ public class IntersectionDetector2D
     // Circle <-> Shape intersection
     public static bool CircleVsCircle(Circle circle1, Circle circle2)
     {
-        float distanceSqr = Vector2.DistanceSquared(circle1.GetPositionVector(), circle2.GetPositionVector());
+        float distanceSqr = Vector2.DistanceSquared(circle1.Position, circle2.Position);
         float radiiSum = (float)circle1.Radius + (float)circle2.Radius;
         return distanceSqr <= radiiSum.Sqr();
     }
 
     public static bool CircleVsPolygon(Circle circle, IPolygon2D box)
     {
-        Vector2 localCirclePos = circle.GetPositionVector();
+        Vector2 localCirclePos = circle.Position;
         Vector2 min = box.GetLocalMin();
         Vector2 max = box.GetLocalMax();
 
@@ -229,8 +235,8 @@ public class IntersectionDetector2D
             min = Vector2.Zero;
             max = box.HalfSize * 2f;
 
-            Vector2 r = circle.GetPositionVector() - box.Position;
-            r.Rotate(Vector2.Zero, -box.Rotation);
+            Vector2 r = circle.Position - box.Position;
+            r = r.Rotate(Vector2.Zero, -box.Rotation);
             localCirclePos = r + box.HalfSize;
         }
 
@@ -239,7 +245,7 @@ public class IntersectionDetector2D
 
     private static bool CalculateCircleToPolygons(Vector2 circlePos, float radius, Vector2 boxMin, Vector2 boxMax)
     {
-        Vector2 closestPointToCircle = circlePos.Clone();
+        Vector2 closestPointToCircle = circlePos;
         if (closestPointToCircle.X < boxMin.X)
         {
             closestPointToCircle.X = boxMin.X;

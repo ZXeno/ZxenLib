@@ -326,7 +326,7 @@ public class IntersectionDetector2DTests
     {
         // Arrange
         Box2D box = new Box2D(new Vector2(2), new Vector2(0), 45);
-        Ray2D ray = new Ray2D(new Vector2(-2.5f, 1), new Vector2(1, -1));
+        Ray2D ray = new Ray2D(new Vector2(-1.5f, .5f), new Vector2(1, -1));
         RaycastResult result = new RaycastResult();
 
         // Act

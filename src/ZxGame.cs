@@ -7,6 +7,7 @@ using Configuration;
 using DependencyInjection;
 using Graphics.Rendering;
 using Input;
+using Physics;
 
 public class ZxGame : Game
 {
@@ -18,18 +19,21 @@ public class ZxGame : Game
     protected DependencyContainer ServiceContainer;
     protected DisplayManager DisplayManager;
     protected SpriteBatch SpriteBatch;
+    protected ZxPhysics2D physics;
 
     public ZxGame(
         IAssetManager assetManager,
         IInputProvider inputProvider,
         IConfigurationManager configManager,
         GameScreenManager screenManager,
+        ZxPhysics2D physics,
         DependencyContainer serviceContainer)
     {
         this.AssetManager = assetManager;
         this.Input = inputProvider;
         this.GameScreenManager = screenManager;
         this.ConfigManager = configManager;
+        this.physics = physics;
         this.ServiceContainer = serviceContainer;
 
         this.Graphics = new GraphicsDeviceManager(this);
@@ -77,9 +81,18 @@ public class ZxGame : Game
         this.GameScreenManager.UpdateStates(deltaTime);
 
         this.Update(deltaTime);
+        this.OnLateUpdate(deltaTime);
+        this.LateUpdate(deltaTime);
     }
 
     protected virtual void Update(float deltaTime){}
+
+    protected virtual void OnLateUpdate(float deltaTime) { }
+
+    private void LateUpdate(float deltaTime)
+    {
+        this.physics.Update(deltaTime);
+    }
 
     protected override void Draw(GameTime gameTime)
     {

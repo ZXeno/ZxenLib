@@ -12,6 +12,7 @@ using GameScreen;
 using Graphics;
 using Graphics.Rendering;
 using Input;
+using Physics;
 
 /// <summary>
 /// Extension class to add all types to the Dependency Injection container(s).
@@ -37,6 +38,7 @@ public static class DependencyInjectionBootstrapper
         collection.Register<IInputProvider, InputProvider>();
         collection.Register<SpriteBatch>();
         collection.Register<ISpriteManager, SpriteManager>();
+        collection.Register<ZxPhysics2D>();
         collection.Register(collection);
     }
 }

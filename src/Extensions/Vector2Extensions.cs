@@ -34,7 +34,7 @@ public static class Vector2Extensions
     /// <param name="origin">The origin of which the vector is being rotated around.</param>
     /// <param name="rotation">How far to rotate the <see cref="Vector2"/>. If <see cref="useDegrees"/> is false, provide radians instead.</param>
     /// <param name="useDegrees">Flag indicating of the <see cref="rotation"/> parameter is in degrees or radians. True by default, specifying that <see cref="rotation"/> is degrees.</param>
-    public static void Rotate(this Vector2 vec, Vector2 origin, double rotation, bool useDegrees = true)
+    public static Vector2 Rotate(this Vector2 vec, Vector2 origin, double rotation, bool useDegrees = true)
     {
         double x = vec.X - origin.X;
         double y = vec.Y - origin.Y;
@@ -45,6 +45,8 @@ public static class Vector2Extensions
 
         vec.X = (float)((x * cos) - (y * sin)) + origin.X;
         vec.Y = (float)((x * sin) + (y * cos)) + origin.Y;
+
+        return vec;
     }
 
     /// <summary>
@@ -58,39 +60,5 @@ public static class Vector2Extensions
     public static bool Compare(this Vector2 v1, Vector2 v2, float epsilon = float.MinValue)
     {
         return ZxMath.Compare(v1, v2, epsilon);
-    }
-
-    /// <summary>
-    /// Creates a new <see cref="Vector2"/> from this <see cref="Vector2"/>.
-    /// </summary>
-    /// <param name="vector">The <see cref="Vector2"/> to clone.</param>
-    /// <returns></returns>
-    public static Vector2 Clone(this Vector2 vector)
-    {
-        return new(vector.X, vector.Y);
-    }
-
-    /// <summary>
-    /// Copies the values from another vector onto this vector.
-    /// </summary>
-    /// <param name="vector">The target vector.</param>
-    /// <param name="source">The source vector.</param>
-    /// <returns></returns>
-    public static void CopyFrom(this Vector2 vector, Vector2 source)
-    {
-        vector.X = source.X;
-        vector.Y = source.Y;
-    }
-
-    /// <summary>
-    /// Copies the values from this vector onto a target vector.
-    /// </summary>
-    /// <param name="source">The target vector.</param>
-    /// <param name="target">The source vector.</param>
-    /// <returns></returns>
-    public static void CopyTo(this Vector2 source, Vector2 target)
-    {
-        target.X = source.X;
-        target.Y = source.Y;
     }
 }
