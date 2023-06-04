@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Components.Interfaces;
 using Microsoft.Xna.Framework.Graphics;
 using ZxenLib.Entities.Components;
 

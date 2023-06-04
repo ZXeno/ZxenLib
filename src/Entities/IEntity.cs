@@ -1,6 +1,7 @@
 ﻿namespace ZxenLib.Entities;
 
 using System.Collections.Generic;
+using Components.Interfaces;
 using ZxenLib.Entities.Components;
 
 /// <summary>

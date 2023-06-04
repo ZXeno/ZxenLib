@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.Entities.Components;
+﻿namespace ZxenLib.Entities.Components.Interfaces;
 
 using Microsoft.Xna.Framework.Graphics;
 

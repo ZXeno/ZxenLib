@@ -1,6 +1,7 @@
 namespace ZxenLib.Physics.Primitives;
 
 using System;
+using Components;
 using Extensions;
 using Interfaces;
 using Microsoft.Xna.Framework;
@@ -57,8 +58,6 @@ public class Box2D : IPolygon2D
         set => this.position = value;
     }
 
-    public Vector2 WorldPosition => this.rigidBody?.WorldPosition ?? Vector2.Zero + this.position;
-
     public Rigidbody2D? Rigidbody
     {
         get => this.rigidBody;
@@ -70,6 +69,10 @@ public class Box2D : IPolygon2D
         get => this.rotation;
         set => this.rotation = value;
     }
+
+    public int VertexCount => 4;
+
+    public float Radius => PhysicsSettings.PolygonRadius;
 
     public Vector2 GetLocalMin()
     {

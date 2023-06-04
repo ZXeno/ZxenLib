@@ -3,6 +3,7 @@ namespace ZxenLib.Physics.Primitives;
 
 using System;
 using System.Diagnostics;
+using Components;
 using Interfaces;
 using Microsoft.Xna.Framework;
 
@@ -42,17 +43,16 @@ public class AABB : IPolygon2D
 
     public Vector2 Center { get; set; }
 
+    public float Radius => PhysicsSettings.PolygonRadius;
+
     /// <summary>
     /// For all other shapes, this should be set. But the AABB should always have a rotation of 0
     /// </summary>
     public float Rotation
     {
         get => 0f;
-        set
-        {
-            Debug.Assert(value == 0, "Rotation of an AABB should always be 0.");
-            return;
-        }
+        // ReSharper disable once ValueParameterNotUsed
+        set { return; }
     }
 
     public Vector2 HalfSize => this.halfSize;
@@ -73,13 +73,13 @@ public class AABB : IPolygon2D
         set => this.position = value;
     }
 
-    public Vector2 WorldPosition => this.rigidBody?.WorldPosition ?? Vector2.Zero + this.position;
-
     public Rigidbody2D? Rigidbody
     {
         get => this.rigidBody;
         set => this.rigidBody = value;
     }
+
+    public int VertexCount => 4;
 
     public Vector2 GetLocalMin()
     {

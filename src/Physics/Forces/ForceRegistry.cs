@@ -1,6 +1,7 @@
 namespace ZxenLib.Physics.Forces;
 
 using System.Collections.Generic;
+using Components;
 
 public class ForceRegistry
 {

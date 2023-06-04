@@ -1,6 +1,7 @@
 namespace ZxenLib.Physics.Primitives;
 
 using System;
+using Components;
 using Extensions;
 using Interfaces;
 using Microsoft.Xna.Framework;
@@ -8,7 +9,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Struct representing a circle.
 /// </summary>
-public class Circle : IShape
+public class Circle : ICollider2D
 {
     private Vector2 position;
     private float radius;
@@ -74,13 +75,16 @@ public class Circle : IShape
         set => this.position = value;
     }
 
-    public Vector2 WorldPosition => this.rigidBody?.WorldPosition ?? Vector2.Zero + this.Position;
-
     public Rigidbody2D? Rigidbody
     {
         get => this.rigidBody;
         set => this.rigidBody = value;
     }
+
+    /// <summary>
+    /// Gets or sets the offset.
+    /// </summary>
+    public Vector2 Offset { get; set; }
 
     /// <summary>
     /// Checks if a <see cref="Point"/> is located inside the circle.

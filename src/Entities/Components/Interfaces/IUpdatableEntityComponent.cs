@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.Entities.Components;
+﻿namespace ZxenLib.Entities.Components.Interfaces;
 
 /// <summary>
 /// Interface representing an updatable object.

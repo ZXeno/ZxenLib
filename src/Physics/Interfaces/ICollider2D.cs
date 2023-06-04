@@ -1,18 +1,14 @@
 namespace ZxenLib.Physics.Interfaces;
 
+using Components;
 using Microsoft.Xna.Framework;
 
-public interface IShape
+public interface ICollider2D
 {
     /// <summary>
     /// The position of this shape.
     /// </summary>
     Vector2 Position { get; }
-
-    /// <summary>
-    /// Gets the world position of this shape.
-    /// </summary>
-    Vector2 WorldPosition { get; }
 
     /// <summary>
     /// The <see cref="Rigidbody2D"/> containing the shape.

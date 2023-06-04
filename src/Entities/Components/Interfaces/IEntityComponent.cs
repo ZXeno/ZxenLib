@@ -1,4 +1,4 @@
-﻿namespace ZxenLib.Entities.Components;
+﻿namespace ZxenLib.Entities.Components.Interfaces;
 
 /// <summary>
 /// The interface representing an EntityComponent.

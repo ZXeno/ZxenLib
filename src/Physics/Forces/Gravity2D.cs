@@ -1,5 +1,6 @@
 namespace ZxenLib.Physics.Forces;
 
+using Components;
 using Microsoft.Xna.Framework;
 
 public class Gravity2D : IForceGenerator

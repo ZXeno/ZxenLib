@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using Components.Interfaces;
 using Microsoft.Xna.Framework.Graphics;
 using ZxenLib.Entities.Components;
 using ZxenLib.Events;

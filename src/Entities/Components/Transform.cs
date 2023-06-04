@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using Interfaces;
 using Microsoft.Xna.Framework;
 
 /// <summary>

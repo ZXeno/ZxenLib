@@ -27,9 +27,9 @@ public class IntersectionDetector2D
         return point.Y.Compare(m * point.X + b);
     }
 
-    public static bool ShapeContains(Vector2 point, IShape shape)
+    public static bool ShapeContains(Vector2 point, ICollider2D collider2D)
     {
-        return shape.Contains(point);
+        return collider2D.Contains(point);
     }
 
     // Line intersects

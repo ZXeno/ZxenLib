@@ -1,4 +1,4 @@
-﻿namespace ZxenLib;
+﻿namespace ZxenLib.Entities.Components;
 
 using System;
 using Microsoft.Xna.Framework;
@@ -123,7 +123,7 @@ public class Angle
     /// <returns>True if the other object is an angle and all checks are equal.</returns>
     public override bool Equals(object? obj)
     {
-        return obj is Angle other && Equals(other);
+        return obj is Angle other && this.Equals(other);
     }
 
     public override int GetHashCode()

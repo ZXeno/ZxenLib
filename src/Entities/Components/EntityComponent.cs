@@ -1,6 +1,7 @@
 ﻿namespace ZxenLib.Entities.Components;
 
 using System;
+using Interfaces;
 
 /// <summary>
 /// The base class of an EntityComponent which implements basic register/unregister functionality.

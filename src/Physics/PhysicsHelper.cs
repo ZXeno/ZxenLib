@@ -2,7 +2,6 @@
 
 using System;
 using Extensions;
-using Interfaces;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -45,7 +44,7 @@ public static class PhysicsHelper
             Vector2 v2 = vertices[v2index];
 
             Vector2 edgeVector = v1 - v2;
-            Vector2 edgeNormal = PhysicsHelper.Normal(edgeVector);
+            Vector2 edgeNormal = new Vector2(edgeVector.Y, -edgeVector.X);
             edgeNormal.Normalize();
 
             normals[x] = new Vector2(edgeNormal.X, edgeNormal.Y);

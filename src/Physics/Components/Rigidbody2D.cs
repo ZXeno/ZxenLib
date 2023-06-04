@@ -1,10 +1,12 @@
-namespace ZxenLib.Physics;
+namespace ZxenLib.Physics.Components;
 
 using System;
-using Entities;
-using Entities.Components;
-using Extensions;
+using Common;
+using Interfaces;
 using Microsoft.Xna.Framework;
+using ZxenLib.Entities;
+using ZxenLib.Entities.Components;
+using ZxenLib.Entities.Components.Interfaces;
 
 public class Rigidbody2D : EntityComponent
 {
@@ -14,11 +16,13 @@ public class Rigidbody2D : EntityComponent
     private float angularDampening = 0f;
     private float mass = 0f;
     private float inverseMass = 0f;
+    private float coefficientOfRestitution = 1.0f;
     private Vector2 accumulatedForce = new Vector2();
-    private Vector2 lineaVelocity = new Vector2();
+    private Vector2 linearVelocity = new Vector2();
     private Vector2 position = new Vector2();
-    private Angle rotation = new Angle();
     private Transform parentTransform;
+    private PhysicsTransform physTransform;
+    private ICollider2D? collider;
 
     /// <summary>
     /// Creates a new instance of the <see cref="Rigidbody2D"/> class.
@@ -27,30 +31,22 @@ public class Rigidbody2D : EntityComponent
     {
         this.Id = Ids.GetNewId();
         this.IsEnabled = true;
-    }
-
-    /// <summary>
-    /// Gets the local base rotation of this rigidbody, relative to its parent <see cref="Transform"/>.
-    /// </summary>
-    public Angle Rotation
-    {
-        get => this.rotation;
-        set => this.rotation = value;
+        this.physTransform = new();
     }
 
     /// <summary>
     /// Gets or sets the local position of this rigidbody, relative to its parent <see cref="Transform"/>.
     /// </summary>
-    public Vector2 Position
+    public PhysicsTransform PhysicsTransform
     {
-        get => this.position;
-        set => this.position = value;
+        get => this.physTransform;
+        set => this.physTransform = value;
     }
 
     /// <summary>
-    /// Gets the world coordinate of this rigidbody.
+    /// Gets the parent transform of the <see cref="Rigidbody2D"/>.
     /// </summary>
-    public Vector2 WorldPosition => this.parentTransform.Position + this.position;
+    public Transform ParentTransform => this.parentTransform;
 
     /// <summary>
     /// Flag indicating if this <see cref="Rigidbody2D"/> should have a fixed rotation.
@@ -102,6 +98,49 @@ public class Rigidbody2D : EntityComponent
     }
 
     /// <summary>
+    /// Flag indicating if the <see cref="Rigidbody2D"/> has infinite mass.<br/>
+    /// A rigidbody is considered to have infinite mass if its mass is 0.
+    /// </summary>
+    public bool IsInfiniteMass => this.mass == 0;
+
+    /// <summary>
+    /// Gets or sets the object implementing the <see cref="ICollider2D"/> interface attached to this rigidbody.
+    /// </summary>
+    public ICollider2D? Collider
+    {
+        get => this.collider;
+        set => this.collider = value;
+    }
+
+    /// <summary>
+    /// Gets the inverse mass of this <see cref="Rigidbody2D"/>.
+    /// </summary>
+    public float InverseMass => this.inverseMass;
+
+    /// <summary>
+    /// Gets or sets the (linear) velocity of this <see cref="Rigidbody2D"/>.
+    /// </summary>
+    public Vector2 Velocity
+    {
+        get => this.linearVelocity;
+        set => this.linearVelocity = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the coefficient of restitution for this <see cref="Rigidbody2D"/>.
+    /// </summary>
+    public float CoefficientOfRestitution
+    {
+        get => this.coefficientOfRestitution;
+        set => this.coefficientOfRestitution = value;
+    }
+
+    /// <summary>
+    /// Flag indicating if this <see cref="Rigidbody2D"/> is affected by gravity.
+    /// </summary>
+    public bool IsAffectedByGravity { get; set; }
+
+    /// <summary>
     /// Registers the component with a parent entity.
     /// </summary>
     /// <param name="parent">The <see cref="IEntity"/> object parent of this <see cref="IEntityComponent"/>.</param>
@@ -131,7 +170,7 @@ public class Rigidbody2D : EntityComponent
         }
 
         Vector2 acceleration = this.accumulatedForce * this.inverseMass;
-        this.position += this.lineaVelocity * deltaTime;
+        this.position += this.linearVelocity * deltaTime;
 
         this.SyncTransform();
         this.ClearAccumulators();

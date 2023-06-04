@@ -1,5 +1,7 @@
 namespace ZxenLib.Physics.Forces;
 
+using Components;
+
 public class ForceRegistration
 {
     private readonly IForceGenerator? forceGenerator = null;
