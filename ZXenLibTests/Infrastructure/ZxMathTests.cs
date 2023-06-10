@@ -4,6 +4,7 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xna.Framework;
 using ZxenLib;
+using ZxenLib.Infrastructure;
 
 [TestClass]
 public class ZxMathTests

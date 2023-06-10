@@ -3,6 +3,7 @@ namespace ZXenLibTests.Physics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xna.Framework;
 using ZxenLib.Physics;
+using ZxenLib.Physics.Collisions;
 using ZxenLib.Physics.Primitives;
 
 [TestClass]

@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\ZxenLib.csproj" />
+    <ProjectReference Include="..\src\ZxenLib\ZxenLib.csproj" />
   </ItemGroup>
 
 </Project>
